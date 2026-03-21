@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI互动课件效果评测系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/chart.js/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #F8FAFC; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        /* 定制滚动条，提升下拉框质感 */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; outline: none; margin: 10px 0; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #E2E8F0; border-radius: 3px; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 18px; height: 18px; border-radius: 50%; background: #2563EB; cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3); margin-top: -6px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); box-shadow: 0 4px 8px rgba(37,99,235,0.4); }
+        input[type=range]:active::-webkit-slider-thumb { cursor: grabbing; }
+        input[type=range]:disabled::-webkit-slider-thumb { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800 relative">
+
+    <aside class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-20 shrink-0">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700 bg-slate-800">
+            <i class="fa-solid fa-cube text-blue-400 mr-2 text-xl"></i>
+            <span class="font-bold text-lg tracking-wide">AI课件测评系统</span>
+        </div>
+        <div class="flex-1 py-6 space-y-2 overflow-y-auto">
+            <div class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">教研评测端</div>
+            <button type="button" onclick="switchView('teacher')" id="nav-teacher" class="w-full text-left px-6 py-3 bg-blue-600 text-white border-r-4 border-blue-400 transition hover:bg-slate-800">
+                <i class="fa-solid fa-pen-to-square mr-3 w-5"></i> 效果评测台
+            </button>
+            <div class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2">产品管理端 (需权限)</div>
+            <button type="button" onclick="attemptAdminAccess('admin-task')" id="nav-admin-task" class="w-full text-left px-6 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-list-check mr-3 w-5"></i> 测评任务管理
+            </button>
+            <button type="button" onclick="attemptAdminAccess('admin-stats')" id="nav-admin-stats" class="w-full text-left px-6 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-chart-pie mr-3 w-5"></i> 数据洞察报告
+            </button>
+        </div>
+        <div class="p-4 border-t border-slate-700 bg-slate-800/50" id="user-profile-container">
+            <div class="text-sm text-slate-400 text-center">状态加载中...</div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden relative bg-slate-50">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10 shrink-0">
+            <h2 id="page-title" class="text-xl font-bold text-slate-800">互动课件效果评测台</h2>
+            <div class="text-sm text-slate-500 font-medium bg-slate-100 px-4 py-1.5 rounded-full flex items-center shadow-inner">
+                <i class="fa-solid fa-shield-halved mr-2 text-green-500"></i> 数据快照隔离与真AI双擎版
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-auto p-6 sm:p-8 relative" id="content-area">
+            
+            <div id="view-teacher" class="max-w-7xl mx-auto space-y-6">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex space-x-2 bg-slate-100 p-1 rounded-lg w-fit">
+                        <button type="button" onclick="switchTeacherTab('pending')" id="tab-pending" class="px-6 py-2 rounded-md text-sm font-bold bg-white text-blue-600 shadow-sm transition">未处理任务</button>
+                        <button type="button" onclick="switchTeacherTab('done')" id="tab-done" class="px-6 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-700 transition">已处理任务</button>
+                    </div>
+                    <div class="flex space-x-4">
+                        <button onclick="exportExcel()" class="px-5 py-2 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 text-sm font-bold rounded-lg transition flex items-center shadow-sm">
+                            <i class="fa-solid fa-file-excel mr-2"></i> 导出全部原始数据明细
+                        </button>
+                        <button onclick="document.getElementById('guide-modal').classList.remove('hidden')" class="px-5 py-2 bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100 text-sm font-bold rounded-lg transition flex items-center shadow-sm">
+                            <i class="fa-solid fa-book-open-reader mr-2"></i> 0-5分通用打分指引
+                        </button>
+                    </div>
+                </div>
+                <div id="task-list-container" class="space-y-6"></div>
+            </div>
+
+            <div id="view-admin-task" class="hidden max-w-[1200px] mx-auto pb-12">
+                <div id="admin-task-list-view" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-list-check text-blue-600 mr-2"></i> 测评任务管理列表
+                        </h3>
+                        <div class="flex space-x-3">
+                            <input type="file" id="json-import-input" accept=".json" class="hidden" onchange="importJson(event)">
+                            <button onclick="exportJson()" class="px-4 py-2 bg-white text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-50 transition shadow-sm border border-slate-300">
+                                <i class="fa-solid fa-download mr-1"></i> 备份 JSON
+                            </button>
+                            <button onclick="document.getElementById('json-import-input').click()" class="px-4 py-2 bg-white text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-50 transition shadow-sm border border-slate-300">
+                                <i class="fa-solid fa-upload mr-1"></i> 导入 JSON
+                            </button>
+                            <button onclick="openNewTaskForm()" class="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 shadow-sm transition">
+                                <i class="fa-solid fa-plus mr-1"></i> 发布新任务
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-0">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-sm border-b border-slate-200">
+                                    <th class="py-4 px-6 font-medium">任务ID</th>
+                                    <th class="py-4 px-6 font-medium">学科</th>
+                                    <th class="py-4 px-6 font-medium w-1/4">课件名称</th>
+                                    <th class="py-4 px-6 font-medium">模型数量</th>
+                                    <th class="py-4 px-6 font-medium">状态</th>
+                                    <th class="py-4 px-6 font-medium text-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-table-body" class="divide-y divide-slate-100 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="admin-task-form-view" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-pen-to-square text-blue-600 mr-2"></i> <span id="admin-form-title">发布新评测任务</span>
+                        </h3>
+                        <button onclick="toggleAdminTaskView('list')" class="text-slate-500 hover:text-slate-700 font-medium text-sm">
+                            <i class="fa-solid fa-arrow-left mr-1"></i> 返回列表
+                        </button>
+                    </div>
+                    <div class="p-8">
+                        <div class="grid grid-cols-12 gap-6 mb-6">
+                            <div class="col-span-4">
+                                <label class="block text-sm font-bold text-slate-700 mb-2">学科分类 <span class="text-red-500">*</span></label>
+                                <select id="form-subject" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <option value="英语">英语 (English)</option>
+                                    <option value="数学">数学 (Math)</option>
+                                    <option value="语文">语文 (Chinese)</option>
+                                </select>
+                            </div>
+                            <div class="col-span-8">
+                                <label class="block text-sm font-bold text-slate-700 mb-2">互动课件名称 <span class="text-red-500">*</span></label>
+                                <input type="text" id="form-title" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="例如：小学英语26个字母大小写配对游戏">
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 mb-2">核心知识点</label>
+                            <input type="text" id="form-knowledge" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="例如：认识26个英文字母的大小写并进行配对">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 mb-2">自然语言描述需求 (用户Prompt) <span class="text-red-500">*</span></label>
+                            <textarea id="form-prompt" class="w-full border border-slate-300 rounded-lg px-4 py-3 h-24 focus:ring-2 focus:ring-blue-500 outline-none resize-none"></textarea>
+                        </div>
+                        <div class="border-t border-slate-200 pt-8 mt-4">
+                            <div class="flex justify-between items-center mb-6">
+                                <div>
+                                    <label class="block text-base font-bold text-slate-800">配置模型产物</label>
+                                    <p class="text-xs text-slate-500 mt-1">系统已默认添加常用模型。产物支持拖拽本地HTML或链接。</p>
+                                </div>
+                                <button type="button" onclick="addNewAdminModelRow()" class="text-sm font-bold text-slate-600 bg-white border border-slate-300 px-4 py-2 rounded-lg hover:bg-slate-50 transition shadow-sm">
+                                    <i class="fa-solid fa-plus mr-1"></i> 新增对比模型
+                                </button>
+                            </div>
+                            <div class="space-y-4" id="admin-models-wrapper"></div>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-slate-200 flex justify-end">
+                            <button type="button" onclick="toggleAdminTaskView('list')" class="px-6 py-2.5 bg-white text-slate-600 border border-slate-300 font-bold rounded-lg mr-4 hover:bg-slate-50 transition">取消</button>
+                            <button type="button" id="save-task-btn" onclick="saveAdminTask()" class="px-8 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md transition flex items-center">
+                                确认保存
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-admin-stats" class="hidden space-y-6 max-w-7xl mx-auto pb-12">
+                
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <button onclick="refreshDashboardSnapshot()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-md transition flex items-center" id="btn-refresh-dashboard">
+                        <i class="fa-solid fa-arrows-rotate mr-2"></i> 获取最新归档数据进行分析
+                    </button>
+                    <div class="flex items-center relative z-[60]">
+                        <h3 class="font-bold text-slate-800 mr-3 text-sm"><i class="fa-solid fa-filter text-blue-500 mr-1"></i> 透视视角</h3>
+                        <div class="relative custom-multiselect w-[240px]">
+                            <div class="bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-lg py-2 px-3 flex justify-between items-center cursor-pointer shadow-sm hover:border-blue-400 hover:bg-white transition" onclick="toggleRaterDropdown(event)" id="rater-filter-display">
+                                <span class="font-bold truncate text-xs flex items-center w-full" id="rater-filter-text"><i class="fa-solid fa-users text-blue-500 mr-1.5"></i> 🌟 综合视角 (全部)</span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-[10px] transition-transform duration-200 ml-2" id="rater-filter-icon"></i>
+                            </div>
+                            <div class="absolute right-0 mt-1.5 w-72 bg-white border border-slate-200 shadow-2xl rounded-xl hidden flex-col overflow-hidden origin-top-right transition-all" id="rater-dropdown-menu">
+                                <div class="px-3 py-2 border-b border-slate-100 bg-slate-50/80 flex justify-between items-center">
+                                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">选择参与统计的考官</span>
+                                </div>
+                                <div class="flex px-3 py-2 border-b border-slate-100 bg-slate-50/50 space-x-2">
+                                    <button class="text-[10px] bg-white border border-slate-200 text-slate-600 px-2 py-1 rounded hover:bg-slate-100 font-bold transition flex-1" onclick="quickSelectRaters('all')">全选</button>
+                                    <button class="text-[10px] bg-purple-50 border border-purple-200 text-purple-700 px-2 py-1 rounded hover:bg-purple-100 font-bold transition flex-1" onclick="quickSelectRaters('ai')">仅看 AI</button>
+                                    <button class="text-[10px] bg-blue-50 border border-blue-200 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 font-bold transition flex-1" onclick="quickSelectRaters('human')">仅看真人</button>
+                                </div>
+                                <div class="max-h-60 overflow-y-auto p-1.5 space-y-0.5 custom-scrollbar" id="rater-filter-list">
+                                    </div>
+                                <div class="p-2 border-t border-slate-100 bg-slate-50">
+                                    <button class="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-lg transition shadow-md flex items-center justify-center" onclick="applyRaterFilter()">
+                                        <i class="fa-solid fa-check mr-1.5"></i> 应用并重新分析
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300 transition" onclick="showMetricInfo('sample')">
+                        <div>
+                            <p class="text-sm font-bold text-slate-500 mb-2 flex items-center">
+                                有效打分样本量
+                                <i class="fa-solid fa-circle-info ml-1.5 text-blue-400 group-hover:text-blue-600"></i>
+                            </p>
+                            <h2 class="text-4xl font-black text-slate-800" id="stat-sample-size">- <span class="text-lg font-medium text-slate-500 normal-case">份</span></h2>
+                        </div>
+                        <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-2xl group-hover:scale-110 transition"><i class="fa-solid fa-file-invoice"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-green-300 transition" onclick="showMetricInfo('v5_overall')">
+                        <div>
+                            <p class="text-sm font-bold text-slate-500 mb-2 flex items-center">
+                                全维度综合得分王 (V5)
+                                <i class="fa-solid fa-circle-info ml-1.5 text-green-400 group-hover:text-green-600"></i>
+                            </p>
+                            <h2 class="text-4xl font-black text-green-600" id="stat-best-overall">-</h2>
+                        </div>
+                        <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl group-hover:scale-110 transition"><i class="fa-solid fa-trophy"></i></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-purple-300 transition" onclick="showMetricInfo('improve')">
+                        <div>
+                            <p class="text-sm font-bold text-slate-500 mb-2 flex items-center">
+                                最大进步幅度 (V1至V5)
+                                <i class="fa-solid fa-circle-info ml-1.5 text-purple-400 group-hover:text-purple-600"></i>
+                            </p>
+                            <h2 class="text-4xl font-black text-purple-600" id="stat-max-improve">-</h2>
+                        </div>
+                        <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-2xl group-hover:scale-110 transition"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-12 gap-6">
+                    <div class="col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-radar-node text-blue-500 mr-2"></i> 模型能力分布 (V5均分)</h3>
+                        <div class="relative h-64 w-full"><canvas id="chartRadar"></canvas></div>
+                    </div>
+                    <div class="col-span-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-crown text-amber-500 mr-2"></i> 综合实力对决</h3>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl shadow-sm relative group cursor-pointer hover:border-indigo-300 transition" onclick="showMetricInfo('v1_best')">
+                                <i class="fa-solid fa-circle-info absolute top-4 right-4 text-indigo-300 group-hover:text-indigo-600"></i>
+                                <div class="text-xs text-indigo-500 font-bold mb-1">初稿开箱即用能力最强</div>
+                                <div class="text-sm font-black text-indigo-800">V1 版本综合得分王</div>
+                                <div id="stat-v1-best" class="mt-2 text-indigo-900 font-bold truncate">-</div>
+                            </div>
+                            <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl shadow-sm relative group cursor-pointer hover:border-emerald-300 transition" onclick="showMetricInfo('v5_best')">
+                                <i class="fa-solid fa-circle-info absolute top-4 right-4 text-emerald-300 group-hover:text-emerald-600"></i>
+                                <div class="text-xs text-emerald-500 font-bold mb-1">终稿潜力迭代上限最高</div>
+                                <div class="text-sm font-black text-emerald-800">V5 版本综合得分王</div>
+                                <div id="stat-v5-best" class="mt-2 text-emerald-900 font-bold truncate">-</div>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center border-t border-slate-100 pt-5"><i class="fa-solid fa-layer-group text-blue-500 mr-2"></i> 各维度最强王者对比</h3>
+                        <div class="grid grid-cols-4 gap-4 flex-1" id="stat-single-dims"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-12 gap-6">
+                     <div class="col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-4 flex items-center"><i class="fa-solid fa-chart-column text-blue-500 mr-2"></i> 进化幅度对比 (V1 vs V5)</h3>
+                        <div class="relative h-48 w-full"><canvas id="chartBar"></canvas></div>
+                    </div>
+                    <div class="col-span-7 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden flex flex-col justify-center">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-white flex items-center"><i class="fa-solid fa-wand-magic-sparkles text-yellow-400 mr-2"></i> 自研模型专属迭代诊断</h3>
+                            <span class="text-xs bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 px-2 py-1 rounded font-bold"><i class="fa-solid fa-microchip mr-1"></i>大模型量化分析</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4" id="stat-ai-suggestions">
+                            <div class="col-span-3 text-center py-4 text-slate-400">点击顶部[获取最新归档数据进行分析]生成诊断...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-slate-800 flex items-center"><i class="fa-solid fa-brain text-purple-500 mr-2"></i> 教研主观评价核心观点提取</h3>
+                        <span class="text-xs bg-purple-50 text-purple-600 border border-purple-200 px-2 py-1 rounded font-bold"><i class="fa-solid fa-bolt text-yellow-400 mr-1"></i>智谱 GLM-4-Flash 智能解析</span>
+                    </div>
+                    <div class="grid grid-cols-12 gap-6" id="stat-feedback-nlp">
+                        <div class="col-span-12 text-center text-slate-400 py-8">点击顶部[获取最新归档数据进行分析]生成聚类...</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="metric-info-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[120] flex items-center justify-center modal-enter backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-[500px] max-w-full mx-4 relative">
+            <button type="button" onclick="document.getElementById('metric-info-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="flex items-center mb-4 border-b border-slate-100 pb-4">
+                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mr-3 text-xl">
+                    <i class="fa-solid fa-microscope"></i>
+                </div>
+                <h3 class="text-lg font-black text-slate-800" id="metric-info-title">指标说明</h3>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <span class="text-xs font-bold text-slate-400 flex items-center mb-2"><i class="fa-solid fa-calculator mr-1.5"></i> 定量计算规则</span>
+                    <p class="text-sm text-slate-600 leading-relaxed font-medium" id="metric-info-calc">计算说明...</p>
+                </div>
+                
+                <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
+                    <span class="text-xs font-bold text-indigo-500 flex items-center mb-2"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> 大模型智能定性解读</span>
+                    <p class="text-sm text-slate-700 leading-relaxed min-h-[60px]" id="metric-info-qualitative">分析中...</p>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button onclick="document.getElementById('metric-info-modal').classList.add('hidden')" class="px-6 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold shadow-md transition">我了解了</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="sysprompt-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[110] flex items-center justify-center modal-enter backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-[600px] max-w-full mx-4 relative flex flex-col max-h-[80vh]">
+            <button type="button" onclick="closeSysPromptModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-3 flex items-center"><i class="fa-solid fa-code text-orange-500 mr-2"></i>完整系统提示词 (System Prompt)</h3>
+            <div class="overflow-y-auto text-sm text-slate-700 leading-relaxed p-4 bg-orange-50/50 border border-orange-100 rounded-lg whitespace-pre-wrap" id="sysprompt-modal-content"></div>
+            <div class="mt-4 flex justify-end"><button onclick="closeSysPromptModal()" class="px-6 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg font-bold transition">关闭</button></div>
+        </div>
+    </div>
+
+    <div id="guide-modal" class="fixed inset-0 bg-slate-900/70 hidden z-[100] flex items-center justify-center modal-enter backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-[850px] max-w-full mx-4 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-scale-balanced text-amber-500 mr-2"></i> 0-5分通用打分指引标准</h3>
+                <button onclick="document.getElementById('guide-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6 text-sm">
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-start space-x-3">
+                    <i class="fa-solid fa-circle-info text-blue-500 mt-0.5 text-lg"></i>
+                    <div>
+                        <h4 class="font-bold text-blue-800 mb-1">为什么“知识准确性”与“教学适配性”要分开打分？</h4>
+                        <p class="text-slate-600 leading-relaxed">它们代表AI产生的两种不同维度的错误。<b>知识准确性</b>是底线，要求没有事实硬伤。而<b>教学适配性</b>是体验，要求符合6-12岁儿童的认知水平。</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-x-8 gap-y-6" id="guide-content-wrapper"></div>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 text-right">
+                <button onclick="document.getElementById('guide-modal').classList.add('hidden')" class="px-8 py-2.5 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-900 shadow-md">我已了解标准</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[100] flex items-center justify-center modal-enter backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-[400px] max-w-full mx-4 relative">
+            <button type="button" onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3 class="text-xl font-bold text-slate-800">系统授权登录</h3>
+                <p class="text-sm text-slate-500 mt-1">请输入管理员分配的邮箱与密码</p>
+            </div>
+            <div class="space-y-4">
+                <div><input type="email" id="login-email" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="系统邮箱账号 (必填)"></div>
+                <div><input type="password" id="login-pass" onkeypress="if(event.key === 'Enter') performLogin()" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="系统登录密码"></div>
+                <div id="login-error" class="text-red-500 text-xs hidden text-center bg-red-50 py-2 rounded">验证失败，账号或密码错误</div>
+                <button type="button" id="login-submit-btn" onclick="performLogin()" class="w-full py-3 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-900 shadow-lg transition">验证并进入</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="custom-toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[999999] flex items-center px-5 py-3.5 bg-slate-800 text-white text-sm font-bold rounded-xl shadow-2xl pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-12">
+        <i id="custom-toast-icon" class="fa-solid fa-circle-info text-blue-400 mr-3 text-lg"></i>
+        <span id="custom-toast-msg" class="tracking-wide">提示信息</span>
+    </div>
+
+    <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[999990] flex items-center justify-center backdrop-blur-sm modal-enter">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-[400px] max-w-full mx-4">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500 mr-3 text-xl">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">操作确认</h3>
+            </div>
+            <p id="custom-confirm-msg" class="text-sm text-slate-600 mb-6 leading-relaxed">确定要执行此操作吗？</p>
+            <div class="flex justify-end space-x-3">
+                <button id="custom-confirm-cancel" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition">取消</button>
+                <button id="custom-confirm-ok" class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold shadow-md transition">确定执行</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= 0. 自定义 UI 组件引擎 =================
+        let toastTimer = null;
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('custom-toast');
+            const msgEl = document.getElementById('custom-toast-msg');
+            const iconEl = document.getElementById('custom-toast-icon');
+            msgEl.innerText = message;
+            if (type === 'success') iconEl.className = 'fa-solid fa-circle-check text-green-400 mr-3 text-lg';
+            else if (type === 'error') iconEl.className = 'fa-solid fa-circle-xmark text-red-400 mr-3 text-lg';
+            else if (type === 'warning') iconEl.className = 'fa-solid fa-triangle-exclamation text-amber-400 mr-3 text-lg';
+            else iconEl.className = 'fa-solid fa-circle-info text-blue-400 mr-3 text-lg';
+            toast.classList.remove('opacity-0', '-translate-y-12');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-12');
+            }, 3000);
+        }
+
+        function showConfirm(message, onConfirm) {
+            const modal = document.getElementById('custom-confirm-modal');
+            const msgEl = document.getElementById('custom-confirm-msg');
+            msgEl.innerText = message;
+            modal.classList.remove('hidden');
+            const btnOk = document.getElementById('custom-confirm-ok');
+            const btnCancel = document.getElementById('custom-confirm-cancel');
+            const newBtnOk = btnOk.cloneNode(true); btnOk.parentNode.replaceChild(newBtnOk, btnOk);
+            const newBtnCancel = btnCancel.cloneNode(true); btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
+            newBtnOk.addEventListener('click', () => { modal.classList.add('hidden'); if (onConfirm) onConfirm(); });
+            newBtnCancel.addEventListener('click', () => { modal.classList.add('hidden'); });
+        }
+
+        // ================= 1. 核心状态与安全初始化 =================
+        // 彻底隐藏真实的 URL 和 KEY，指向本地的 Worker 代理接口
+        const SUPABASE_URL = window.location.origin + '/api/supabase';
+        const SUPABASE_KEY = 'dummy-key'; // 假钥匙，只为了骗过 SDK 初始化
+        const ADMIN_EMAIL = 'chenjialing12@xdf.cn'; 
+        
+        let dbClient = null;
+        try { if (window.supabase) { dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } } catch (e) { console.error(e); }
+
+        let currentUser = null;
+        let tasks = []; 
+        let dashboardSnapshotTasks = []; 
+        let hasInitializedDashboard = false;
+        let targetAdminView = '';
+        let currentEditingTaskId = null;
+        let currentTab = 'pending';
+        
+        // 【新增】：多选筛选器状态
+        let availableRaters = [];
+        let activeSelectedRaters = []; // 空数组代表全选
+        
+        let currentInsights = { sampleSize: 0, bestV5Score: 0, bestV5Name: '', bestV1Score: 0, bestV1Name: '', maxImproveScore: 0, maxImproveName: '' };
+
+        const fullCriteriaDict = {
+            d1: { 
+                0: "0分 灾难：核心内容完全反科学或逻辑颠倒。", 
+                1: "1分 糟糕：存在多处知识错误，比如计算错误，单词拼写错误，错别字等等各学科的特定知识点错误，或者概念错误。", 
+                2: "2分 较差：存在一处明显的硬性知识错误，比如目标单词拼错了，计算错误等，跟1分的区别是只允许1处错误，多处错误直接1分。", 
+                3: "3分 及格：核心知识点正确，但有少许边缘非核心知识点错误，比如单词读音错误，知识点扩展错误等。", 
+                4: "4分 极好：知识点100%正确，无上述事实性错误，包括读音，拼写，计算，概念，知识点扩展等。", 
+                5: "5分 惊艳：不仅100%零错误，还能提供巧妙的语境应用，拓展知识，能给教研老师和学生超出预期的极致感受。" 
+            },
+            d2: { 
+                0: "0分 灾难：完全偏离教育目的，比如包含成人化内容，负面价值观，完全不符合教育目的。", 
+                1: "1分 糟糕：纯粹的娱乐玩具，几乎无学习价值，比如纯粹的娱乐游戏，没有教育属性。", 
+                2: "2分 较差：难度超纲或过于低幼，比如生词过多，难度超纲，过于低幼等。", 
+                3: "3分 及格：基本具备教育属性，难度基本适配，但反馈生硬，缺乏层层引导，无法激发学生探索欲。", 4: "4分 极好：高度贴合目标认知，寓教于乐，层层引导，激发学生探索欲。", 
+                5: "5分 惊艳：深度洞察心理，有非常棒的防挫败机制、或者有趣的纠错引导、或者阶梯式的难度爬升脚手架极其精妙激发探索欲，能给教研老师和学生超出预期的极致感受。" 
+            },
+            d3: { 
+                0: "0分 灾难：彻底白屏或黑屏卡死，彻底无法使用。", 
+                1: "1分 糟糕：存在严重阻断性Bug，几乎无法进入互动课件，比如点击无效，卡死等。", 
+                2: "2分 较差：交互不灵敏，部分点击无效，滑动不了但底部还有内容，无法继续进行游戏等。", 
+                3: "3分 及格：有一些视觉或者交互Bug，但不影响主线游戏通关。", 
+                4: "4分 极好：操作丝滑无任何Bug，稳定通关，所有交互反馈及时且准确。", 
+                5: "5分 惊艳：极其强健，完美防错容错极致优雅，能给教研老师和学生超出预期的极致感受。" 
+            },
+            d4: { 
+                0: "0分 灾难：视觉极其杂乱无法辨认，完全无法使用，比如文字乱码，图片裂了等。", 
+                1: "1分 糟糕：界面极度简陋，素材扭曲，比如图片裂了，文字错位等。", 
+                2: "2分 较差：排版混乱拥挤，比如文字重叠，图片遮挡色彩刺眼等。", 
+                3: "3分 及格：设计中规中矩，信息清晰，符合儿童审美。", 
+                4: "4分 极好：视觉美观出众，色彩排版极佳，高度契合儿童审美。", 
+                5: "5分 惊艳：具备顶尖的视觉与情感表现力，高度契合儿童审美，能给教研老师和学生超出预期的极致感受。" 
+            }
+        };
+        const dimensions = [{ id: "d1", label: "知识准确性" }, { id: "d2", label: "教学适配性" }, { id: "d3", label: "系统健壮性" }, { id: "d4", label: "视觉美观度" }];
+        const PRESET_MODELS = ["ITeach效果", "猿辅导飞象老师", "好未来老师帮", "架构组效果", "Jolin's 效果"];
+
+        function renderGuide() {
+            try {
+                const wrapper = document.getElementById('guide-content-wrapper');
+                if (!wrapper) return;
+                let html = '';
+                dimensions.forEach((d, i) => {
+                    html += `<div><h4 class="font-bold text-slate-800 text-base mb-3 pb-2 border-b-2 border-slate-100"><span class="bg-slate-800 text-white w-5 h-5 inline-flex items-center justify-center rounded-full text-xs mr-1">${i+1}</span> ${d.label}</h4><ul class="space-y-2 text-slate-600">`;
+                    [5,4,3,2,1,0].forEach(score => {
+                        let text = fullCriteriaDict[d.id][score] || "";
+                        let idx = text.indexOf('：'); if (idx === -1) idx = text.indexOf(':');
+                        let title = "", desc = text;
+                        if (idx !== -1) { title = text.substring(0, idx + 1); desc = text.substring(idx + 1); }
+                        let c = score >= 4 ? 'text-green-600' : (score >= 3 ? 'text-amber-500' : 'text-red-500');
+                        html += `<li><b class="${c}">${title}</b>${desc}</li>`;
+                    });
+                    html += `</ul></div>`;
+                });
+                wrapper.innerHTML = html;
+            } catch (err) {}
+        }
+
+        // ================= 大模型通用调用引擎 =================
+        
+        async function callZhipuAI(systemPrompt, userPrompt) {
+            try {
+                // 指向本地的 Worker 代理接口，不再暴露密钥
+                const response = await fetch('/api/llm', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model: "xdf-gp-3.0", // 修改为你公司的内部模型名称
+                        messages: [ { role: "system", content: systemPrompt }, { role: "user", content: userPrompt } ],
+                        temperature: 0.1, 
+                        response_format: { type: "json_object" } 
+                    })
+                });
+                const resData = await response.json();
+                let jsonStr = resData.choices[0].message.content;
+                jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, ''); 
+                return JSON.parse(jsonStr);
+            } catch (e) {
+                console.error("LLM JSON API Error:", e);
+                return null;
+            }
+        }
+        
+        async function callZhipuTextAI(systemPrompt, userPrompt) {
+            try {
+                // 指向本地的 Worker 代理接口，不再暴露密钥
+                const response = await fetch('/api/llm', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model: "xdf-gp-3.0", // 修改为你公司的内部模型名称
+                        messages: [ { role: "system", content: systemPrompt }, { role: "user", content: userPrompt } ],
+                        temperature: 0.3
+                    })
+                });
+                const resData = await response.json();
+                return resData.choices[0].message.content;
+            } catch (e) {
+                console.error("LLM Text API Error:", e);
+                return "大模型调用失败，请检查网络或 API Key 配置。";
+            }
+        }
+
+        // ================= 基于大模型与业务标准的动态卡片解读 =================
+        async function showMetricInfo(metricType) {
+            const modal = document.getElementById('metric-info-modal');
+            const titleEl = document.getElementById('metric-info-title');
+            const calcEl = document.getElementById('metric-info-calc');
+            const qualEl = document.getElementById('metric-info-qualitative');
+
+            modal.classList.remove('hidden');
+            qualEl.innerHTML = '<span class="text-blue-500 font-bold"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>大模型正在结合真实数据与业务底线生成诊断...</span>';
+
+            let title = "", calc = "", promptText = "";
+            const sysPrompt = "你是一个严苛且专业的AI教育产品数据分析专家。我们的打分采用极其严苛的0-5分制：0分灾难，1分糟糕，2分较差，3分及格(仅代表无硬伤能勉强用)，4分极好(代表丝滑体验的互动课件)，5分惊艳(代表超越预期的完美互动课件)。请基于给出的具体分数或指标，生成一小段定性解读（60字以内），语气专业、犀利、一针见血，直接给出诊断结论，千万不要说客套话。";
+
+            if(metricType === 'sample') {
+                title = "有效打分样本量";
+                calc = "在当前筛选视角下，所有【已归档】任务中，各位教研员针对各个模型提交的有效评分人次总和。";
+                promptText = `当前的有效打分样本量为 ${currentInsights.sampleSize} 份。请评估这个数据量是否具备统计学参考价值（如<10份偶然性大，>30份较好，>50份极佳可信度高）。`;
+            } else if(metricType === 'v5_overall') {
+                title = "全维度综合得分王 (V5)";
+                calc = "所有模型 V5(终稿) 版本的四个维度(准确、适配、健壮、美观)分数的算术平均值，取最高分。";
+                promptText = `当前评测中表现最好的模型是"${currentInsights.bestV5Name}"，其终稿(V5)综合得分为 ${currentInsights.bestV5Score.toFixed(2)} 分 (满分5分)。请结合我们“3分勉强及格，4分为极好，5分为商业大作”的严苛标准，评价这个成绩代表了怎样的业务可用性水平。`;
+            } else if(metricType === 'improve') {
+                title = "最大进步幅度 (V1至V5)";
+                calc = "对比所有模型各自的 V5 综合均分与 V1 综合均分之差，取提升数值绝对值最大的那个分数。";
+                promptText = `"${currentInsights.maxImproveName}" 模型从盲测初稿(V1)到调优终稿(V5)，分数大幅提升了 ${currentInsights.maxImproveScore.toFixed(2)} 分 (满分5分)。请评价这个提升幅度，它代表了该模型怎样的“指令理解能力和迭代可塑性”。`;
+            } else if(metricType === 'v1_best') {
+                title = "初稿开箱即用能力最强 (V1)";
+                calc = "所有模型 V1(初稿) 版本的四个维度分数的算术平均值，取最高分。";
+                promptText = `在没有任何人工干预盲测中，"${currentInsights.bestV1Name}" 模型的初稿(V1)表现最好，综合得分为 ${currentInsights.bestV1Score.toFixed(2)} 分 (满分5分)。请结合我们的严苛评分标准(3分才算能用)，评价它是否真正具备对小白友好的“开箱即用”能力。`;
+            } else if(metricType === 'v5_best') {
+                title = "终稿潜力迭代上限最高 (V5)";
+                calc = "所有模型经过多次指令修改后的最终版平均分最高值。用以衡量模型能力天花板。";
+                promptText = `经过反复多轮人工调教后，"${currentInsights.bestV5Name}" 模型达到了最高天花板得分为 ${currentInsights.bestV5Score.toFixed(2)} 分 (满分5分)。请评价这个上限分数是否达标甚至超越了商业化大作的要求。`;
+            }
+
+            titleEl.innerText = title;
+            calcEl.innerText = calc;
+
+            if (currentInsights.sampleSize === 0) {
+                qualEl.innerHTML = '<span class="text-slate-400">当前视角暂无已归档数据，无法进行智能分析。</span>';
+                return;
+            }
+
+            const aiResponse = await callZhipuTextAI(sysPrompt, promptText);
+            qualEl.innerHTML = `<span class="text-slate-800 font-bold leading-relaxed text-sm">${aiResponse}</span>`;
+        }
+
+        // ================= 数据抓取与鉴权 =================
+        async function checkSession() {
+            try { if (dbClient) { const { data: { session } } = await dbClient.auth.getSession(); currentUser = session ? session.user : null; } } catch(e) {}
+            try { updateUserProfileUI(); } catch(e) {}
+            try { await fetchTasksFromDB(); } catch(e) {}
+        }
+
+        async function fetchTasksFromDB() {
+            if(!dbClient) return;
+            try {
+                const { data, error } = await dbClient.from('courseware_evatask').select('*').order('id', { ascending: false });
+                if (error) throw error;
+                if (data && data.length > 0) {
+                    data.forEach(t => {
+                        if(!t.feedbacks) t.feedbacks = {};
+                        if(!Array.isArray(t.models)) t.models = [];
+                        t.models.forEach(m => {
+                            if (!m.scores) m.scores = {};
+                            if (m.scores.v1 && typeof m.scores.v1.d1 === 'number') {
+                                const oldScores = JSON.parse(JSON.stringify(m.scores)); m.scores = { [ADMIN_EMAIL]: oldScores }; 
+                            }
+                        });
+                    });
+                    tasks = data;
+                } else { tasks = []; }
+                
+                const tView = document.getElementById('view-teacher'); const aView = document.getElementById('admin-task-list-view');
+                if(tView && !tView.classList.contains('hidden')) renderTeacherList();
+                if(aView && !aView.classList.contains('hidden')) renderAdminTable();
+            } catch (e) { console.error(e); }
+        }
+
+        function updateUserProfileUI() {
+            const container = document.getElementById('user-profile-container');
+            if (!container) return;
+            if (currentUser) {
+                const name = currentUser.email.split('@')[0];
+                const role = (currentUser.email === ADMIN_EMAIL) ? '产品经理 / 管理员' : '教研评测员';
+                container.innerHTML = `<div class="flex items-center justify-between w-full"><div class="flex items-center"><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563eb&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-600" alt="Avatar"><div class="ml-3"><p class="text-sm font-bold truncate max-w-[110px]" title="${currentUser.email}">${name}</p><p class="text-xs text-blue-400">${role}</p></div></div><button onclick="performLogout()" class="text-slate-400 hover:text-red-400 ml-2" title="退出"><i class="fa-solid fa-arrow-right-from-bracket"></i></button></div>`;
+            } else {
+                container.innerHTML = `<button onclick="promptLogin()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition shadow-md flex items-center justify-center"><i class="fa-solid fa-right-to-bracket mr-2"></i> 登录后打分</button>`;
+            }
+        }
+
+        function promptLogin() {
+            showToast('登录后才能打分哦~', 'info'); targetAdminView = '';
+            document.getElementById('login-email').value = ''; document.getElementById('login-pass').value = '';
+            document.getElementById('login-error').classList.add('hidden'); document.getElementById('login-modal').classList.remove('hidden');
+        }
+
+        async function performLogin() {
+            if (!dbClient) return showToast("无法连接到云端服务器", "error");
+            const email = document.getElementById('login-email').value.trim(); const password = document.getElementById('login-pass').value;
+            const btn = document.getElementById('login-submit-btn'); const errorBox = document.getElementById('login-error');
+            if(!email || !password) return;
+            if(btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> 验证中...'; btn.disabled = true; }
+            try {
+                const { data, error } = await dbClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                currentUser = data.user; closeLoginModal(); updateUserProfileUI(); renderTeacherList(); showToast("登录成功", "success");
+                if (targetAdminView) { attemptAdminAccess(targetAdminView); targetAdminView = ''; }
+            } catch (e) {
+                if(errorBox) { errorBox.innerText = "账号或密码错误，请重试"; errorBox.classList.remove('hidden'); }
+            } finally { if(btn) { btn.innerHTML = '验证并进入'; btn.disabled = false; } }
+        }
+
+        function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); targetAdminView = ''; }
+        async function performLogout() { if (dbClient) await dbClient.auth.signOut(); window.location.reload(); }
+
+        // ================= 路由与视图控制 =================
+        function switchView(viewName) {
+            try {
+                ['teacher', 'admin-task', 'admin-stats'].forEach(v => {
+                    const el = document.getElementById('view-' + v); if(el) el.classList.add('hidden');
+                    const nav = document.getElementById('nav-' + v); if(nav) nav.classList.remove('bg-slate-800', 'bg-blue-600', 'text-white', 'border-blue-400', 'text-slate-300', 'border-transparent');
+                });
+                const activeNav = document.getElementById('nav-' + viewName);
+                if (activeNav) { if (viewName === 'teacher') activeNav.classList.add('bg-blue-600', 'text-white', 'border-blue-400'); else activeNav.classList.add('bg-slate-800', 'text-white', 'border-blue-400'); }
+                const targetView = document.getElementById('view-' + viewName); if(targetView) targetView.classList.remove('hidden');
+
+                if (viewName === 'teacher') renderTeacherList();
+                if (viewName === 'admin-task') toggleAdminTaskView('list');
+                
+                if (viewName === 'admin-stats') {
+                    if (!hasInitializedDashboard) { refreshDashboardSnapshot(); hasInitializedDashboard = true; }
+                }
+            } catch (e) { console.error("切换视图异常:", e); }
+        }
+
+        function attemptAdminAccess(viewName) {
+            if (currentUser && currentUser.email === ADMIN_EMAIL) switchView(viewName);
+            else if (currentUser) showToast(`抱歉，仅管理员 (${ADMIN_EMAIL}) 可进入后台。`, 'error');
+            else { targetAdminView = viewName; document.getElementById('login-email').value = ''; document.getElementById('login-pass').value = ''; document.getElementById('login-error').classList.add('hidden'); document.getElementById('login-modal').classList.remove('hidden'); }
+        }
+
+        async function submitScoresAndSync(taskId, btnEl) {
+            if (!dbClient || !currentUser) return showToast("鉴权失败，无法保存", "error");
+            const originalText = btnEl.innerHTML; btnEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>云端保存中...'; btnEl.disabled = true;
+
+            try {
+                const { data: latestTask, error: fetchErr } = await dbClient.from('courseware_evatask').select('*').eq('id', taskId).single();
+                if (fetchErr) throw fetchErr;
+
+                const localTask = tasks.find(t => t.id === taskId);
+                const email = currentUser.email;
+
+                localTask.models.forEach((localModel, idx) => {
+                    if(!latestTask.models[idx].scores) latestTask.models[idx].scores = {};
+                    if(localModel.scores && localModel.scores[email]) {
+                        latestTask.models[idx].scores[email] = localModel.scores[email];
+                    }
+                });
+
+                if(localTask.feedbacks && localTask.feedbacks[email]) {
+                    if(!latestTask.feedbacks) latestTask.feedbacks = {};
+                    latestTask.feedbacks[email] = localTask.feedbacks[email];
+                }
+
+                const { error: upsertErr } = await dbClient.from('courseware_evatask').upsert(latestTask);
+                if (upsertErr) throw upsertErr;
+
+                showToast('您的评分与评价已成功录入云端！', 'success');
+            } catch (e) {
+                let errMsg = e.message || "未知网络错误";
+                if(errMsg.includes("feedbacks")) errMsg = "数据库缺少 feedbacks 字段，请在 Supabase 运行 ALTER TABLE 添加！";
+                showToast("保存失败: " + errMsg, "error");
+            } finally {
+                btnEl.innerHTML = originalText; btnEl.disabled = false; fetchTasksFromDB();
+            }
+        }
+
+        function exportExcel() {
+            if (!tasks || tasks.length === 0) return showToast("当前数据库中没有任何数据可供导出！", "warning");
+            const exportData = [];
+            tasks.forEach(t => {
+                const statusStr = t.status === 'done' ? '已归档' : '未评测/评测中';
+                if (!Array.isArray(t.models) || t.models.length === 0) {
+                    exportData.push({
+                        "任务ID": t.id, "学科": t.subject, "互动课件名称": t.title, "知识点": t.knowledge, "提示词": t.prompt, "当前状态": statusStr, "模型名称": "-",
+                        "V1版本html": "-", "V1_知识准确性": "-", "V1_教学适配性": "-", "V1_系统健壮性": "-", "V1_视觉美观度": "-",
+                        "V5版本html": "-", "V5_知识准确性": "-", "V5_教学适配性": "-", "V5_系统健壮性": "-", "V5_视觉美观度": "-",
+                        "评分人": "-", "整体主观评价": "-"
+                    });
+                    return;
+                }
+                t.models.forEach(m => {
+                    let v1Url = m.v1 || "-"; let v5Url = m.v5 || "-";
+                    if (v1Url.startsWith('data:')) v1Url = "本地上传文件(为防崩溃不导出源码)";
+                    if (v5Url.startsWith('data:')) v5Url = "本地上传文件(为防崩溃不导出源码)";
+
+                    const scoresObj = m.scores || {};
+                    let raters = Object.keys(scoresObj).filter(k => k.includes('@')); 
+                    
+                    if (raters.length === 0) {
+                        exportData.push({
+                            "任务ID": t.id, "学科": t.subject, "互动课件名称": t.title, "知识点": t.knowledge, "提示词": t.prompt, "当前状态": statusStr, "模型名称": m.name,
+                            "V1版本html": v1Url, "V1_知识准确性": "-", "V1_教学适配性": "-", "V1_系统健壮性": "-", "V1_视觉美观度": "-",
+                            "V5版本html": v5Url, "V5_知识准确性": "-", "V5_教学适配性": "-", "V5_系统健壮性": "-", "V5_视觉美观度": "-",
+                            "评分人": "暂无打分", "整体主观评价": "-"
+                        });
+                    } else {
+                        raters.forEach(email => {
+                            const sV1 = scoresObj[email].v1 || {}; const sV5 = scoresObj[email].v5 || {};
+                            const feedback = (t.feedbacks && t.feedbacks[email] && t.feedbacks[email].trim() !== '') ? t.feedbacks[email] : "未填写";
+                            exportData.push({
+                                "任务ID": t.id, "学科": t.subject, "互动课件名称": t.title, "知识点": t.knowledge, "提示词": t.prompt, "当前状态": statusStr, "模型名称": m.name,
+                                "V1版本html": v1Url, "V1_知识准确性": sV1.d1 !== undefined ? sV1.d1 : "-", "V1_教学适配性": sV1.d2 !== undefined ? sV1.d2 : "-", "V1_系统健壮性": sV1.d3 !== undefined ? sV1.d3 : "-", "V1_视觉美观度": sV1.d4 !== undefined ? sV1.d4 : "-",
+                                "V5版本html": v5Url, "V5_知识准确性": sV5.d1 !== undefined ? sV5.d1 : "-", "V5_教学适配性": sV5.d2 !== undefined ? sV5.d2 : "-", "V5_系统健壮性": sV5.d3 !== undefined ? sV5.d3 : "-", "V5_视觉美观度": sV5.d4 !== undefined ? sV5.d4 : "-",
+                                "评分人": email, "整体主观评价": feedback
+                            });
+                        });
+                    }
+                });
+            });
+
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "全部原始数据明细");
+            XLSX.writeFile(workbook, `AI课件全量明细数据_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        // ================= 教研打分台交互 =================
+        function switchTeacherTab(tab) {
+            currentTab = tab;
+            const btnP = document.getElementById('tab-pending'); const btnD = document.getElementById('tab-done');
+            if(btnP && btnD) {
+                if (tab === 'pending') { btnP.className = "px-6 py-2 rounded-md text-sm font-bold bg-white text-blue-600 shadow-sm transition"; btnD.className = "px-6 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-700 transition"; } 
+                else { btnD.className = "px-6 py-2 rounded-md text-sm font-bold bg-white text-blue-600 shadow-sm transition"; btnP.className = "px-6 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-700 transition"; }
+            }
+            renderTeacherList();
+        }
+
+        function updateFeedback(taskId, value) {
+            if (!currentUser) return;
+            const task = tasks.find(t => t.id === taskId);
+            if(task) { if(!task.feedbacks) task.feedbacks = {}; task.feedbacks[currentUser.email] = value; }
+        }
+
+        function updateScore(taskId, modelIndex, version, dimId, value) {
+            if (!currentUser) return;
+            const task = tasks.find(t => t.id === taskId);
+            if(task && Array.isArray(task.models) && task.models[modelIndex]) { 
+                const email = currentUser.email;
+                if (!task.models[modelIndex].scores) task.models[modelIndex].scores = {};
+                if (!task.models[modelIndex].scores[email]) { task.models[modelIndex].scores[email] = { v1: { d1: 0, d2: 0, d3: 0, d4: 0 }, v5: { d1: 0, d2: 0, d3: 0, d4: 0 } }; }
+                task.models[modelIndex].scores[email][version][dimId] = parseInt(value); 
+            }
+        }
+
+        function getScoreColorClass(val) { return val >= 4 ? "text-green-600" : (val <= 2 ? "text-red-500" : "text-amber-500"); }
+
+        function handleSlider(el, dimId, taskId, modelIdx, version) {
+            const val = parseInt(el.value); updateScore(taskId, modelIdx, version, dimId, val);
+            const tooltip = el.parentElement.querySelector('.tooltip-box');
+            if(tooltip) { tooltip.innerText = fullCriteriaDict[dimId][val] || ""; tooltip.style.left = `calc(${(val / 5) * 100}%)`; tooltip.classList.remove('hidden'); }
+            const valSpan = el.parentElement.parentElement.querySelector('.score-val');
+            if(valSpan) { valSpan.innerText = val; valSpan.className = `score-val ml-4 font-bold ${getScoreColorClass(val)} w-4 text-right font-mono`; }
+        }
+
+        function hideTooltip(el) { const tooltip = el.parentElement.querySelector('.tooltip-box'); if(tooltip) tooltip.classList.add('hidden'); }
+
+        function getScoreSafely(model, email, version, dimId) {
+            try {
+                if (!model || !model.scores) return 0;
+                if (email && model.scores[email] && model.scores[email][version]) { const s = model.scores[email][version][dimId]; if (typeof s === 'number') return s; }
+                if (model.scores[version]) { const s = model.scores[version][dimId]; if (typeof s === 'number') return s; }
+                return 0;
+            } catch(e) { return 0; }
+        }
+
+        function renderTeacherList() {
+            const container = document.getElementById('task-list-container'); if(!container) return;
+            container.innerHTML = '';
+            const filteredTasks = (tasks || []).filter(t => t.status === currentTab);
+            const tabP = document.getElementById('tab-pending'); if(tabP) tabP.innerText = `未处理任务 (${(tasks || []).filter(t=>t.status==='pending').length})`;
+
+            if (filteredTasks.length === 0) {
+                container.innerHTML = `<div class="text-center py-20 bg-white rounded-2xl border border-slate-200"><i class="fa-solid fa-mug-hot text-5xl text-slate-300 mb-4 block"></i><span class="text-slate-500 font-medium">暂无${currentTab === 'pending' ? '待处理' : '已完成'}的任务。</span></div>`;
+                return;
+            }
+
+            const isLogged = !!currentUser; const currentEmail = isLogged ? currentUser.email : null;
+
+            filteredTasks.forEach(task => {
+                const card = document.createElement('div'); card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden";
+                let modelRows = ''; const safeModels = Array.isArray(task.models) ? task.models : [];
+                
+                safeModels.forEach((model, mIndex) => {
+                    const highlightClass = model.isOwn ? "bg-blue-50/40 border-blue-100" : "bg-white border-slate-100";
+                    let sysPromptHtml = '';
+                    if (model.sysPrompt) {
+                        sysPromptHtml = `<div class="mt-2 text-xs text-orange-600 bg-orange-50/80 p-3 rounded-lg border border-orange-100 flex flex-col items-start w-full relative"><b class="mb-1 text-orange-800"><i class="fa-solid fa-terminal mr-1"></i>系统提示词：</b><div class="line-clamp-4 text-orange-800/80 leading-relaxed text-justify w-full">${model.sysPrompt}</div><button onclick="showSysPromptModal('${encodeURIComponent(model.sysPrompt)}')" class="text-blue-600 mt-1 font-bold hover:underline flex items-center">查看更多 <i class="fa-solid fa-angles-right text-[10px] ml-1"></i></button></div>`;
+                    }
+                    const overlayHtml = !isLogged ? `<div class="absolute inset-0 z-20 cursor-pointer" onclick="promptLogin()" title="点击登录后打分"></div>` : '';
+                    const isLocked = currentTab === 'done' || !isLogged; const cursorClass = isLocked ? 'opacity-50 cursor-not-allowed' : ''; const disabledAttr = isLocked ? 'disabled="disabled"' : '';
+
+                    modelRows += `<div class="grid grid-cols-12 gap-8 p-6 border-b ${highlightClass} last:border-0 items-start relative"><div class="col-span-2 pt-2 flex flex-col pr-2 border-r border-slate-200/60 min-h-full"><div class="text-slate-800 font-bold text-base mb-1">${model.name}</div>${model.isOwn ? '<span class="text-[11px] bg-blue-600 text-white px-2 py-0.5 rounded shadow-sm w-fit mb-3">业务模型</span>' : '<div class="h-3"></div>'}${sysPromptHtml}</div><div class="col-span-5 bg-slate-50 rounded-xl p-6 border border-slate-200 relative"><div class="flex justify-between items-center mb-6 pb-3 border-b border-slate-200"><span class="text-sm font-bold text-slate-600">第1次效果 (V1)</span><button onclick="previewUrl('${model.v1}')" class="text-xs bg-white border border-slate-300 px-3 py-1.5 rounded-lg text-slate-700 hover:text-blue-600 hover:border-blue-400 transition flex items-center shadow-sm font-medium"><i class="fa-solid fa-play-circle mr-1 text-blue-500 text-sm"></i> 预览课件</button></div><div class="space-y-5">
+                                    ${dimensions.map(d => {
+                                        const score = getScoreSafely(model, currentEmail, 'v1', d.id);
+                                        return `<div class="flex items-center justify-between"><span class="text-sm text-slate-700 font-medium w-24">${d.label}</span><div class="relative flex-1 flex items-center px-4">${overlayHtml}<div class="absolute bottom-6 w-[240px] p-2.5 bg-slate-800 text-white text-xs rounded shadow-xl z-30 pointer-events-none hidden tooltip-box leading-relaxed transform -translate-x-1/2"></div><input type="range" min="0" max="5" value="${score}" step="1" oninput="handleSlider(this, '${d.id}', ${task.id}, ${mIndex}, 'v1')" onmouseenter="handleSlider(this, '${d.id}', ${task.id}, ${mIndex}, 'v1')" onmouseleave="hideTooltip(this)" class="w-full ${cursorClass}" ${disabledAttr}></div><span class="score-val ml-4 font-bold ${getScoreColorClass(score)} w-4 text-right font-mono">${score}</span></div>`
+                                    }).join('')}
+                                </div></div><div class="col-span-5 bg-blue-50/40 rounded-xl p-6 border border-blue-100 relative"><div class="flex justify-between items-center mb-6 pb-3 border-b border-blue-100"><span class="text-sm font-bold text-blue-700">第5次最终效果 (V5)</span><button onclick="previewUrl('${model.v5}')" class="text-xs bg-blue-600 border border-blue-600 px-3 py-1.5 rounded-lg text-white hover:bg-blue-700 transition flex items-center shadow-sm font-medium"><i class="fa-solid fa-play-circle mr-1 text-white text-sm"></i> 预览课件</button></div><div class="space-y-5">
+                                    ${dimensions.map(d => {
+                                        const score = getScoreSafely(model, currentEmail, 'v5', d.id);
+                                        return `<div class="flex items-center justify-between"><span class="text-sm text-slate-700 font-medium w-24">${d.label}</span><div class="relative flex-1 flex items-center px-4">${overlayHtml}<div class="absolute bottom-6 w-[240px] p-2.5 bg-slate-800 text-white text-xs rounded shadow-xl z-30 pointer-events-none hidden tooltip-box leading-relaxed transform -translate-x-1/2"></div><input type="range" min="0" max="5" value="${score}" step="1" oninput="handleSlider(this, '${d.id}', ${task.id}, ${mIndex}, 'v5')" onmouseenter="handleSlider(this, '${d.id}', ${task.id}, ${mIndex}, 'v5')" onmouseleave="hideTooltip(this)" class="w-full ${cursorClass}" ${disabledAttr}></div><span class="score-val ml-4 font-bold ${getScoreColorClass(score)} w-4 text-right font-mono">${score}</span></div>`
+                                    }).join('')}
+                                </div></div></div>`;
+                });
+
+                const feedbackText = (currentEmail && task.feedbacks && task.feedbacks[currentEmail]) ? task.feedbacks[currentEmail] : '';
+                const isLocked = currentTab === 'done' || !isLogged;
+
+                card.innerHTML = `
+                    <div class="bg-white px-8 py-5 border-b border-slate-200 flex justify-between items-start">
+                        <div class="space-y-3 w-4/5"><div class="flex items-center space-x-3 mb-1"><span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs font-bold">${task.subject}</span><h3 class="text-xl font-bold text-slate-800">${task.title}</h3></div><div class="text-sm text-slate-600 flex bg-slate-50 p-2.5 rounded-lg border border-slate-100"><span class="font-bold w-20 shrink-0 text-slate-500">知识点：</span> <span class="leading-relaxed">${task.knowledge}</span></div><div class="text-sm text-slate-600 flex bg-slate-50 p-2.5 rounded-lg border border-slate-100"><span class="font-bold w-20 shrink-0 text-slate-500">需求Prompt：</span> <span class="leading-relaxed text-slate-700">${task.prompt}</span></div></div>
+                        ${currentTab === 'pending' ? (isLogged ? `<button onclick="submitScoresAndSync(${task.id}, this)" class="bg-blue-600 text-white px-8 py-3 rounded-xl text-sm font-bold shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-0.5 mt-2"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>提交测评数据</button>` : `<button onclick="promptLogin()" class="bg-slate-800 text-white px-8 py-3 rounded-xl text-sm font-bold shadow-lg hover:bg-slate-900 transition mt-2"><i class="fa-solid fa-lock mr-2"></i>登录后打分</button>`) : `<div class="flex flex-col items-end mt-2"><span class="text-green-600 font-bold text-base bg-green-50 px-4 py-2 rounded-lg border border-green-200"><i class="fa-solid fa-circle-check"></i> 评测已归档</span></div>`}
+                    </div>
+                    <div class="divide-y divide-slate-100 bg-slate-50/20">${modelRows}</div>
+                    <div class="bg-slate-50 p-6 border-t border-slate-200 relative">
+                        ${!isLogged ? `<div class="absolute inset-0 z-20 cursor-pointer" onclick="promptLogin()" title="点击登录后评价"></div>` : ''}
+                        <label class="block text-sm font-bold text-slate-700 mb-3 flex items-center"><i class="fa-regular fa-comment-dots text-blue-500 mr-2 text-lg"></i>整体主观评价与建议<span class="text-slate-400 font-normal ml-2 text-xs">(选填，仅对管理员和自己可见)</span></label>
+                        <textarea class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition resize-none ${isLocked ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}" rows="2" placeholder="${isLocked ? '未填写任何评价' : '请在此输入您对这几个模型产出课件的整体主观感受、优缺点对比或改进建议...'}" oninput="updateFeedback(${task.id}, this.value)" ${isLocked ? 'disabled' : ''}>${feedbackText}</textarea>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ================= 后台任务管理 =================
+        function toggleAdminTaskView(view) {
+            const lv = document.getElementById('admin-task-list-view'); const fv = document.getElementById('admin-task-form-view');
+            if(view === 'list') { if(lv) lv.classList.remove('hidden'); if(fv) fv.classList.add('hidden'); renderAdminTable(); } 
+            else { if(lv) lv.classList.add('hidden'); if(fv) fv.classList.remove('hidden'); }
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-table-body'); if(!tbody) return;
+            tbody.innerHTML = '';
+            if(!tasks || tasks.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">暂无评测任务</td></tr>`; return; }
+            tasks.forEach(t => {
+                const len = Array.isArray(t.models) ? t.models.length : 0;
+                const statusBadge = t.status === 'pending' ? `<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">未评测</span>` : `<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">已完成</span>`;
+                tbody.innerHTML += `<tr class="hover:bg-slate-50 transition border-b border-slate-100"><td class="py-4 px-6 text-slate-500 font-mono">#${t.id}</td><td class="py-4 px-6"><span class="bg-slate-100 px-2 py-1 rounded text-xs font-bold text-slate-600">${t.subject}</span></td><td class="py-4 px-6 font-bold text-slate-700">${t.title}</td><td class="py-4 px-6">${len} 个</td><td class="py-4 px-6">${statusBadge}</td><td class="py-4 px-6 text-right">${t.status === 'pending' ? `<button onclick="markTaskDone(${t.id})" class="text-green-600 hover:underline font-bold text-sm mr-4"><i class="fa-solid fa-check mr-1"></i>强制归档</button>` : ''}<button onclick="editAdminTask(${t.id})" class="text-blue-600 hover:underline font-bold text-sm mr-4"><i class="fa-solid fa-pen-to-square mr-1"></i>编辑</button><button onclick="deleteAdminTask(${t.id})" class="text-red-500 hover:underline text-sm"><i class="fa-solid fa-trash-can mr-1"></i>删除</button></td></tr>`;
+            });
+        }
+
+        function markTaskDone(id) {
+            showConfirm('强制归档后，前台教研员将无法再修改分数。确定要归档吗？', async () => {
+                const t = tasks.find(x => x.id === id);
+                if(t) { 
+                    const orig = t.status; t.status = 'done'; 
+                    try {
+                        const { error } = await dbClient.from('courseware_evatask').upsert(t);
+                        if(error) throw error;
+                        renderAdminTable(); showToast('该任务已成功归档！', 'success');
+                    } catch(e) { t.status = orig; showToast("归档失败", "error"); }
+                }
+            });
+        }
+
+        function deleteAdminTask(id) {
+            showConfirm('警告：此操作不可逆。确定要永久删除这个测评任务吗？', async () => {
+                if(dbClient) {
+                    try { const { error } = await dbClient.from('courseware_evatask').delete().eq('id', id); if (error) return showToast('删除失败：' + error.message, 'error'); } catch(e) {}
+                }
+                tasks = (tasks || []).filter(t => t.id !== id); renderAdminTable(); showToast('已成功删除该任务', 'success');
+            });
+        }
+
+        function openNewTaskForm() {
+            currentEditingTaskId = null;
+            document.getElementById('admin-form-title').innerText = "发布新评测任务";
+            document.getElementById('form-title').value = ""; document.getElementById('admin-models-wrapper').innerHTML = '';
+            PRESET_MODELS.forEach(preset => addNewAdminModelRow(preset, preset.includes("Jolin") || preset.includes("ITeach")));
+            toggleAdminTaskView('form');
+        }
+
+        function editAdminTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if(!task) return;
+            currentEditingTaskId = id;
+            
+            const t1 = document.getElementById('admin-form-title');
+            const t2 = document.getElementById('form-subject');
+            const t3 = document.getElementById('form-title');
+            const t4 = document.getElementById('form-knowledge');
+            const t5 = document.getElementById('form-prompt');
+            const t6 = document.getElementById('admin-models-wrapper');
+
+            if(t1) t1.innerText = "编辑评测任务";
+            if(t2) t2.value = task.subject || "英语";
+            if(t3) t3.value = task.title || "";
+            if(t4) t4.value = task.knowledge || "";
+            if(t5) t5.value = task.prompt || "";
+            if(t6) t6.innerHTML = '';
+            
+            if(Array.isArray(task.models)) {
+                task.models.forEach(m => {
+                    const rowId = addNewAdminModelRow(m.name, m.isOwn);
+                    const row = document.getElementById(rowId);
+                    if(!row) return;
+                    const sysp = row.querySelector('.sysprompt-input');
+                    if(sysp) sysp.value = m.sysPrompt || '';
+                    
+                    const isBase64 = (m.v1 && m.v1.startsWith('data:')) || (m.v5 && m.v5.startsWith('data:'));
+                    if (isBase64) {
+                        const fileRadio = row.querySelector('input[type="radio"][value="file"]');
+                        if(fileRadio) fileRadio.checked = true;
+                        toggleModelInput(rowId, 'file');
+                        
+                        if (m.v1 && m.v1.startsWith('data:')) {
+                            const fi1 = row.querySelector('.file-v1-input');
+                            if(fi1 && fi1.parentElement) fi1.parentElement.querySelector('.file-name-display').innerHTML = `<span class="text-blue-600 font-bold"><i class="fa-solid fa-file-circle-check mr-1"></i> 已保留历史文件 (不修改请留空)</span>`;
+                            row.dataset.originalV1 = m.v1;
+                        }
+                        if (m.v5 && m.v5.startsWith('data:')) {
+                            const fi5 = row.querySelector('.file-v5-input');
+                            if(fi5 && fi5.parentElement) fi5.parentElement.querySelector('.file-name-display').innerHTML = `<span class="text-blue-600 font-bold"><i class="fa-solid fa-file-circle-check mr-1"></i> 已保留历史文件 (不修改请留空)</span>`;
+                            row.dataset.originalV5 = m.v5;
+                        }
+                    } else {
+                        const urlRadio = row.querySelector('input[type="radio"][value="url"]');
+                        if(urlRadio) urlRadio.checked = true;
+                        toggleModelInput(rowId, 'url');
+                        const urlV1 = row.querySelector('.url-v1-input');
+                        const urlV5 = row.querySelector('.url-v5-input');
+                        if(urlV1) urlV1.value = (m.v1 !== '#') ? m.v1 : '';
+                        if(urlV5) urlV5.value = (m.v5 !== '#') ? m.v5 : '';
+                    }
+                });
+            }
+            toggleAdminTaskView('form');
+        }
+
+        function previewUrl(url) {
+            if (!url || url === '#' || url.trim() === '') return showToast('未配置效果链接或文件', 'warning');
+            if (url.startsWith('data:text/html')) {
+                const win = window.open();
+                if (win) {
+                    win.document.body.style.margin = '0';
+                    const iframe = win.document.createElement('iframe');
+                    iframe.style.width = '100vw'; iframe.style.height = '100vh'; iframe.style.border = 'none'; iframe.src = url;
+                    win.document.body.appendChild(iframe); win.document.title = "预览本地课件 - AI评测系统";
+                } else showToast('弹窗被浏览器拦截，请在地址栏允许弹出窗口。', 'warning');
+            } else window.open(url, '_blank');
+        }
+
+        function showSysPromptModal(encodedText) {
+            const el = document.getElementById('sysprompt-modal-content');
+            if(el) el.innerText = decodeURIComponent(encodedText);
+            const md = document.getElementById('sysprompt-modal');
+            if(md) md.classList.remove('hidden');
+        }
+        function closeSysPromptModal() { 
+            const md = document.getElementById('sysprompt-modal');
+            if(md) md.classList.add('hidden'); 
+        }
+
+        function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('border-blue-500', 'bg-blue-50'); e.currentTarget.classList.remove('border-slate-300'); }
+        function handleDragLeave(e) { e.preventDefault(); e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50'); e.currentTarget.classList.add('border-slate-300'); }
+        function handleDrop(e, dropzoneEl) {
+            e.preventDefault();
+            dropzoneEl.classList.remove('border-blue-500', 'bg-blue-50');
+            dropzoneEl.classList.add('border-slate-300');
+            const fileInput = dropzoneEl.querySelector('input[type="file"]');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if(file.name.toLowerCase().endsWith('.html') || file.name.toLowerCase().endsWith('.htm')) {
+                    fileInput.files = e.dataTransfer.files;
+                    updateFileName(fileInput);
+                } else { showToast('请上传 .html 格式的文件。', 'error'); }
+            }
+        }
+        function updateFileName(inputEl) {
+            const displayEl = inputEl.parentElement.querySelector('.file-name-display');
+            if (inputEl.files && inputEl.files.length > 0) {
+                displayEl.innerHTML = `<span class="text-blue-600 font-bold"><i class="fa-solid fa-file-code mr-1"></i> ${inputEl.files[0].name}</span>`;
+            } else { displayEl.innerHTML = `点击或拖拽文件到此处`; }
+        }
+
+        function showCombobox(input) {
+            const list = input.closest('.custom-combobox').querySelector('.combobox-list');
+            if(list) { renderComboboxOptions(input, list); list.classList.remove('hidden'); }
+        }
+        function toggleCombobox(btn) {
+            const input = btn.closest('.custom-combobox').querySelector('.model-name-input');
+            const list = btn.closest('.custom-combobox').querySelector('.combobox-list');
+            if (list && list.classList.contains('hidden')) { input.focus(); showCombobox(input); } else if(list) { list.classList.add('hidden'); }
+        }
+        function filterCombobox(input) { 
+            const list = input.closest('.custom-combobox').querySelector('.combobox-list');
+            if(list) renderComboboxOptions(input, list); 
+        }
+        function renderComboboxOptions(input, list) {
+            const val = input.value.trim().toLowerCase();
+            list.innerHTML = '';
+            PRESET_MODELS.forEach(preset => {
+                if (preset.toLowerCase().includes(val) || val === '') {
+                    const li = document.createElement('li');
+                    li.className = "px-3 py-2 hover:bg-blue-50 cursor-pointer text-slate-700 font-medium transition border-b border-slate-50 last:border-0";
+                    li.innerText = preset;
+                    li.onmousedown = (e) => { e.preventDefault(); input.value = preset; list.classList.add('hidden'); };
+                    list.appendChild(li);
+                }
+            });
+            if (list.innerHTML === '') list.innerHTML = '<li class="px-3 py-2 text-slate-400 text-xs italic">输入生效</li>';
+        }
+        
+        let modelRowCounter = 0;
+        function addNewAdminModelRow(defaultName = "", isOwn = false) {
+            const container = document.getElementById('admin-models-wrapper');
+            if(!container) return;
+            const rowId = 'model-row-' + modelRowCounter++;
+            const div = document.createElement('div');
+            div.className = "bg-slate-50 p-5 rounded-xl border border-slate-200 relative shadow-sm";
+            div.id = rowId;
+            
+            div.innerHTML = `
+                <button onclick="document.getElementById('${rowId}').remove()" class="absolute top-5 right-5 text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-trash"></i></button>
+                <div class="grid grid-cols-12 gap-6 items-center mb-4 pr-8">
+                    <div class="col-span-4 relative custom-combobox">
+                        <div class="flex items-center border-b-2 border-slate-300 focus-within:border-blue-500 transition relative bg-transparent">
+                            <input type="text" class="model-name-input w-full text-sm font-bold text-slate-800 bg-transparent px-2 py-1 outline-none" placeholder="模型名称" value="${defaultName}" onfocus="showCombobox(this)" oninput="filterCombobox(this)" autocomplete="off">
+                            <button type="button" class="text-slate-400 px-2 hover:text-blue-500 outline-none" onclick="toggleCombobox(this)"><i class="fa-solid fa-chevron-down text-xs"></i></button>
+                        </div>
+                        <ul class="absolute left-0 right-0 mt-1 bg-white border border-slate-200 shadow-lg rounded-lg z-50 hidden max-h-48 overflow-y-auto text-sm combobox-list py-1"></ul>
+                    </div>
+                    <div class="col-span-8 flex space-x-6">
+                        <label class="flex items-center text-sm font-medium text-slate-600 cursor-pointer"><input type="radio" name="type-${rowId}" value="url" onchange="toggleModelInput('${rowId}', 'url')" class="mr-2"> URL 链接</label>
+                        <label class="flex items-center text-sm font-medium text-slate-600 cursor-pointer"><input type="radio" name="type-${rowId}" value="file" checked onchange="toggleModelInput('${rowId}', 'file')" class="mr-2"> HTML 上传</label>
+                    </div>
+                </div>
+                <div class="col-span-12 mb-5">
+                    <textarea class="sysprompt-input w-full text-sm border border-slate-300 rounded-lg px-4 py-3 h-20 outline-none focus:border-blue-500 resize-none" placeholder="专属System Prompt..."></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="input-url-${rowId} hidden space-y-3">
+                        <div class="flex items-center space-x-3"><span class="text-xs font-bold text-slate-500 w-6">V1:</span><input type="text" class="url-v1-input w-full text-sm border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500" placeholder="V1 链接"></div>
+                        <div class="flex items-center space-x-3"><span class="text-xs font-bold text-slate-500 w-6">V5:</span><input type="text" class="url-v5-input w-full text-sm border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500" placeholder="V5 链接"></div>
+                    </div>
+                    <div class="input-file-${rowId} block space-y-4">
+                        <div class="flex items-start space-x-3"><span class="text-xs font-bold text-slate-500 w-6 pt-2">V1:</span><div class="dropzone-area relative flex-1 border-2 border-dashed border-slate-300 rounded-lg p-3 text-center hover:bg-slate-100 cursor-pointer" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, this)"><input type="file" accept=".html" class="file-v1-input absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="updateFileName(this)"><i class="fa-solid fa-file-arrow-up text-slate-400 text-xl mb-1"></i><div class="text-xs text-slate-500 font-medium file-name-display">点击或拖拽文件</div></div></div>
+                        <div class="flex items-start space-x-3"><span class="text-xs font-bold text-slate-500 w-6 pt-2">V5:</span><div class="dropzone-area relative flex-1 border-2 border-dashed border-slate-300 rounded-lg p-3 text-center hover:bg-slate-100 cursor-pointer" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, this)"><input type="file" accept=".html" class="file-v5-input absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="updateFileName(this)"><i class="fa-solid fa-file-arrow-up text-slate-400 text-xl mb-1"></i><div class="text-xs text-slate-500 font-medium file-name-display">点击或拖拽文件</div></div></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            return rowId;
+        }
+
+        function toggleModelInput(rowId, type) {
+            const urlDiv = document.querySelector(`.input-url-${rowId}`);
+            const fileDiv = document.querySelector(`.input-file-${rowId}`);
+            if(urlDiv && fileDiv) {
+                if(type === 'url') {
+                    urlDiv.classList.remove('hidden'); urlDiv.classList.add('block');
+                    fileDiv.classList.add('hidden'); fileDiv.classList.remove('block');
+                } else {
+                    urlDiv.classList.add('hidden'); urlDiv.classList.remove('block');
+                    fileDiv.classList.remove('hidden'); fileDiv.classList.add('block');
+                }
+            }
+        }
+
+        const readFileAsDataURL = (file) => new Promise((resolve) => {
+            if (!file) resolve(null);
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => { showToast("读取文件失败", "error"); resolve(null); };
+            reader.readAsDataURL(file);
+        });
+
+        async function saveAdminTask() {
+            const titleEl = document.getElementById('form-title');
+            if(!titleEl || !titleEl.value) return showToast("请填写互动课件名称", "warning");
+
+            const saveBtn = document.getElementById('save-task-btn');
+            if(saveBtn) { saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> 同步中...'; saveBtn.disabled = true; }
+
+            let existingFeedbacks = {};
+            if (currentEditingTaskId) {
+                const oldTask = tasks.find(t => t.id === currentEditingTaskId);
+                if (oldTask && oldTask.feedbacks) {
+                    existingFeedbacks = JSON.parse(JSON.stringify(oldTask.feedbacks));
+                }
+            }
+
+            const newTask = {
+                id: currentEditingTaskId || Date.now(),
+                subject: document.getElementById('form-subject') ? document.getElementById('form-subject').value : '英语',
+                title: titleEl.value,
+                knowledge: document.getElementById('form-knowledge') ? document.getElementById('form-knowledge').value : '',
+                prompt: document.getElementById('form-prompt') ? document.getElementById('form-prompt').value : '',
+                status: 'pending',
+                feedbacks: existingFeedbacks, 
+                models: []
+            };
+
+            const w = document.getElementById('admin-models-wrapper');
+            const rows = w ? w.children : [];
+            const modelPromises = Array.from(rows).map(async (row) => {
+                const nameInp = row.querySelector('.model-name-input');
+                if(!nameInp || !nameInp.value) return null;
+                const name = nameInp.value;
+
+                const sysPrompt = row.querySelector('.sysprompt-input') ? row.querySelector('.sysprompt-input').value : '';
+                let v1Url = "#", v5Url = "#";
+                
+                const urlRadio = row.querySelector('input[type="radio"][value="url"]');
+                const isUrlMode = urlRadio ? urlRadio.checked : false;
+                
+                if (isUrlMode) {
+                    v1Url = row.querySelector('.url-v1-input') ? row.querySelector('.url-v1-input').value || "#" : "#";
+                    v5Url = row.querySelector('.url-v5-input') ? row.querySelector('.url-v5-input').value || "#" : "#";
+                } else {
+                    const f1 = row.querySelector('.file-v1-input') ? row.querySelector('.file-v1-input').files[0] : null;
+                    const f5 = row.querySelector('.file-v5-input') ? row.querySelector('.file-v5-input').files[0] : null;
+                    const b64_1 = await readFileAsDataURL(f1);
+                    const b64_2 = await readFileAsDataURL(f5);
+                    
+                    v1Url = b64_1 || row.dataset.originalV1 || "#";
+                    v5Url = b64_2 || row.dataset.originalV5 || "#";
+                }
+
+                let existingScores = {};
+                if (currentEditingTaskId) {
+                    const oldTask = tasks.find(t => t.id === currentEditingTaskId);
+                    if (oldTask && Array.isArray(oldTask.models)) {
+                        const oldModel = oldTask.models.find(m => m.name === name);
+                        if (oldModel && oldModel.scores) existingScores = JSON.parse(JSON.stringify(oldModel.scores));
+                    }
+                }
+
+                return { 
+                    name: name, 
+                    sysPrompt: sysPrompt, 
+                    v1: v1Url, 
+                    v5: v5Url, 
+                    isOwn: name.includes('Jolin') || name.includes('ITeach'), 
+                    scores: existingScores 
+                };
+            });
+
+            const parsedModels = await Promise.all(modelPromises);
+            newTask.models = parsedModels.filter(m => m !== null);
+
+            if (!dbClient) {
+                showToast("脱机状态：无法连接到云端", "error");
+                if(saveBtn) { saveBtn.innerHTML = '确认保存'; saveBtn.disabled = false; }
+                return;
+            }
+            try {
+                const { error } = await dbClient.from('courseware_evatask').upsert(newTask);
+                if (error) throw error;
+                if (currentEditingTaskId) {
+                    const index = tasks.findIndex(t => t.id === currentEditingTaskId);
+                    if(index !== -1) tasks[index] = newTask;
+                } else { 
+                    tasks.unshift(newTask); 
+                }
+                showToast(currentEditingTaskId ? "任务修改成功，数据已安全同步至云端！" : "新任务发布成功，数据已安全同步至云端！", "success");
+                toggleAdminTaskView('list');
+            } catch (e) {
+                console.error("云端保存失败:", e);
+                let errMsg = e.message || JSON.stringify(e);
+                if (errMsg.includes("column") && errMsg.includes("feedbacks") && errMsg.includes("does not exist")) {
+                    errMsg = "数据库缺少 feedbacks 字段，请先在 Supabase 运行 ALTER TABLE 增加该列！";
+                }
+                showToast("保存失败: " + errMsg, "error");
+            } finally {
+                if(saveBtn) { saveBtn.innerHTML = '确认保存'; saveBtn.disabled = false; }
+            }
+        }
+
+        // ================= 【重构】多选下拉框与渲染引擎 =================
+
+        // 1. 下拉框开关逻辑
+        function toggleRaterDropdown(e) {
+            if(e) e.stopPropagation();
+            const menu = document.getElementById('rater-dropdown-menu');
+            const icon = document.getElementById('rater-filter-icon');
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                menu.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // 点击空白处关闭下拉框
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('rater-dropdown-menu');
+            const display = document.getElementById('rater-filter-display');
+            if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && (!display || !display.contains(e.target))) {
+                menu.classList.add('hidden');
+                const icon = document.getElementById('rater-filter-icon');
+                if(icon) icon.style.transform = 'rotate(0deg)';
+            }
+            // 同时处理模型名的下拉框关闭
+            if (!e.target.closest('.custom-combobox')) { document.querySelectorAll('.combobox-list').forEach(list => list.classList.add('hidden')); }
+        });
+
+        // 2. 提取打分人并渲染列表
+        function updateRaterFilterOptions(snapshotTasks) {
+            let raters = new Set();
+            snapshotTasks.forEach(t => {
+                if(!Array.isArray(t.models)) return;
+                t.models.forEach(m => {
+                    if (m.scores) { Object.keys(m.scores).forEach(k => { if (k.includes('@')) raters.add(k); }); }
+                });
+            });
+            availableRaters = Array.from(raters);
+            
+            // 渲染 Checkbox
+            const listEl = document.getElementById('rater-filter-list');
+            if (!listEl) return;
+            let html = '';
+            availableRaters.forEach(r => {
+                // 如果 activeSelectedRaters 为空，代表处于"全选"的默认状态
+                const isChecked = activeSelectedRaters.length === 0 || activeSelectedRaters.includes(r);
+                const isAI = r.includes('.ai') || r.includes('crayfish'); // 智能识别是否为 AI 账号
+                const icon = isAI ? '<i class="fa-solid fa-robot text-purple-500 mr-2 w-4 text-center"></i>' : '<i class="fa-solid fa-user text-blue-500 mr-2 w-4 text-center"></i>';
+                
+                html += `
+                    <label class="flex items-center px-3 py-2 hover:bg-slate-100 rounded-lg cursor-pointer transition group">
+                        <input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 custom-rater-checkbox" value="${r}" ${isChecked ? 'checked' : ''}>
+                        <span class="ml-3 text-sm text-slate-700 font-medium truncate group-hover:text-blue-600 flex items-center w-full" title="${r}">${icon}${r.split('@')[0]}</span>
+                    </label>
+                `;
+            });
+            if (availableRaters.length === 0) {
+                html = '<div class="p-3 text-center text-xs text-slate-400">暂无打分人数据</div>';
+            }
+            listEl.innerHTML = html;
+            updateRaterDisplayText();
+        }
+
+        // 3. 快捷选择逻辑 (全选/仅看AI/仅看真人)
+        function quickSelectRaters(type) {
+            const checkboxes = document.querySelectorAll('.custom-rater-checkbox');
+            checkboxes.forEach(cb => {
+                const val = cb.value;
+                const isAI = val.includes('.ai') || val.includes('crayfish');
+                if (type === 'all') cb.checked = true;
+                else if (type === 'ai') cb.checked = isAI;
+                else if (type === 'human') cb.checked = !isAI;
+            });
+        }
+
+        // 4. 点击应用按钮
+        function applyRaterFilter() {
+            const checkboxes = document.querySelectorAll('.custom-rater-checkbox');
+            let selected = [];
+            let allChecked = true;
+            
+            checkboxes.forEach(cb => {
+                if (cb.checked) selected.push(cb.value);
+                else allChecked = false;
+            });
+
+            if (selected.length === 0) {
+                showToast('请至少勾选一位评测人！', 'warning');
+                return;
+            }
+
+            // 如果全部勾选了，重置为空数组(代表ALL)，否则存入具体的选中项
+            activeSelectedRaters = allChecked ? [] : selected;
+            
+            updateRaterDisplayText();
+            toggleRaterDropdown(); // 关闭下拉框
+            renderDashboardFromSnapshot(); // 触发看板重绘
+        }
+
+        // 5. 更新外部按钮的文字显示
+        function updateRaterDisplayText() {
+            const textEl = document.getElementById('rater-filter-text');
+            if (!textEl) return;
+            if (activeSelectedRaters.length === 0 && availableRaters.length > 0) {
+                textEl.innerHTML = '<i class="fa-solid fa-users text-blue-500 mr-1.5 text-[14px]"></i> 🌟 综合视角 (全部)';
+            } else if (activeSelectedRaters.length === 1) {
+                const r = activeSelectedRaters[0];
+                const isAI = r.includes('.ai') || r.includes('crayfish');
+                const icon = isAI ? '<i class="fa-solid fa-robot text-purple-500 mr-1.5 text-[14px]"></i>' : '<i class="fa-solid fa-user text-blue-500 mr-1.5 text-[14px]"></i>';
+                textEl.innerHTML = `${icon} 专属视角: ${r.split('@')[0]}`;
+            } else if (activeSelectedRaters.length > 1) {
+                textEl.innerHTML = `<i class="fa-solid fa-users-viewfinder text-indigo-500 mr-1.5 text-[14px]"></i> 聚合视角 (已选 ${activeSelectedRaters.length} 人)`;
+            } else {
+                textEl.innerHTML = '暂无数据';
+            }
+        }
+
+        // 获取快照并初始化
+        async function refreshDashboardSnapshot() {
+            const btn = document.getElementById('btn-refresh-dashboard');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> 同步云端数据中...';
+            btn.disabled = true;
+            
+            try {
+                const { data, error } = await dbClient.from('courseware_evatask').select('*').eq('status', 'done').order('id', { ascending: false });
+                if (error) throw error;
+                
+                dashboardSnapshotTasks = data || [];
+                showToast("看板数据快照已更新到最新！", "success");
+                
+                // 更新选项并依据现有的勾选状态重新渲染
+                updateRaterFilterOptions(dashboardSnapshotTasks);
+                renderDashboardFromSnapshot();
+                
+            } catch (e) {
+                console.error("拉取看板快照失败:", e);
+                showToast("获取云端最新数据失败，请检查网络", "error");
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        let chartInstances = {};
+
+        // 依据 activeSelectedRaters (数组) 过滤数据并渲染
+        function renderDashboardFromSnapshot() {
+            if(!dashboardSnapshotTasks || dashboardSnapshotTasks.length === 0) {
+                document.getElementById('stat-sample-size').innerHTML = `- <span class="text-lg font-medium text-slate-500 normal-case">份</span>`;
+                document.getElementById('stat-best-overall').innerHTML = `-`;
+                document.getElementById('stat-max-improve').innerHTML = `-`;
+                document.getElementById('stat-v1-best').innerText = "-";
+                document.getElementById('stat-v5-best').innerText = "-";
+                document.getElementById('stat-single-dims').innerHTML = `<div class="col-span-4 text-center text-slate-400 py-10">当前没有已归档的评测数据...</div>`;
+                document.getElementById('stat-ai-suggestions').innerHTML = `<div class="col-span-3 text-center text-slate-400 py-8">数据量不足，无法生成迭代建议...</div>`;
+                document.getElementById('stat-feedback-nlp').innerHTML = `<div class="col-span-12 text-center text-slate-400 py-8">数据量不足，无法生成语义聚类...</div>`;
+                if(chartInstances.radar) chartInstances.radar.destroy();
+                if(chartInstances.bar) chartInstances.bar.destroy();
+                currentInsights = { sampleSize: 0, bestV5Score: 0, bestV5Name: '', bestV1Score: 0, bestV1Name: '', maxImproveScore: 0, maxImproveName: '' };
+                return;
+            }
+
+            let totalSamples = 0; let modelStats = {}; 
+            let allFeedbacksForNLP = [];
+
+            dashboardSnapshotTasks.forEach(task => {
+                if(task.feedbacks) {
+                    Object.keys(task.feedbacks).forEach(email => {
+                        // 如果未选中任何特定人(代表全选)，或者当前人被选中了
+                        if (activeSelectedRaters.length === 0 || activeSelectedRaters.includes(email)) {
+                            if (task.feedbacks[email] && task.feedbacks[email].trim() !== '') {
+                                allFeedbacksForNLP.push(task.feedbacks[email]);
+                            }
+                        }
+                    });
+                }
+
+                if(!Array.isArray(task.models)) return;
+                task.models.forEach(m => {
+                    const name = m.name;
+                    if(!modelStats[name]) modelStats[name] = { count: 0, v1: {d1:0,d2:0,d3:0,d4:0,total:0}, v5: {d1:0,d2:0,d3:0,d4:0,total:0} };
+                    
+                    const scoresObj = m.scores || {};
+                    let raters = Object.keys(scoresObj).filter(k => k.includes('@')); 
+                    
+                    // 进行数组包含过滤
+                    if (activeSelectedRaters.length > 0) {
+                        raters = raters.filter(r => activeSelectedRaters.includes(r));
+                    }
+
+                    raters.forEach(email => {
+                        totalSamples++; modelStats[name].count++;
+                        if(scoresObj[email].v1) {
+                            modelStats[name].v1.d1 += scoresObj[email].v1.d1 || 0; modelStats[name].v1.d2 += scoresObj[email].v1.d2 || 0;
+                            modelStats[name].v1.d3 += scoresObj[email].v1.d3 || 0; modelStats[name].v1.d4 += scoresObj[email].v1.d4 || 0;
+                            modelStats[name].v1.total += ((scoresObj[email].v1.d1||0) + (scoresObj[email].v1.d2||0) + (scoresObj[email].v1.d3||0) + (scoresObj[email].v1.d4||0)) / 4;
+                        }
+                        if(scoresObj[email].v5) {
+                            modelStats[name].v5.d1 += scoresObj[email].v5.d1 || 0; modelStats[name].v5.d2 += scoresObj[email].v5.d2 || 0;
+                            modelStats[name].v5.d3 += scoresObj[email].v5.d3 || 0; modelStats[name].v5.d4 += scoresObj[email].v5.d4 || 0;
+                            modelStats[name].v5.total += ((scoresObj[email].v5.d1||0) + (scoresObj[email].v5.d2||0) + (scoresObj[email].v5.d3||0) + (scoresObj[email].v5.d4||0)) / 4;
+                        }
+                    });
+                });
+            });
+
+            const unitStr = activeSelectedRaters.length === 0 ? '人次计分' : '题评估';
+            document.getElementById('stat-sample-size').innerHTML = `${totalSamples} <span class="text-base font-medium text-slate-500 normal-case">${unitStr}</span>`;
+
+            let averages = [];
+            for(const [name, data] of Object.entries(modelStats)) {
+                if(data.count === 0) continue;
+                averages.push({ 
+                    name, 
+                    v1: data.v1.total / data.count, 
+                    v5: data.v5.total / data.count, 
+                    diff: (data.v5.total / data.count) - (data.v1.total / data.count), 
+                    v1_d1: data.v1.d1 / data.count, v1_d2: data.v1.d2 / data.count, v1_d3: data.v1.d3 / data.count, v1_d4: data.v1.d4 / data.count,
+                    v5_d1: data.v5.d1 / data.count, v5_d2: data.v5.d2 / data.count, v5_d3: data.v5.d3 / data.count, v5_d4: data.v5.d4 / data.count
+                });
+            }
+
+            if(averages.length > 0) {
+                const bestV5Overall = averages.reduce((max, cur) => cur.v5 > max.v5 ? cur : max, averages[0]);
+                const maxImprove = averages.reduce((max, cur) => cur.diff > max.diff ? cur : max, averages[0]);
+                const bestV1Overall = averages.reduce((max, cur) => cur.v1 > max.v1 ? cur : max, averages[0]);
+
+                currentInsights.sampleSize = totalSamples;
+                currentInsights.bestV5Score = bestV5Overall.v5;
+                currentInsights.bestV5Name = bestV5Overall.name;
+                currentInsights.bestV1Score = bestV1Overall.v1;
+                currentInsights.bestV1Name = bestV1Overall.name;
+                currentInsights.maxImproveScore = maxImprove.diff;
+                currentInsights.maxImproveName = maxImprove.name;
+
+                document.getElementById('stat-best-overall').innerHTML = `${bestV5Overall.v5.toFixed(2)} <span class="text-base font-medium text-slate-500 normal-case">分 / ${bestV5Overall.name}</span>`;
+                document.getElementById('stat-max-improve').innerHTML = `+${maxImprove.diff.toFixed(2)} <span class="text-base font-medium text-slate-500 normal-case">分 / ${maxImprove.name}</span>`;
+                document.getElementById('stat-v1-best').innerHTML = `<span class="text-2xl">${bestV1Overall.v1.toFixed(2)}</span> <span class="text-sm font-normal">分 / ${bestV1Overall.name}</span>`;
+                document.getElementById('stat-v5-best').innerHTML = `<span class="text-2xl">${bestV5Overall.v5.toFixed(2)}</span> <span class="text-sm font-normal">分 / ${bestV5Overall.name}</span>`;
+            }
+
+            const dimMapping = { d1: "知识准确性", d2: "教学适配性", d3: "系统健壮性", d4: "视觉美观度" };
+            let breakdownHTML = '';
+            ['d1','d2','d3','d4'].forEach(d => {
+                const v1BestDim = averages.reduce((max, cur) => cur['v1_'+d] > max['v1_'+d] ? cur : max, averages[0]);
+                const v5BestDim = averages.reduce((max, cur) => cur['v5_'+d] > max['v5_'+d] ? cur : max, averages[0]);
+                
+                breakdownHTML += `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col hover:shadow-md transition">
+                    <div class="text-sm font-bold text-slate-700 mb-3 text-center border-b border-slate-200 pb-2">${dimMapping[d]}</div>
+                    <div class="flex-1 flex flex-col justify-center space-y-3">
+                        <div>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">V1 初稿最佳</div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-indigo-600 truncate w-16" title="${v1BestDim.name}">${v1BestDim.name}</span>
+                                <span class="text-xs font-mono bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">${v1BestDim['v1_'+d].toFixed(1)}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">V5 终稿最佳</div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-emerald-600 truncate w-16" title="${v5BestDim.name}">${v5BestDim.name}</span>
+                                <span class="text-xs font-mono bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">${v5BestDim['v5_'+d].toFixed(1)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('stat-single-dims').innerHTML = breakdownHTML;
+
+            renderDynamicCharts(averages);
+            triggerAIQuantitativeAnalysis(averages);
+            triggerAIFeedbackNLP(allFeedbacksForNLP);
+        }
+
+        async function triggerAIQuantitativeAnalysis(averagesData) {
+            const container = document.getElementById('stat-ai-suggestions');
+            container.innerHTML = `<div class="col-span-3 flex flex-col items-center justify-center py-6 text-yellow-300"><i class="fa-solid fa-microchip fa-spin text-3xl mb-3"></i><span class="font-bold tracking-wide animate-pulse">大模型正在结合0-5分严苛标准推演诊断...</span></div>`;
+
+            const promptText = `
+你是一个资深的AI教育产品研发专家。请分析以下各模型在V1(初稿)和V5(终稿)的客观打分数据。
+打分包含四个维度：d1(知识准确性), d2(教学适配性), d3(系统健壮性), d4(视觉美观度)。
+【评分标准极其严苛】：3分仅代表'及格/没硬伤能用'，4分代表'极好/无Bug丝滑'，5分代表'惊艳，给教研和学员超出预期的感受'。低于3分说明存在明显缺陷(如阻断性Bug、超纲)。
+注意：带有'ITeach'或'Jolin'字样的是我们自研的核心模型，其余为竞品。满分为5分。
+
+注意：打分标准也将发送给你供参考，具体如下：
+d1: { 
+                0: "0分 灾难：核心内容完全反科学或逻辑颠倒。", 
+                1: "1分 糟糕：存在多处知识错误，比如计算错误，单词拼写错误，错别字等等各学科的特定知识点错误，或者概念错误。", 
+                2: "2分 较差：存在一处明显的硬性知识错误，比如目标单词拼错了，计算错误等，跟1分的区别是只允许1处错误，多处错误直接1分。", 
+                3: "3分 及格：核心知识点正确，但有少许边缘非核心知识点错误，比如单词读音错误，知识点扩展错误等。", 
+                4: "4分 极好：知识点100%正确，无上述事实性错误，包括读音，拼写，计算，概念，知识点扩展等。", 
+                5: "5分 惊艳：不仅100%零错误，还能提供巧妙的语境应用，拓展知识，能给教研老师和学生超出预期的极致感受。" 
+            },
+            d2: { 
+                0: "0分 灾难：完全偏离教育目的，比如包含成人化内容，负面价值观，完全不符合教育目的。", 
+                1: "1分 糟糕：纯粹的娱乐玩具，几乎无学习价值，比如纯粹的娱乐游戏，没有教育属性。", 
+                2: "2分 较差：难度超纲或过于低幼，比如生词过多，难度超纲，过于低幼等。", 
+                3: "3分 及格：基本具备教育属性，难度基本适配，但反馈生硬，缺乏层层引导，无法激发学生探索欲。", 4: "4分 极好：高度贴合目标认知，寓教于乐，层层引导，激发学生探索欲。", 
+                5: "5分 惊艳：深度洞察心理，有非常棒的防挫败机制、或者有趣的纠错引导、或者阶梯式的难度爬升脚手架极其精妙激发探索欲，能给教研老师和学生超出预期的极致感受。" 
+            },
+            d3: { 
+                0: "0分 灾难：彻底白屏或黑屏卡死，彻底无法使用。", 
+                1: "1分 糟糕：存在严重阻断性Bug，几乎无法进入互动课件，比如点击无效，卡死等。", 
+                2: "2分 较差：交互不灵敏，部分点击无效，滑动不了但底部还有内容，无法继续进行游戏等。", 
+                3: "3分 及格：有一些视觉或者交互Bug，但不影响主线游戏通关。", 
+                4: "4分 极好：操作丝滑无任何Bug，稳定通关，所有交互反馈及时且准确。", 
+                5: "5分 惊艳：极其强健，完美防错容错极致优雅，能给教研老师和学生超出预期的极致感受。" 
+            },
+            d4: { 
+                0: "0分 灾难：视觉极其杂乱无法辨认，完全无法使用，比如文字乱码，图片裂了等。", 
+                1: "1分 糟糕：界面极度简陋，素材扭曲，比如图片裂了，文字错位等。", 
+                2: "2分 较差：排版混乱拥挤，比如文字重叠，图片遮挡色彩刺眼等。", 
+                3: "3分 及格：设计中规中矩，信息清晰，符合儿童审美。", 
+                4: "4分 极好：视觉美观出众，色彩排版极佳，高度契合儿童审美。", 
+                5: "5分 惊艳：具备顶尖的视觉与情感表现力，高度契合儿童审美，能给教研老师和学生超出预期的极致感受。" 
+            }
+
+请深度对比分析自研模型的优势和短板，你【必须绝对服从】以下推演逻辑：
+1. 护城河优势：不仅要看V5(终稿)哪个维度得分高，还要看相对V1(初稿)哪个维度提升最大，说明模型可塑性强。
+2. 致命短板拷问（极其关键！）：绝对不能只看V5及格了就认为没有劣势！你【必须】横向对比自研模型与竞品在 V1(初稿) 的得分。如果自研模型在 V1 阶段的某些维度（例如 d3系统健壮性 或 d4视觉美观度）得分很低，甚至排名垫底/倒数，你必须极其严厉地指出：该模型"初次开箱即用能力"极差，过度依赖用户的后续调教，这是当前最致命的体验短板！
+3. 研发迭代Action：基于V1的痛点，给出明确的底层策略或系统Prompt优化建议。
+
+请输出严格的JSON格式：
+{ "strength": "一句话精炼总结核心优势（说明为什么强于竞品）", "weakness": "一句话精炼总结致命短板（必须结合V1的初版表现进行拷问）", "action": "下一步具体的研发Prompt重构或迭代建议" }`;
+
+            const resultObj = await callZhipuAI("你是一个严格输出JSON格式的资深数据产品经理。", promptText);
+            
+            if (resultObj) {
+                container.innerHTML = `
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10"><div class="text-green-400 font-bold mb-2"><i class="fa-solid fa-circle-check mr-1"></i> 护城河优势</div><p class="text-sm text-slate-300 leading-relaxed">${resultObj.strength || '暂无明显优势'}</p></div>
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10"><div class="text-red-400 font-bold mb-2"><i class="fa-solid fa-triangle-exclamation mr-1"></i> 致命短板拷问</div><p class="text-sm text-slate-300 leading-relaxed">${resultObj.weakness || '表现平庸，需寻找破局点'}</p></div>
+                    <div class="bg-white/10 p-4 rounded-xl border border-white/10"><div class="text-blue-400 font-bold mb-2"><i class="fa-solid fa-rocket mr-1"></i> 研发迭代 Action</div><p class="text-sm text-slate-300 leading-relaxed">${resultObj.action || '继续观望数据'}</p></div>
+                `;
+            } else { container.innerHTML = `<div class="col-span-3 text-center py-4 text-red-400">大模型推理失败，请检查系统设置。</div>`; }
+        }
+
+        async function triggerAIFeedbackNLP(feedbackArray) {
+            const container = document.getElementById('stat-feedback-nlp');
+            if (!feedbackArray || feedbackArray.length === 0) { container.innerHTML = `<div class="col-span-12 text-center text-slate-400 py-8">该视角下暂无主观评价数据，无法生成语义分析...</div>`; return; }
+
+            container.innerHTML = `<div class="col-span-12 flex flex-col items-center justify-center py-8 text-purple-500"><i class="fa-solid fa-brain fa-fade text-4xl mb-3"></i><span class="font-bold tracking-wide animate-pulse">大语言模型正在基于核心评价维度进行语义提取...</span></div>`;
+
+            const promptText = `
+你是一个资深的教育产品体验分析师。请仔细阅读以下几十位教研老师对不同AI课件模型的原始主观评价长文本。
+带有'ITeach'或'Jolin'的是我们自研模型，其他是外部竞品。
+
+你的任务是进行结构化提取和挖掘不包含在4个评价维度的额外意见或建议，但不允许直接照搬教研老师的原话，必须进行归纳总结。
+【绝对强制要求】：在归纳提炼优缺点时，如果属于四个确切的专业词汇，就往这4大类上归类，绝不允许使用缩写或同义词替换：
+- 知识准确性
+- 教学适配性
+- 系统健壮性
+- 视觉美观度
+如果教研老师没有提到某个维度，则不进行归纳总结。
+如果教研老师提到了不包含在4个评价维度但教研老师觉得很重要的内容，一定要标记出来，这代表用户的真实诉求，必须重视。
+请按以下三个模块执行：
+1. 提炼出自研模型最受好评的【核心优势】（2-3条短语）。
+2. 提炼出自研模型被吐槽最多的【致命劣势/痛点】（2-3条短语）。
+3. 概括其他竞品模型的大致表现和值得我们学习的借鉴点（2-3条短语）。
+
+每条短语必须专业、干练，控制在60字以内。
+
+评价数据：
+${feedbackArray.join('\n')}
+
+请输出严格的JSON格式：
+{ "iteach_strengths": ["优势1", "优势2"], "iteach_weaknesses": ["劣势1", "劣势2"], "competitors_summary": ["概括1", "概括2"] }`;
+
+            const resultObj = await callZhipuAI("你是一个精通NLP语义提取和JSON输出的AI分析师。", promptText);
+            
+            if (resultObj) {
+                const buildList = (arr, iconHtml, emptyMsg) => {
+                    if (!arr || arr.length === 0) return `<li class="text-sm text-slate-400 italic">${emptyMsg}</li>`;
+                    return arr.map(p => `<li class="mb-3 pl-6 relative text-sm text-slate-700 leading-relaxed font-medium"><div class="absolute left-0 top-0.5">${iconHtml}</div>${p}</li>`).join('');
+                };
+
+                const strHtml = buildList(resultObj.iteach_strengths, '<i class="fa-solid fa-check text-green-500"></i>', '未提取到明显的自研优势。');
+                const weakHtml = buildList(resultObj.iteach_weaknesses, '<i class="fa-solid fa-xmark text-red-500"></i>', '太棒了，未提取到明显痛点。');
+                const compHtml = buildList(resultObj.competitors_summary, '<i class="fa-solid fa-magnifying-glass text-blue-500"></i>', '无明显的竞品特征反馈。');
+
+                container.innerHTML = `
+                    <div class="col-span-4 bg-green-50/70 border border-green-200 p-6 rounded-xl shadow-inner"><h4 class="text-green-800 font-black mb-4 flex items-center text-base"><i class="fa-regular fa-face-smile-wink mr-2 text-xl text-green-600"></i> 自研模型核心优势</h4><ul class="list-none m-0 p-0">${strHtml}</ul></div>
+                    <div class="col-span-4 bg-red-50/70 border border-red-200 p-6 rounded-xl shadow-inner"><h4 class="text-red-800 font-black mb-4 flex items-center text-base"><i class="fa-solid fa-stethoscope mr-2 text-xl text-red-500"></i> 自研模型核心痛点</h4><ul class="list-none m-0 p-0">${weakHtml}</ul></div>
+                    <div class="col-span-4 bg-blue-50/70 border border-blue-200 p-6 rounded-xl shadow-inner"><h4 class="text-blue-800 font-black mb-4 flex items-center text-base"><i class="fa-solid fa-chess-knight mr-2 text-xl text-blue-500"></i> 竞品表现与借鉴点</h4><ul class="list-none m-0 p-0">${compHtml}</ul></div>
+                `;
+            } else { container.innerHTML = `<div class="col-span-12 text-center text-red-500 py-8"><i class="fa-solid fa-triangle-exclamation mr-2"></i> AI 语义分析调用失败，请检查网络。</div>`; }
+        }
+
+        function renderDynamicCharts(averagesData) {
+            try {
+                if (typeof Chart === 'undefined') return;
+                if(chartInstances.radar) chartInstances.radar.destroy();
+                if(chartInstances.bar) chartInstances.bar.destroy();
+
+                const ourModelData = averagesData.find(a => a.name.includes("ITeach") || a.name.includes("Jolin"));
+
+                const canvasRadar = document.getElementById('chartRadar');
+                const canvasBar = document.getElementById('chartBar');
+                
+                if (canvasRadar && ourModelData) {
+                    const competitors = averagesData.filter(a => a.name !== ourModelData.name);
+                    competitors.sort((a,b) => b.v5 - a.v5);
+                    const topCompetitor = competitors.length > 0 ? competitors[0] : null;
+
+                    const datasets = [{
+                        label: ourModelData.name, data: [ourModelData.v5_d1, ourModelData.v5_d2, ourModelData.v5_d3, ourModelData.v5_d4],
+                        backgroundColor: 'rgba(37, 99, 235, 0.2)', borderColor: 'rgb(37, 99, 235)', pointBackgroundColor: 'rgb(37, 99, 235)'
+                    }];
+
+                    if(topCompetitor) {
+                        datasets.push({
+                            label: `最强竞品: ${topCompetitor.name}`, data: [topCompetitor.v5_d1, topCompetitor.v5_d2, topCompetitor.v5_d3, topCompetitor.v5_d4],
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgb(239, 68, 68)', borderDash: [5, 5]
+                        });
+                    }
+
+                    chartInstances.radar = new Chart(canvasRadar.getContext('2d'), { type: 'radar', data: { labels: ['知识准确性', '教学适配性', '系统健壮性', '视觉美观度'], datasets: datasets }, options: { scales: { r: { min: 0, max: 5 } }, maintainAspectRatio: false } });
+                }
+
+                if (canvasBar && averagesData.length > 0) {
+                    const labels = averagesData.map(a => a.name); const v1Data = averagesData.map(a => a.v1); const v5Data = averagesData.map(a => a.v5);
+                    chartInstances.bar = new Chart(canvasBar.getContext('2d'), { type: 'bar', data: { labels: labels, datasets: [ { label: 'V1 初稿均分', data: v1Data, backgroundColor: '#CBD5E1' }, { label: 'V5 终版均分', data: v5Data, backgroundColor: '#3B82F6' } ] }, options: { maintainAspectRatio: false, scales: { y: { min: 0, max: 5 } } } });
+                }
+            } catch (e) { console.error("图表渲染失败:", e); }
+        }
+
+        // ================= 启动逻辑 =================
+        try { renderGuide(); updateUserProfileUI(); switchView('teacher'); } catch (e) {}
+        checkSession();
+
+    </script>
+</body>
+</html>
