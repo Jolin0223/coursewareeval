@@ -522,7 +522,7 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        model: "xdf-co-4.6", // 修改为你公司的内部模型名称
+                        model: "xdf-gp-3.1", // 修改为你公司的内部模型名称
                         messages: [ { role: "system", content: systemPrompt }, { role: "user", content: userPrompt } ],
                         temperature: 0.1, 
                         response_format: { type: "json_object" } 
@@ -545,7 +545,7 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        model: "xdf-co-4.6", // 修改为你公司的内部模型名称
+                        model: "xdf-gp-3.1", // 修改为你公司的内部模型名称
                         messages: [ { role: "system", content: systemPrompt }, { role: "user", content: userPrompt } ],
                         temperature: 0.3
                     })
