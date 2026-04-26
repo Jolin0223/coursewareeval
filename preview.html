@@ -25,40 +25,66 @@
 <div id="error"><h2>⚠️ 加载失败</h2><p id="em"></p></div>
 <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
 <script>
-const DB_URL='https://ihzhoqdzysobkrjavhdw.supabase.co';
-const DB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImloemhvcWR6eXNvYmtyamF2aGR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5NjQ2NTYsImV4cCI6MjA2MDU0MDY1Nn0.GxBx2i2jASGBBzBYsMCh0GR3kMo7miAGWxJpMh-YnfY';
+// 走 _worker.js 代理，不暴露真实 key
+const DB_URL = window.location.origin + '/api/supabase';
+const DB_KEY = 'dummy-key';
+
 (async()=>{
-  const id=new URLSearchParams(location.search).get('id');
-  if(!id)return err('缺少参数 ?id=xxx');
-  const db=supabase.createClient(DB_URL,DB_KEY);
+  const id = new URLSearchParams(location.search).get('id');
+  if (!id) return err('缺少参数 ?id=xxx');
+
+  const db = supabase.createClient(DB_URL, DB_KEY);
 
   // 1) courseware.html_current
-  const{data:cw,error:e1}=await db.from('courseware').select('title,source,composite_score,html_current,file_url').eq('id',id).single();
-  if(e1||!cw)return err('课件不存在: '+id);
-  let html=cw.html_current;
+  const {data: cw, error: e1} = await db.from('courseware').select('title,source,composite_score,html_current,file_url').eq('id', id).single();
+  if (e1 || !cw) return err('课件不存在: ' + id);
+  let html = cw.html_current;
 
-  // 2) fallback: evaluation_history.html_snapshot (最新轮次)
-  if(!html||!html.trim()){
-    const{data:eh}=await db.from('evaluation_history').select('html_snapshot').eq('courseware_id',id).order('iteration_round',{ascending:false}).limit(1);
-    if(eh&&eh[0])html=eh[0].html_snapshot;
+  // 2) fallback: evaluation_history.html_snapshot（最新轮次）
+  if (!html || !html.trim()) {
+    const {data: eh} = await db.from('evaluation_history').select('html_snapshot').eq('courseware_id', id).order('iteration_round', {ascending: false}).limit(1);
+    if (eh && eh[0]) html = eh[0].html_snapshot;
   }
 
   // 3) fallback: file_url 直接 iframe
-  if((!html||!html.trim())&&cw.file_url){bar(cw);const f=document.getElementById('preview-frame');f.src=cw.file_url;f.style.display='block';document.getElementById('loading').style.display='none';return}
+  if ((!html || !html.trim()) && cw.file_url) {
+    bar(cw);
+    const f = document.getElementById('preview-frame');
+    f.src = cw.file_url;
+    show(f);
+    return;
+  }
 
-  if(!html||!html.trim())return err('该课件暂无可预览内容');
+  if (!html || !html.trim()) return err('该课件暂无可预览内容');
 
-  // 如果是 base64 格式先解码
-  if(html.startsWith('data:text/html;base64,')){try{html=atob(html.split(',')[1])}catch(e){}}
+  // base64 解码
+  if (html.startsWith('data:text/html;base64,')) {
+    try { html = atob(html.split(',')[1]); } catch(e) {}
+  }
 
   bar(cw);
-  const f=document.getElementById('preview-frame');
-  f.src=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));
-  f.style.display='block';
-  document.getElementById('loading').style.display='none';
+  const f = document.getElementById('preview-frame');
+  f.src = URL.createObjectURL(new Blob([html], {type: 'text/html;charset=utf-8'}));
+  show(f);
 })();
-function bar(c){const b=document.getElementById('bar');b.style.display='flex';document.getElementById('bt').textContent=c.title||'';const m={self_skill:'自研',feixiang:'飞象',laoshibang:'老师帮'};document.getElementById('bs').textContent=m[c.source]||c.source||'';if(c.composite_score)document.getElementById('bc').textContent='综合 '+c.composite_score}
-function err(m){document.getElementById('loading').style.display='none';document.getElementById('error').style.display='block';document.getElementById('em').textContent=m}
+
+function show(f) {
+  f.style.display = 'block';
+  document.getElementById('loading').style.display = 'none';
+}
+function bar(c) {
+  const b = document.getElementById('bar');
+  b.style.display = 'flex';
+  document.getElementById('bt').textContent = c.title || '';
+  const m = {self_skill:'自研', feixiang:'飞象', laoshibang:'老师帮'};
+  document.getElementById('bs').textContent = m[c.source] || c.source || '';
+  if (c.composite_score) document.getElementById('bc').textContent = '综合 ' + c.composite_score;
+}
+function err(m) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error').style.display = 'block';
+  document.getElementById('em').textContent = m;
+}
 </script>
 </body>
 </html>
