@@ -492,6 +492,16 @@
         const dimensions = [{ id: "d1", label: "知识准确性" }, { id: "d2", label: "教学适配性" }, { id: "d3", label: "系统健壮性" }, { id: "d4", label: "视觉美观度" }];
         const PRESET_MODELS = ["ITeach效果", "猿辅导飞象老师", "好未来老师帮", "架构组效果", "Jolin's 效果"];
 
+        function isRaterEmail(value) {
+            return typeof value === 'string' && value.includes('@');
+        }
+
+        function normalizeFeedbackText(value) {
+            if (typeof value === 'string') return value.trim();
+            if (typeof value === 'number' || typeof value === 'boolean') return String(value).trim();
+            return '';
+        }
+
         function renderGuide() {
             try {
                 const wrapper = document.getElementById('guide-content-wrapper');
@@ -756,7 +766,7 @@
                     if (v5Url.startsWith('data:')) v5Url = "本地上传文件(为防崩溃不导出源码)";
 
                     const scoresObj = m.scores || {};
-                    let raters = Object.keys(scoresObj).filter(k => k.includes('@')); 
+                    let raters = Object.keys(scoresObj).filter(isRaterEmail); 
                     
                     if (raters.length === 0) {
                         exportData.push({
@@ -768,7 +778,7 @@
                     } else {
                         raters.forEach(email => {
                             const sV1 = scoresObj[email].v1 || {}; const sV5 = scoresObj[email].v5 || {};
-                            const feedback = (t.feedbacks && t.feedbacks[email] && t.feedbacks[email].trim() !== '') ? t.feedbacks[email] : "未填写";
+                            const feedback = normalizeFeedbackText(t.feedbacks && t.feedbacks[email]) || "未填写";
                             exportData.push({
                                 "任务ID": t.id, "学科": t.subject, "互动课件名称": t.title, "知识点": t.knowledge, "提示词": t.prompt, "当前状态": statusStr, "模型名称": m.name,
                                 "V1版本html": v1Url, "V1_知识准确性": sV1.d1 !== undefined ? sV1.d1 : "-", "V1_教学适配性": sV1.d2 !== undefined ? sV1.d2 : "-", "V1_系统健壮性": sV1.d3 !== undefined ? sV1.d3 : "-", "V1_视觉美观度": sV1.d4 !== undefined ? sV1.d4 : "-",
@@ -874,7 +884,7 @@
                                 </div></div></div>`;
                 });
 
-                const feedbackText = (currentEmail && task.feedbacks && task.feedbacks[currentEmail]) ? task.feedbacks[currentEmail] : '';
+                const feedbackText = normalizeFeedbackText(currentEmail && task.feedbacks && task.feedbacks[currentEmail]);
                 const isLocked = currentTab === 'done' || !isLogged;
 
                 card.innerHTML = `
@@ -1274,7 +1284,7 @@
             snapshotTasks.forEach(t => {
                 if(!Array.isArray(t.models)) return;
                 t.models.forEach(m => {
-                    if (m.scores) { Object.keys(m.scores).forEach(k => { if (k.includes('@')) raters.add(k); }); }
+                    if (m.scores) { Object.keys(m.scores).forEach(k => { if (isRaterEmail(k)) raters.add(k); }); }
                 });
             });
             availableRaters = Array.from(raters);
@@ -1408,11 +1418,12 @@
 
             dashboardSnapshotTasks.forEach(task => {
                 if(task.feedbacks) {
-                    Object.keys(task.feedbacks).forEach(email => {
+                    Object.keys(task.feedbacks).filter(isRaterEmail).forEach(email => {
                         // 如果未选中任何特定人(代表全选)，或者当前人被选中了
                         if (activeSelectedRaters.length === 0 || activeSelectedRaters.includes(email)) {
-                            if (task.feedbacks[email] && task.feedbacks[email].trim() !== '') {
-                                allFeedbacksForNLP.push(task.feedbacks[email]);
+                            const feedbackText = normalizeFeedbackText(task.feedbacks[email]);
+                            if (feedbackText !== '') {
+                                allFeedbacksForNLP.push(feedbackText);
                             }
                         }
                     });
@@ -1424,7 +1435,7 @@
                     if(!modelStats[name]) modelStats[name] = { count: 0, v1: {d1:0,d2:0,d3:0,d4:0,total:0}, v5: {d1:0,d2:0,d3:0,d4:0,total:0} };
                     
                     const scoresObj = m.scores || {};
-                    let raters = Object.keys(scoresObj).filter(k => k.includes('@')); 
+                    let raters = Object.keys(scoresObj).filter(isRaterEmail); 
                     
                     // 进行数组包含过滤
                     if (activeSelectedRaters.length > 0) {
