@@ -416,11 +416,21 @@ function renderArtifactFrame(key, url) {
       </div>
     `;
   }
+  const [type, , variant = ''] = key.split(':');
+  const previewKind = type === 'template' ? variant : 'style';
+  const hasLink = Boolean(url);
   return `
-    <div class="artifact-frame">
+    <div class="artifact-frame empty-frame ${previewKind}">
+      <div class="mock-courseware">
+        <div class="mock-top"></div>
+        <div class="mock-board">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="mock-actions"><i></i><i></i><i></i></div>
+      </div>
       <div class="artifact-empty">
-        <strong>待补效果截图</strong>
-        <div class="record-meta">${url ? '已保留私有链接，截图用于团队评审可见' : '未记录链接，建议先上传截图'}</div>
+        <strong>${hasLink ? '已保留私有链接' : '待补效果截图'}</strong>
+        <div class="record-meta">${hasLink ? '上传截图后，团队不用登录也能评审' : '先放截图，再记录问题和结论'}</div>
       </div>
     </div>
   `;
