@@ -1,0 +1,454 @@
+{
+  "sourceFile": "/Users/jolin/Downloads/7月1日 一键同款&套用模板效果测试.xlsx",
+  "type": "template-vs-same-evaluation",
+  "cases": [
+    {
+      "id": "template-case-01",
+      "materialId": "ca1bfccfb7be4fd4bbc743428c774d83",
+      "materialPreview": "",
+      "userDemand": "改成小学一年级数学的看图列算式，左侧图是要列的算是，右侧是用户要列出的算式以及算式结果，注意是小学一年级10以内加减法的，不允许超出这个范围",
+      "winner": "",
+      "winnerLabel": "",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-02",
+      "materialId": "ff2095eb1dc04b7fa71bc624d6bfceef",
+      "materialPreview": "",
+      "userDemand": "做一个英语游戏字母顺序学习的题吧",
+      "winner": "same",
+      "winnerLabel": "一键同款",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/babc961d49f142f8bee25c1590d31159",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/00b50992140f46d297ace853d1df39c3",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-03",
+      "materialId": "7dbdb7545d694796b4d38791ec533bbf",
+      "materialPreview": "",
+      "userDemand": "",
+      "winner": "",
+      "winnerLabel": "",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-04",
+      "materialId": "33f1f1f658da4c519a19c4299eb3fade",
+      "materialPreview": "",
+      "userDemand": "",
+      "winner": "",
+      "winnerLabel": "",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-05",
+      "materialId": "72dd870d6072461581081877c26ab014",
+      "materialPreview": "",
+      "userDemand": "做一个小学英语单词首字母约束的互动游戏",
+      "winner": "same",
+      "winnerLabel": "一键同款",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/8fad689c51724e1db30e24e1a017a9d3",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/1480e6ced85047e2b54e501c73dc70e0",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-06",
+      "materialId": "12fa58e91e3b45618e49d0636e04d717",
+      "materialPreview": "",
+      "userDemand": "",
+      "winner": "",
+      "winnerLabel": "",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-07",
+      "materialId": "eda9d71fa91b4174b5574e9a2979baa2",
+      "materialPreview": "",
+      "userDemand": "",
+      "winner": "",
+      "winnerLabel": "",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-08",
+      "materialId": "f57d9d4ceeae49c785b2f4ba8797f8ca",
+      "materialPreview": "",
+      "userDemand": "",
+      "winner": "",
+      "winnerLabel": "",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-09",
+      "materialId": "efc345d2528f406fb9bcf31e34bd02c1",
+      "materialPreview": "",
+      "userDemand": "改成小学一年级的听词选物， 听颜色的单词，选出正确的颜色并摆放和提交",
+      "winner": "template",
+      "winnerLabel": "套用玩法",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/144c34aaf69847c9967af9d895c801e8",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/5c515aabe76a4fb0851c4c5a50ef9d60",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-10",
+      "materialId": "a4762a3f26c34797845c3d32de06bb5b",
+      "materialPreview": "",
+      "userDemand": "改成小学一年级语文认识天地人你我他的配对， 生成图片、 汉字和拼音 三个模块",
+      "winner": "template",
+      "winnerLabel": "套用玩法",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/f09123e0b91d43c0bd09a9a578a6febc",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/ab8078e2439a413083a1937f511a5b27",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-11",
+      "materialId": "f1aa49c74721405188899471d8d62d75",
+      "materialPreview": "",
+      "userDemand": "改成小学数学学习角度的互动游戏",
+      "winner": "template",
+      "winnerLabel": "套用玩法",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/generator/game",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/8326e03a1b504653986c9ebe771b2aa3",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-12",
+      "materialId": "cf969594339549499ba285441c6778e1",
+      "materialPreview": "",
+      "userDemand": "把这个模板改成图片-单词-释义匹配， 主要是一年级英语水果单词的学习。",
+      "winner": "same",
+      "winnerLabel": "一键同款",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/397cac39e2f9448ba9f6e5a91fa11455",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/77f9053285184844a3d2cee453e2fb07",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-13",
+      "materialId": "f7c2fe83b68540b89a665cc8f1c14efe",
+      "materialPreview": "",
+      "userDemand": "改成小学一年级数学的看图列算式，左侧图是要列的算是，右侧是用户要列出的算式以及算式结果，注意是小学一年级10以内加减法的，不允许超出这个范围",
+      "winner": "template",
+      "winnerLabel": "套用玩法",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/bbf5ba7388cc4211a7014ad3d990543f",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/8d1be7a243fb49f28f21ca45d55d6d27",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-14",
+      "materialId": "6009c0824b21492592e96d6a00c5cb4f",
+      "materialPreview": "",
+      "userDemand": "改成小学英语字母单词坐标寻宝的互动课件",
+      "winner": "same",
+      "winnerLabel": "一键同款",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/63065755c081429b82710d931523d0b7",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/d77b287041974c438cb8e5d5c662bb61",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-15",
+      "materialId": "729ff96072e347f2bea0529c652d3a10",
+      "materialPreview": "",
+      "userDemand": "改成小学一年级的古诗上下句的互动课件",
+      "winner": "same",
+      "winnerLabel": "一键同款",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/3d5d858adec44e859856c89c9470d439",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/ca99ca9e09c84465b9088d80e7f07dcd",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    },
+    {
+      "id": "template-case-16",
+      "materialId": "4b6a91b3cad144b584c9a9d409422fc6",
+      "materialPreview": "",
+      "userDemand": "改成语文里面的根据线索猜汉字，注意是小学一年级上册第二单元里面学到的汉字",
+      "winner": "same",
+      "winnerLabel": "一键同款",
+      "variants": [
+        {
+          "id": "same",
+          "label": "一键同款",
+          "effectUrl": "https://box.xdf.cn/kpm/717c9ca9793f4e689619ac861d455492",
+          "method": "same"
+        },
+        {
+          "id": "template-v1",
+          "label": "套用玩法 V1",
+          "effectUrl": "https://box.xdf.cn/kpm/0fb5275b5b484a95a26e727e609e64b8",
+          "method": "template"
+        },
+        {
+          "id": "template-v2",
+          "label": "套用玩法 V2",
+          "effectUrl": "",
+          "method": "template"
+        }
+      ]
+    }
+  ]
+}
