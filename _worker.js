@@ -67,15 +67,6 @@ async function fetchWithTimeout(url, options, timeoutMs) {
     }
 }
 
-async function drainResponseStream(response) {
-    if (!response.body) return;
-    const reader = response.body.getReader();
-    while (true) {
-        const { done } = await reader.read();
-        if (done) break;
-    }
-}
-
 async function verifyAdminUser(request, env) {
     if (!env.SUPABASE_URL || typeof env.SUPABASE_URL !== 'string') {
         return {
@@ -227,11 +218,10 @@ async function runStyleLatestEffect(request, env, ctx) {
         }, 502);
     }
 
-    const drainPromise = drainResponseStream(modifyResponse).catch(error => {
-        console.warn('material-modify stream drain failed', error);
-    });
-    if (ctx?.waitUntil) {
-        ctx.waitUntil(drainPromise);
+    if (modifyResponse.body) {
+        try {
+            await modifyResponse.body.cancel();
+        } catch (error) {}
     }
 
     return jsonResponse({
