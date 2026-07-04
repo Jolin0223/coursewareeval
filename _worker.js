@@ -221,12 +221,9 @@ async function runStyleLatestEffect(request, env, ctx) {
     }
 
     const conversationId = createBody.data.conversationId;
-    const modifyPromise = startMaterialModify(baseUrl, authHeaders, conversationId, prompt).catch(error => {
+    startMaterialModify(baseUrl, authHeaders, conversationId, prompt).catch(error => {
         console.warn('material-modify background start failed', error);
     });
-    if (ctx?.waitUntil) {
-        ctx.waitUntil(modifyPromise);
-    }
 
     return jsonResponse({
         ok: true,
