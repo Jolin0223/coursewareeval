@@ -214,7 +214,8 @@ async function runStyleLatestEffect(request, env, ctx) {
     const createText = await createResponse.text();
     let createBody = {};
     try { createBody = createText ? JSON.parse(createText) : {}; } catch (error) { createBody = { raw: createText }; }
-    if (!createResponse.ok || createBody.code !== 0 || !createBody.data?.conversationId) {
+    const createSuccess = createBody.code === 0 || createBody.code === 200;
+    if (!createResponse.ok || !createSuccess || !createBody.data?.conversationId) {
         return jsonResponse({
             error: 'CREATE_SAME_FAILED',
             message: createBody.msg || createBody.message || `一键同款接口返回 ${createResponse.status}`,
