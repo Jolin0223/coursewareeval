@@ -24,3 +24,4 @@
 - Main navigation now separates `效果自评` for internal product iteration evaluation from `竞品测评` for external vertical competitor comparison.
 - Current self-evaluation submenu priorities: `课件生成效果`, `画面风格调整`, `套用玩法`, `一键同款`.
 - `画面风格调整` should work as an iteration workbench: always show the latest version first, keep historical versions below, allow screenshot/link/score/problem capture, generate and manually edit next-version reference prompts, export developer-facing Excel, and reserve a future one-click style-library update hook.
+- `套用玩法` should use `灵感推荐区_最终全量表及制作节奏.xlsx` / sheet `开发入库使用表-其他角色勿动` as the developer-facing source format. The second column `id` is the `templateId` for the prompt update API `/api/update-inspiration-template-prompt/{templateId}`, proxied to `http://box.test.xdf.cn/kpm-api/tool/update-inspiration-template-prompt/{templateId}`.

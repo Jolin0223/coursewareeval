@@ -96,7 +96,35 @@ export default {
         }
 
         // =========================================================
-        // 3. 放行所有正常的网页静态资源请求
+        // 3. 代理灵感推荐区模板提示词入库请求
+        // =========================================================
+        if (url.pathname.startsWith('/api/update-inspiration-template-prompt/')) {
+            try {
+                const templateId = decodeURIComponent(url.pathname.replace('/api/update-inspiration-template-prompt/', ''));
+                if (!templateId) {
+                    return jsonResponse({ error: 'MISSING_TEMPLATE_ID', message: 'Missing template id.' }, 400);
+                }
+
+                const targetUrl = `http://box.test.xdf.cn/kpm-api/tool/update-inspiration-template-prompt/${encodeURIComponent(templateId)}`;
+                const newRequest = new Request(targetUrl, new Request(request));
+                newRequest.headers.set('Content-Type', request.headers.get('Content-Type') || 'application/json');
+
+                const response = await fetch(newRequest);
+                const proxiedResponse = new Response(response.body, response);
+                proxiedResponse.headers.set('Cache-Control', 'no-store');
+                proxiedResponse.headers.set('Access-Control-Allow-Origin', '*');
+                proxiedResponse.headers.set('X-Upstream-Template-Id', templateId);
+                return proxiedResponse;
+            } catch (error) {
+                return jsonResponse({
+                    error: 'TEMPLATE_PROMPT_PROXY_ERROR',
+                    message: error.message
+                }, 502);
+            }
+        }
+
+        // =========================================================
+        // 4. 放行所有正常的网页静态资源请求
         // =========================================================
         return env.ASSETS.fetch(request);
     }
