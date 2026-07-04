@@ -38,3 +38,4 @@
 - UI polish rule: do not use browser-native `title` tooltips, `alert/confirm/prompt`, native `<select>` dropdowns, or default file-upload chrome for user-facing interactions. Use custom Ant-like components such as `ce-has-tooltip`, custom modals, custom dropdowns, custom toast, and custom upload buttons.
 - `画面风格调整` 的“跑最新版效果”自动化必须走 Cloudflare Worker 代理 `/api/style-eval/run-latest`。Worker 先校验 Supabase 登录用户是管理员，再用 Cloudflare 环境变量 `KPM_APP_SECRET` 代签名调用 `box.xdf.cn` 的一键同款和素材修改接口。不要把 KPM app secret 写入前端、仓库或静态 JSON。当前自动回填效果链接；截图自动回填还需要单独接入截图 runner 或浏览器渲染服务。
 - `material-modify` 返回 `text/event-stream`，不要在 Cloudflare Worker 请求里同步 `response.text()` 等完整生成流结束，否则登录后真实生成可能被 Cloudflare 中断成原生 502。当前做法是等待一键同款创建会话和素材修改接口接收请求后立即回填预览链接，长流只在后台 drain；后续更稳方案应改成队列/任务表/截图 runner 的异步任务架构。
+- `跑最新版效果` 的 KPM 基础地址应使用用户提供的正式域名 `http://box.xdf.cn`。如果 Cloudflare 环境变量误设为 `box.test.xdf.cn`，该测试域名可能触发 Cloudflare DNS/local IP 类错误，导致线上按钮 502；Worker 当前会对 `box.test.xdf.cn` 做保护性改写到正式域名。

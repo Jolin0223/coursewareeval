@@ -193,7 +193,8 @@ async function runStyleLatestEffect(request, env, ctx) {
         return jsonResponse({ error: 'MISSING_PROMPT', message: '最新版提示词为空，不能运行。' }, 400);
     }
 
-    const baseUrl = (env.KPM_BASE_URL || 'http://box.xdf.cn').replace(/\/+$/, '');
+    const configuredBaseUrl = String(env.KPM_BASE_URL || 'http://box.xdf.cn').replace(/\/+$/, '');
+    const baseUrl = configuredBaseUrl.includes('box.test.xdf.cn') ? 'http://box.xdf.cn' : configuredBaseUrl;
     const authHeaders = await buildKpmAuthHeaders(env);
 
     const createResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/create-same-by-one-click`, {
