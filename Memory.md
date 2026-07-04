@@ -16,4 +16,10 @@
   - `画面风格测评`: imported `7月2日调整画面风格-效果测试 (1).xlsx` into structured style/version data, covering 19 base styles and Prompt V1-V5 records.
   - `一键同款 vs 套用玩法`: imported `7月1日 一键同款&套用模板效果测试.xlsx` into material-level comparison cases.
 - New frontend stores screenshots, scores, issue notes, status, winner, and reason tags in browser localStorage for fast IA validation. Multi-user sharing still needs Supabase tables plus Supabase Storage.
-- Old single-file evaluation page was moved to `legacy.html` and remains reachable from the new sidebar as `旧版竞品测评`.
+- Old single-file evaluation page remains in `legacy.html` as a reference copy; the root `index.html` is now based on that admin shell again.
+
+## 2026-07-04
+
+- User decided the main product should be based on the old Ant Design-like admin shell, not a separate custom workspace shell.
+- Main navigation now separates `效果自评` for internal product iteration evaluation from `竞品测评` for external vertical competitor comparison.
+- Current self-evaluation submenu priorities: `课件生成效果`, `画面风格调整`, `套用玩法`, `一键同款`.

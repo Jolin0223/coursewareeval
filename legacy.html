@@ -9,20 +9,20 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #F8FAFC; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .modal-enter { animation: fadeIn 0.2s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
+
         /* 定制滚动条，提升下拉框质感 */
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
+
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; outline: none; margin: 10px 0; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #E2E8F0; border-radius: 3px; }
         input[type=range]::-webkit-slider-thumb {
@@ -44,9 +44,23 @@
             <span class="font-bold text-lg tracking-wide">AI课件测评系统</span>
         </div>
         <div class="flex-1 py-6 space-y-2 overflow-y-auto">
-            <div class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">教研评测端</div>
+            <div class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">效果测评端</div>
+            <div class="px-4 pt-2 pb-1 text-xs font-semibold text-slate-500">效果自评</div>
+            <button type="button" onclick="switchView('self-generation')" id="nav-self-generation" class="w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-wand-magic-sparkles mr-3 w-5"></i> 课件生成效果
+            </button>
+            <button type="button" onclick="switchView('self-style')" id="nav-self-style" class="w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-palette mr-3 w-5"></i> 画面风格调整
+            </button>
+            <button type="button" onclick="switchView('self-template')" id="nav-self-template" class="w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-puzzle-piece mr-3 w-5"></i> 套用玩法
+            </button>
+            <button type="button" onclick="switchView('self-same')" id="nav-self-same" class="w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-clone mr-3 w-5"></i> 一键同款
+            </button>
+            <div class="px-4 pt-5 pb-1 text-xs font-semibold text-slate-500">外部纵向测评</div>
             <button type="button" onclick="switchView('teacher')" id="nav-teacher" class="w-full text-left px-6 py-3 bg-blue-600 text-white border-r-4 border-blue-400 transition hover:bg-slate-800">
-                <i class="fa-solid fa-pen-to-square mr-3 w-5"></i> 效果评测台
+                <i class="fa-solid fa-pen-to-square mr-3 w-5"></i> 竞品测评
             </button>
             <div class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2">产品管理端 (需权限)</div>
             <button type="button" onclick="attemptAdminAccess('admin-task')" id="nav-admin-task" class="w-full text-left px-6 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
@@ -70,7 +84,7 @@
         </header>
 
         <div class="flex-1 overflow-auto p-6 sm:p-8 relative" id="content-area">
-            
+
             <div id="view-teacher" class="max-w-7xl mx-auto space-y-6">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex space-x-2 bg-slate-100 p-1 rounded-lg w-fit">
@@ -87,6 +101,97 @@
                     </div>
                 </div>
                 <div id="task-list-container" class="space-y-6"></div>
+            </div>
+
+            <div id="view-self-generation" class="hidden max-w-7xl mx-auto space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-wand-magic-sparkles text-blue-600 mr-2"></i> 课件生成效果
+                        </h3>
+                        <p class="text-sm text-slate-500 mt-1">用于比较不同课件生成模型、提示词版本、素材链路下的生成质量。</p>
+                    </div>
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="border border-slate-200 rounded-xl p-5 bg-white">
+                            <div class="text-sm font-bold text-slate-500 mb-2">近期模型</div>
+                            <div class="text-xl font-black text-slate-800">Gemini 3.1 Pro</div>
+                            <p class="text-sm text-slate-500 mt-2">重点看复杂交互、题型保持、长 Prompt 稳定性。</p>
+                        </div>
+                        <div class="border border-slate-200 rounded-xl p-5 bg-white">
+                            <div class="text-sm font-bold text-slate-500 mb-2">对照模型</div>
+                            <div class="text-xl font-black text-slate-800">Gemini 3.5 Flash</div>
+                            <p class="text-sm text-slate-500 mt-2">重点看速度、成本、批量测试稳定性。</p>
+                        </div>
+                        <div class="border border-dashed border-slate-300 rounded-xl p-5 bg-slate-50">
+                            <div class="text-sm font-bold text-slate-500 mb-2">下一步</div>
+                            <div class="text-xl font-black text-slate-800">接入测评任务</div>
+                            <p class="text-sm text-slate-500 mt-2">后续把模型版本、截图、评分和问题记录放进这里维护。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-self-style" class="hidden max-w-7xl mx-auto space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-palette text-blue-600 mr-2"></i> 画面风格调整
+                        </h3>
+                        <p class="text-sm text-slate-500 mt-1">用于维护 19 种基础风格的 Prompt 版本、效果截图、问题记录和最终入库稿。</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">基础风格</p><p class="text-3xl font-black text-slate-800 mt-2">19</p></div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">Prompt 版本</p><p class="text-3xl font-black text-slate-800 mt-2">76</p></div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">当前重点</p><p class="text-xl font-black text-slate-800 mt-3">截图补齐</p></div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">维护方式</p><p class="text-xl font-black text-slate-800 mt-3">版本追踪</p></div>
+                        </div>
+                        <div class="border border-dashed border-slate-300 rounded-xl p-8 text-center text-slate-500">
+                            后续在这里承接“7月2日调整画面风格效果测试”的结构化录入和截图评审。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-self-template" class="hidden max-w-7xl mx-auto space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-puzzle-piece text-blue-600 mr-2"></i> 套用玩法
+                        </h3>
+                        <p class="text-sm text-slate-500 mt-1">用于评估首页灵感推荐区“套用玩法”的 Prompt 版本和生成效果。</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="border border-slate-200 rounded-xl overflow-hidden">
+                            <div class="grid grid-cols-3 bg-slate-50 text-sm font-bold text-slate-500 border-b border-slate-200">
+                                <div class="px-5 py-3">测评对象</div>
+                                <div class="px-5 py-3">核心问题</div>
+                                <div class="px-5 py-3">记录内容</div>
+                            </div>
+                            <div class="grid grid-cols-3 text-sm text-slate-700">
+                                <div class="px-5 py-4 font-bold">套用玩法 V1 / V2</div>
+                                <div class="px-5 py-4">是否保留玩法骨架，是否符合用户改写需求。</div>
+                                <div class="px-5 py-4">效果截图、分数、问题、胜出原因。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-self-same" class="hidden max-w-7xl mx-auto space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                            <i class="fa-solid fa-clone text-blue-600 mr-2"></i> 一键同款
+                        </h3>
+                        <p class="text-sm text-slate-500 mt-1">用于和“套用玩法”并列对比，判断同一素材下哪个链路效果更好。</p>
+                    </div>
+                    <div class="p-8">
+                        <div class="border border-dashed border-slate-300 rounded-xl p-8 text-center text-slate-500">
+                            后续在这里沉淀“一键同款 vs 套用玩法”的逐案例对比结论。
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="view-admin-task" class="hidden max-w-[1200px] mx-auto pb-12">
@@ -180,7 +285,7 @@
             </div>
 
             <div id="view-admin-stats" class="hidden space-y-6 max-w-7xl mx-auto pb-12">
-                
+
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
                     <button onclick="refreshDashboardSnapshot()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-md transition flex items-center" id="btn-refresh-dashboard">
                         <i class="fa-solid fa-arrows-rotate mr-2"></i> 获取最新归档数据进行分析
@@ -311,19 +416,19 @@
                 </div>
                 <h3 class="text-lg font-black text-slate-800" id="metric-info-title">指标说明</h3>
             </div>
-            
+
             <div class="space-y-4">
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <span class="text-xs font-bold text-slate-400 flex items-center mb-2"><i class="fa-solid fa-calculator mr-1.5"></i> 定量计算规则</span>
                     <p class="text-sm text-slate-600 leading-relaxed font-medium" id="metric-info-calc">计算说明...</p>
                 </div>
-                
+
                 <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
                     <span class="text-xs font-bold text-indigo-500 flex items-center mb-2"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> 大模型智能定性解读</span>
                     <p class="text-sm text-slate-700 leading-relaxed min-h-[60px]" id="metric-info-qualitative">分析中...</p>
                 </div>
             </div>
-            
+
             <div class="mt-6 flex justify-end">
                 <button onclick="document.getElementById('metric-info-modal').classList.add('hidden')" class="px-6 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold shadow-md transition">我了解了</button>
             </div>
@@ -437,56 +542,56 @@
         // 彻底隐藏真实的 URL 和 KEY，指向本地的 Worker 代理接口
         const SUPABASE_URL = window.location.origin + '/api/supabase';
         const SUPABASE_KEY = 'dummy-key'; // 假钥匙，只为了骗过 SDK 初始化
-        const ADMIN_EMAIL = 'chenjialing12@xdf.cn'; 
-        
+        const ADMIN_EMAIL = 'chenjialing12@xdf.cn';
+
         let dbClient = null;
         try { if (window.supabase) { dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } } catch (e) { console.error(e); }
 
         let currentUser = null;
-        let tasks = []; 
-        let dashboardSnapshotTasks = []; 
+        let tasks = [];
+        let dashboardSnapshotTasks = [];
         let hasInitializedDashboard = false;
         let targetAdminView = '';
         let currentEditingTaskId = null;
         let currentTab = 'pending';
-        
+
         // 【新增】：多选筛选器状态
         let availableRaters = [];
         let activeSelectedRaters = []; // 空数组代表全选
-        
+
         let currentInsights = { sampleSize: 0, bestV5Score: 0, bestV5Name: '', bestV1Score: 0, bestV1Name: '', maxImproveScore: 0, maxImproveName: '' };
 
         const fullCriteriaDict = {
-            d1: { 
-                0: "0分 灾难：核心内容完全反科学或逻辑颠倒。", 
-                1: "1分 糟糕：存在多处知识错误，比如计算错误，单词拼写错误，错别字等等各学科的特定知识点错误，或者概念错误。", 
-                2: "2分 较差：存在一处明显的硬性知识错误，比如目标单词拼错了，计算错误等，跟1分的区别是只允许1处错误，多处错误直接1分。", 
-                3: "3分 及格：核心知识点正确，但有少许边缘非核心知识点错误，比如单词读音错误，知识点扩展错误等。", 
-                4: "4分 极好：知识点100%正确，无上述事实性错误，包括读音，拼写，计算，概念，知识点扩展等。", 
-                5: "5分 惊艳：不仅100%零错误，还能提供巧妙的语境应用，拓展知识，能给教研老师和学生超出预期的极致感受。" 
+            d1: {
+                0: "0分 灾难：核心内容完全反科学或逻辑颠倒。",
+                1: "1分 糟糕：存在多处知识错误，比如计算错误，单词拼写错误，错别字等等各学科的特定知识点错误，或者概念错误。",
+                2: "2分 较差：存在一处明显的硬性知识错误，比如目标单词拼错了，计算错误等，跟1分的区别是只允许1处错误，多处错误直接1分。",
+                3: "3分 及格：核心知识点正确，但有少许边缘非核心知识点错误，比如单词读音错误，知识点扩展错误等。",
+                4: "4分 极好：知识点100%正确，无上述事实性错误，包括读音，拼写，计算，概念，知识点扩展等。",
+                5: "5分 惊艳：不仅100%零错误，还能提供巧妙的语境应用，拓展知识，能给教研老师和学生超出预期的极致感受。"
             },
-            d2: { 
-                0: "0分 灾难：完全偏离教育目的，比如包含成人化内容，负面价值观，完全不符合教育目的。", 
-                1: "1分 糟糕：纯粹的娱乐玩具，几乎无学习价值，比如纯粹的娱乐游戏，没有教育属性。", 
-                2: "2分 较差：难度超纲或过于低幼，比如生词过多，难度超纲，过于低幼等。", 
-                3: "3分 及格：基本具备教育属性，难度基本适配，但反馈生硬，缺乏层层引导，无法激发学生探索欲。", 4: "4分 极好：高度贴合目标认知，寓教于乐，层层引导，激发学生探索欲。", 
-                5: "5分 惊艳：深度洞察心理，有非常棒的防挫败机制、或者有趣的纠错引导、或者阶梯式的难度爬升脚手架极其精妙激发探索欲，能给教研老师和学生超出预期的极致感受。" 
+            d2: {
+                0: "0分 灾难：完全偏离教育目的，比如包含成人化内容，负面价值观，完全不符合教育目的。",
+                1: "1分 糟糕：纯粹的娱乐玩具，几乎无学习价值，比如纯粹的娱乐游戏，没有教育属性。",
+                2: "2分 较差：难度超纲或过于低幼，比如生词过多，难度超纲，过于低幼等。",
+                3: "3分 及格：基本具备教育属性，难度基本适配，但反馈生硬，缺乏层层引导，无法激发学生探索欲。", 4: "4分 极好：高度贴合目标认知，寓教于乐，层层引导，激发学生探索欲。",
+                5: "5分 惊艳：深度洞察心理，有非常棒的防挫败机制、或者有趣的纠错引导、或者阶梯式的难度爬升脚手架极其精妙激发探索欲，能给教研老师和学生超出预期的极致感受。"
             },
-            d3: { 
-                0: "0分 灾难：彻底白屏或黑屏卡死，彻底无法使用。", 
-                1: "1分 糟糕：存在严重阻断性Bug，几乎无法进入互动课件，比如点击无效，卡死等。", 
-                2: "2分 较差：交互不灵敏，部分点击无效，滑动不了但底部还有内容，无法继续进行游戏等。", 
-                3: "3分 及格：有一些视觉或者交互Bug，但不影响主线游戏通关。", 
-                4: "4分 极好：操作丝滑无任何Bug，稳定通关，所有交互反馈及时且准确。", 
-                5: "5分 惊艳：极其强健，完美防错容错极致优雅，能给教研老师和学生超出预期的极致感受。" 
+            d3: {
+                0: "0分 灾难：彻底白屏或黑屏卡死，彻底无法使用。",
+                1: "1分 糟糕：存在严重阻断性Bug，几乎无法进入互动课件，比如点击无效，卡死等。",
+                2: "2分 较差：交互不灵敏，部分点击无效，滑动不了但底部还有内容，无法继续进行游戏等。",
+                3: "3分 及格：有一些视觉或者交互Bug，但不影响主线游戏通关。",
+                4: "4分 极好：操作丝滑无任何Bug，稳定通关，所有交互反馈及时且准确。",
+                5: "5分 惊艳：极其强健，完美防错容错极致优雅，能给教研老师和学生超出预期的极致感受。"
             },
-            d4: { 
-                0: "0分 灾难：视觉极其杂乱无法辨认，完全无法使用，比如文字乱码，图片裂了等。", 
-                1: "1分 糟糕：界面极度简陋，素材扭曲，比如图片裂了，文字错位等。", 
-                2: "2分 较差：排版混乱拥挤，比如文字重叠，图片遮挡色彩刺眼等。", 
-                3: "3分 及格：设计中规中矩，信息清晰，符合儿童审美。", 
-                4: "4分 极好：视觉美观出众，色彩排版极佳，高度契合儿童审美。", 
-                5: "5分 惊艳：具备顶尖的视觉与情感表现力，高度契合儿童审美，能给教研老师和学生超出预期的极致感受。" 
+            d4: {
+                0: "0分 灾难：视觉极其杂乱无法辨认，完全无法使用，比如文字乱码，图片裂了等。",
+                1: "1分 糟糕：界面极度简陋，素材扭曲，比如图片裂了，文字错位等。",
+                2: "2分 较差：排版混乱拥挤，比如文字重叠，图片遮挡色彩刺眼等。",
+                3: "3分 及格：设计中规中矩，信息清晰，符合儿童审美。",
+                4: "4分 极好：视觉美观出众，色彩排版极佳，高度契合儿童审美。",
+                5: "5分 惊艳：具备顶尖的视觉与情感表现力，高度契合儿童审美，能给教研老师和学生超出预期的极致感受。"
             }
         };
         const dimensions = [{ id: "d1", label: "知识准确性" }, { id: "d2", label: "教学适配性" }, { id: "d3", label: "系统健壮性" }, { id: "d4", label: "视觉美观度" }];
@@ -524,7 +629,7 @@
         }
 
         // ================= 大模型通用调用引擎 =================
-        
+
         async function callZhipuAI(systemPrompt, userPrompt) {
             try {
                 // 指向本地的 Worker 代理接口，不再暴露密钥
@@ -534,20 +639,20 @@
                     body: JSON.stringify({
                         model: "xdf-gp-3.1", // 修改为你公司的内部模型名称
                         messages: [ { role: "system", content: systemPrompt }, { role: "user", content: userPrompt } ],
-                        temperature: 0.1, 
-                        response_format: { type: "json_object" } 
+                        temperature: 0.1,
+                        response_format: { type: "json_object" }
                     })
                 });
                 const resData = await response.json();
                 let jsonStr = resData.choices[0].message.content;
-                jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, ''); 
+                jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '');
                 return JSON.parse(jsonStr);
             } catch (e) {
                 console.error("LLM JSON API Error:", e);
                 return null;
             }
         }
-        
+
         async function callZhipuTextAI(systemPrompt, userPrompt) {
             try {
                 // 指向本地的 Worker 代理接口，不再暴露密钥
@@ -634,13 +739,13 @@
                         t.models.forEach(m => {
                             if (!m.scores) m.scores = {};
                             if (m.scores.v1 && typeof m.scores.v1.d1 === 'number') {
-                                const oldScores = JSON.parse(JSON.stringify(m.scores)); m.scores = { [ADMIN_EMAIL]: oldScores }; 
+                                const oldScores = JSON.parse(JSON.stringify(m.scores)); m.scores = { [ADMIN_EMAIL]: oldScores };
                             }
                         });
                     });
                     tasks = data;
                 } else { tasks = []; }
-                
+
                 const tView = document.getElementById('view-teacher'); const aView = document.getElementById('admin-task-list-view');
                 if(tView && !tView.classList.contains('hidden')) renderTeacherList();
                 if(aView && !aView.classList.contains('hidden')) renderAdminTable();
@@ -687,17 +792,32 @@
         // ================= 路由与视图控制 =================
         function switchView(viewName) {
             try {
-                ['teacher', 'admin-task', 'admin-stats'].forEach(v => {
+                const viewNames = ['self-generation', 'self-style', 'self-template', 'self-same', 'teacher', 'admin-task', 'admin-stats'];
+                const viewTitles = {
+                    'self-generation': '课件生成效果',
+                    'self-style': '画面风格调整',
+                    'self-template': '套用玩法',
+                    'self-same': '一键同款',
+                    teacher: '竞品测评',
+                    'admin-task': '测评任务管理',
+                    'admin-stats': '数据洞察报告'
+                };
+                viewNames.forEach(v => {
                     const el = document.getElementById('view-' + v); if(el) el.classList.add('hidden');
                     const nav = document.getElementById('nav-' + v); if(nav) nav.classList.remove('bg-slate-800', 'bg-blue-600', 'text-white', 'border-blue-400', 'text-slate-300', 'border-transparent');
+                    if(nav) nav.classList.add('text-slate-300', 'border-transparent');
                 });
                 const activeNav = document.getElementById('nav-' + viewName);
-                if (activeNav) { if (viewName === 'teacher') activeNav.classList.add('bg-blue-600', 'text-white', 'border-blue-400'); else activeNav.classList.add('bg-slate-800', 'text-white', 'border-blue-400'); }
+                if (activeNav) {
+                    activeNav.classList.remove('text-slate-300', 'border-transparent');
+                    activeNav.classList.add('bg-blue-600', 'text-white', 'border-blue-400');
+                }
                 const targetView = document.getElementById('view-' + viewName); if(targetView) targetView.classList.remove('hidden');
+                const titleEl = document.getElementById('page-title'); if(titleEl) titleEl.innerText = viewTitles[viewName] || '互动课件效果测评台';
 
                 if (viewName === 'teacher') renderTeacherList();
                 if (viewName === 'admin-task') toggleAdminTaskView('list');
-                
+
                 if (viewName === 'admin-stats') {
                     if (!hasInitializedDashboard) { refreshDashboardSnapshot(); hasInitializedDashboard = true; }
                 }
@@ -766,8 +886,8 @@
                     if (v5Url.startsWith('data:')) v5Url = "本地上传文件(为防崩溃不导出源码)";
 
                     const scoresObj = m.scores || {};
-                    let raters = Object.keys(scoresObj).filter(isRaterEmail); 
-                    
+                    let raters = Object.keys(scoresObj).filter(isRaterEmail);
+
                     if (raters.length === 0) {
                         exportData.push({
                             "任务ID": t.id, "学科": t.subject, "互动课件名称": t.title, "知识点": t.knowledge, "提示词": t.prompt, "当前状态": statusStr, "模型名称": m.name,
@@ -801,7 +921,7 @@
             currentTab = tab;
             const btnP = document.getElementById('tab-pending'); const btnD = document.getElementById('tab-done');
             if(btnP && btnD) {
-                if (tab === 'pending') { btnP.className = "px-6 py-2 rounded-md text-sm font-bold bg-white text-blue-600 shadow-sm transition"; btnD.className = "px-6 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-700 transition"; } 
+                if (tab === 'pending') { btnP.className = "px-6 py-2 rounded-md text-sm font-bold bg-white text-blue-600 shadow-sm transition"; btnD.className = "px-6 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-700 transition"; }
                 else { btnD.className = "px-6 py-2 rounded-md text-sm font-bold bg-white text-blue-600 shadow-sm transition"; btnP.className = "px-6 py-2 rounded-md text-sm font-medium text-slate-500 hover:text-slate-700 transition"; }
             }
             renderTeacherList();
@@ -816,11 +936,11 @@
         function updateScore(taskId, modelIndex, version, dimId, value) {
             if (!currentUser) return;
             const task = tasks.find(t => t.id === taskId);
-            if(task && Array.isArray(task.models) && task.models[modelIndex]) { 
+            if(task && Array.isArray(task.models) && task.models[modelIndex]) {
                 const email = currentUser.email;
                 if (!task.models[modelIndex].scores) task.models[modelIndex].scores = {};
                 if (!task.models[modelIndex].scores[email]) { task.models[modelIndex].scores[email] = { v1: { d1: 0, d2: 0, d3: 0, d4: 0 }, v5: { d1: 0, d2: 0, d3: 0, d4: 0 } }; }
-                task.models[modelIndex].scores[email][version][dimId] = parseInt(value); 
+                task.models[modelIndex].scores[email][version][dimId] = parseInt(value);
             }
         }
 
@@ -861,7 +981,7 @@
             filteredTasks.forEach(task => {
                 const card = document.createElement('div'); card.className = "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden";
                 let modelRows = ''; const safeModels = Array.isArray(task.models) ? task.models : [];
-                
+
                 safeModels.forEach((model, mIndex) => {
                     const highlightClass = model.isOwn ? "bg-blue-50/40 border-blue-100" : "bg-white border-slate-100";
                     let sysPromptHtml = '';
@@ -906,7 +1026,7 @@
         // ================= 后台任务管理 =================
         function toggleAdminTaskView(view) {
             const lv = document.getElementById('admin-task-list-view'); const fv = document.getElementById('admin-task-form-view');
-            if(view === 'list') { if(lv) lv.classList.remove('hidden'); if(fv) fv.classList.add('hidden'); renderAdminTable(); } 
+            if(view === 'list') { if(lv) lv.classList.remove('hidden'); if(fv) fv.classList.add('hidden'); renderAdminTable(); }
             else { if(lv) lv.classList.add('hidden'); if(fv) fv.classList.remove('hidden'); }
         }
 
@@ -924,8 +1044,8 @@
         function markTaskDone(id) {
             showConfirm('强制归档后，前台教研员将无法再修改分数。确定要归档吗？', async () => {
                 const t = tasks.find(x => x.id === id);
-                if(t) { 
-                    const orig = t.status; t.status = 'done'; 
+                if(t) {
+                    const orig = t.status; t.status = 'done';
                     try {
                         const { error } = await dbClient.from('courseware_evatask').upsert(t);
                         if(error) throw error;
@@ -956,7 +1076,7 @@
             const task = tasks.find(t => t.id === id);
             if(!task) return;
             currentEditingTaskId = id;
-            
+
             const t1 = document.getElementById('admin-form-title');
             const t2 = document.getElementById('form-subject');
             const t3 = document.getElementById('form-title');
@@ -970,7 +1090,7 @@
             if(t4) t4.value = task.knowledge || "";
             if(t5) t5.value = task.prompt || "";
             if(t6) t6.innerHTML = '';
-            
+
             if(Array.isArray(task.models)) {
                 task.models.forEach(m => {
                     const rowId = addNewAdminModelRow(m.name, m.isOwn);
@@ -978,13 +1098,13 @@
                     if(!row) return;
                     const sysp = row.querySelector('.sysprompt-input');
                     if(sysp) sysp.value = m.sysPrompt || '';
-                    
+
                     const isBase64 = (m.v1 && m.v1.startsWith('data:')) || (m.v5 && m.v5.startsWith('data:'));
                     if (isBase64) {
                         const fileRadio = row.querySelector('input[type="radio"][value="file"]');
                         if(fileRadio) fileRadio.checked = true;
                         toggleModelInput(rowId, 'file');
-                        
+
                         if (m.v1 && m.v1.startsWith('data:')) {
                             const fi1 = row.querySelector('.file-v1-input');
                             if(fi1 && fi1.parentElement) fi1.parentElement.querySelector('.file-name-display').innerHTML = `<span class="text-blue-600 font-bold"><i class="fa-solid fa-file-circle-check mr-1"></i> 已保留历史文件 (不修改请留空)</span>`;
@@ -1028,9 +1148,9 @@
             const md = document.getElementById('sysprompt-modal');
             if(md) md.classList.remove('hidden');
         }
-        function closeSysPromptModal() { 
+        function closeSysPromptModal() {
             const md = document.getElementById('sysprompt-modal');
-            if(md) md.classList.add('hidden'); 
+            if(md) md.classList.add('hidden');
         }
 
         function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('border-blue-500', 'bg-blue-50'); e.currentTarget.classList.remove('border-slate-300'); }
@@ -1064,9 +1184,9 @@
             const list = btn.closest('.custom-combobox').querySelector('.combobox-list');
             if (list && list.classList.contains('hidden')) { input.focus(); showCombobox(input); } else if(list) { list.classList.add('hidden'); }
         }
-        function filterCombobox(input) { 
+        function filterCombobox(input) {
             const list = input.closest('.custom-combobox').querySelector('.combobox-list');
-            if(list) renderComboboxOptions(input, list); 
+            if(list) renderComboboxOptions(input, list);
         }
         function renderComboboxOptions(input, list) {
             const val = input.value.trim().toLowerCase();
@@ -1082,7 +1202,7 @@
             });
             if (list.innerHTML === '') list.innerHTML = '<li class="px-3 py-2 text-slate-400 text-xs italic">输入生效</li>';
         }
-        
+
         let modelRowCounter = 0;
         function addNewAdminModelRow(defaultName = "", isOwn = false) {
             const container = document.getElementById('admin-models-wrapper');
@@ -1091,7 +1211,7 @@
             const div = document.createElement('div');
             div.className = "bg-slate-50 p-5 rounded-xl border border-slate-200 relative shadow-sm";
             div.id = rowId;
-            
+
             div.innerHTML = `
                 <button onclick="document.getElementById('${rowId}').remove()" class="absolute top-5 right-5 text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-trash"></i></button>
                 <div class="grid grid-cols-12 gap-6 items-center mb-4 pr-8">
@@ -1169,7 +1289,7 @@
                 knowledge: document.getElementById('form-knowledge') ? document.getElementById('form-knowledge').value : '',
                 prompt: document.getElementById('form-prompt') ? document.getElementById('form-prompt').value : '',
                 status: 'pending',
-                feedbacks: existingFeedbacks, 
+                feedbacks: existingFeedbacks,
                 models: []
             };
 
@@ -1182,10 +1302,10 @@
 
                 const sysPrompt = row.querySelector('.sysprompt-input') ? row.querySelector('.sysprompt-input').value : '';
                 let v1Url = "#", v5Url = "#";
-                
+
                 const urlRadio = row.querySelector('input[type="radio"][value="url"]');
                 const isUrlMode = urlRadio ? urlRadio.checked : false;
-                
+
                 if (isUrlMode) {
                     v1Url = row.querySelector('.url-v1-input') ? row.querySelector('.url-v1-input').value || "#" : "#";
                     v5Url = row.querySelector('.url-v5-input') ? row.querySelector('.url-v5-input').value || "#" : "#";
@@ -1194,7 +1314,7 @@
                     const f5 = row.querySelector('.file-v5-input') ? row.querySelector('.file-v5-input').files[0] : null;
                     const b64_1 = await readFileAsDataURL(f1);
                     const b64_2 = await readFileAsDataURL(f5);
-                    
+
                     v1Url = b64_1 || row.dataset.originalV1 || "#";
                     v5Url = b64_2 || row.dataset.originalV5 || "#";
                 }
@@ -1208,13 +1328,13 @@
                     }
                 }
 
-                return { 
-                    name: name, 
-                    sysPrompt: sysPrompt, 
-                    v1: v1Url, 
-                    v5: v5Url, 
-                    isOwn: name.includes('Jolin') || name.includes('ITeach'), 
-                    scores: existingScores 
+                return {
+                    name: name,
+                    sysPrompt: sysPrompt,
+                    v1: v1Url,
+                    v5: v5Url,
+                    isOwn: name.includes('Jolin') || name.includes('ITeach'),
+                    scores: existingScores
                 };
             });
 
@@ -1232,8 +1352,8 @@
                 if (currentEditingTaskId) {
                     const index = tasks.findIndex(t => t.id === currentEditingTaskId);
                     if(index !== -1) tasks[index] = newTask;
-                } else { 
-                    tasks.unshift(newTask); 
+                } else {
+                    tasks.unshift(newTask);
                 }
                 showToast(currentEditingTaskId ? "任务修改成功，数据已安全同步至云端！" : "新任务发布成功，数据已安全同步至云端！", "success");
                 toggleAdminTaskView('list');
@@ -1288,7 +1408,7 @@
                 });
             });
             availableRaters = Array.from(raters);
-            
+
             // 渲染 Checkbox
             const listEl = document.getElementById('rater-filter-list');
             if (!listEl) return;
@@ -1298,7 +1418,7 @@
                 const isChecked = activeSelectedRaters.length === 0 || activeSelectedRaters.includes(r);
                 const isAI = r.includes('.ai') || r.includes('crayfish'); // 智能识别是否为 AI 账号
                 const icon = isAI ? '<i class="fa-solid fa-robot text-purple-500 mr-2 w-4 text-center"></i>' : '<i class="fa-solid fa-user text-blue-500 mr-2 w-4 text-center"></i>';
-                
+
                 html += `
                     <label class="flex items-center px-3 py-2 hover:bg-slate-100 rounded-lg cursor-pointer transition group">
                         <input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 custom-rater-checkbox" value="${r}" ${isChecked ? 'checked' : ''}>
@@ -1330,7 +1450,7 @@
             const checkboxes = document.querySelectorAll('.custom-rater-checkbox');
             let selected = [];
             let allChecked = true;
-            
+
             checkboxes.forEach(cb => {
                 if (cb.checked) selected.push(cb.value);
                 else allChecked = false;
@@ -1343,7 +1463,7 @@
 
             // 如果全部勾选了，重置为空数组(代表ALL)，否则存入具体的选中项
             activeSelectedRaters = allChecked ? [] : selected;
-            
+
             updateRaterDisplayText();
             toggleRaterDropdown(); // 关闭下拉框
             renderDashboardFromSnapshot(); // 触发看板重绘
@@ -1373,18 +1493,18 @@
             const originalHtml = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> 同步云端数据中...';
             btn.disabled = true;
-            
+
             try {
                 const { data, error } = await dbClient.from('courseware_evatask').select('*').eq('status', 'done').order('id', { ascending: false });
                 if (error) throw error;
-                
+
                 dashboardSnapshotTasks = data || [];
                 showToast("看板数据快照已更新到最新！", "success");
-                
+
                 // 更新选项并依据现有的勾选状态重新渲染
                 updateRaterFilterOptions(dashboardSnapshotTasks);
                 renderDashboardFromSnapshot();
-                
+
             } catch (e) {
                 console.error("拉取看板快照失败:", e);
                 showToast("获取云端最新数据失败，请检查网络", "error");
@@ -1413,7 +1533,7 @@
                 return;
             }
 
-            let totalSamples = 0; let modelStats = {}; 
+            let totalSamples = 0; let modelStats = {};
             let allFeedbacksForNLP = [];
 
             dashboardSnapshotTasks.forEach(task => {
@@ -1433,10 +1553,10 @@
                 task.models.forEach(m => {
                     const name = m.name;
                     if(!modelStats[name]) modelStats[name] = { count: 0, v1: {d1:0,d2:0,d3:0,d4:0,total:0}, v5: {d1:0,d2:0,d3:0,d4:0,total:0} };
-                    
+
                     const scoresObj = m.scores || {};
-                    let raters = Object.keys(scoresObj).filter(isRaterEmail); 
-                    
+                    let raters = Object.keys(scoresObj).filter(isRaterEmail);
+
                     // 进行数组包含过滤
                     if (activeSelectedRaters.length > 0) {
                         raters = raters.filter(r => activeSelectedRaters.includes(r));
@@ -1464,11 +1584,11 @@
             let averages = [];
             for(const [name, data] of Object.entries(modelStats)) {
                 if(data.count === 0) continue;
-                averages.push({ 
-                    name, 
-                    v1: data.v1.total / data.count, 
-                    v5: data.v5.total / data.count, 
-                    diff: (data.v5.total / data.count) - (data.v1.total / data.count), 
+                averages.push({
+                    name,
+                    v1: data.v1.total / data.count,
+                    v5: data.v5.total / data.count,
+                    diff: (data.v5.total / data.count) - (data.v1.total / data.count),
                     v1_d1: data.v1.d1 / data.count, v1_d2: data.v1.d2 / data.count, v1_d3: data.v1.d3 / data.count, v1_d4: data.v1.d4 / data.count,
                     v5_d1: data.v5.d1 / data.count, v5_d2: data.v5.d2 / data.count, v5_d3: data.v5.d3 / data.count, v5_d4: data.v5.d4 / data.count
                 });
@@ -1498,7 +1618,7 @@
             ['d1','d2','d3','d4'].forEach(d => {
                 const v1BestDim = averages.reduce((max, cur) => cur['v1_'+d] > max['v1_'+d] ? cur : max, averages[0]);
                 const v5BestDim = averages.reduce((max, cur) => cur['v5_'+d] > max['v5_'+d] ? cur : max, averages[0]);
-                
+
                 breakdownHTML += `
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col hover:shadow-md transition">
                     <div class="text-sm font-bold text-slate-700 mb-3 text-center border-b border-slate-200 pb-2">${dimMapping[d]}</div>
@@ -1538,36 +1658,36 @@
 注意：带有'ITeach'或'Jolin'字样的是我们自研的核心模型，其余为竞品。满分为5分。
 
 注意：打分标准也将发送给你供参考，具体如下：
-d1: { 
-                0: "0分 灾难：核心内容完全反科学或逻辑颠倒。", 
-                1: "1分 糟糕：存在多处知识错误，比如计算错误，单词拼写错误，错别字等等各学科的特定知识点错误，或者概念错误。", 
-                2: "2分 较差：存在一处明显的硬性知识错误，比如目标单词拼错了，计算错误等，跟1分的区别是只允许1处错误，多处错误直接1分。", 
-                3: "3分 及格：核心知识点正确，但有少许边缘非核心知识点错误，比如单词读音错误，知识点扩展错误等。", 
-                4: "4分 极好：知识点100%正确，无上述事实性错误，包括读音，拼写，计算，概念，知识点扩展等。", 
-                5: "5分 惊艳：不仅100%零错误，还能提供巧妙的语境应用，拓展知识，能给教研老师和学生超出预期的极致感受。" 
+d1: {
+                0: "0分 灾难：核心内容完全反科学或逻辑颠倒。",
+                1: "1分 糟糕：存在多处知识错误，比如计算错误，单词拼写错误，错别字等等各学科的特定知识点错误，或者概念错误。",
+                2: "2分 较差：存在一处明显的硬性知识错误，比如目标单词拼错了，计算错误等，跟1分的区别是只允许1处错误，多处错误直接1分。",
+                3: "3分 及格：核心知识点正确，但有少许边缘非核心知识点错误，比如单词读音错误，知识点扩展错误等。",
+                4: "4分 极好：知识点100%正确，无上述事实性错误，包括读音，拼写，计算，概念，知识点扩展等。",
+                5: "5分 惊艳：不仅100%零错误，还能提供巧妙的语境应用，拓展知识，能给教研老师和学生超出预期的极致感受。"
             },
-            d2: { 
-                0: "0分 灾难：完全偏离教育目的，比如包含成人化内容，负面价值观，完全不符合教育目的。", 
-                1: "1分 糟糕：纯粹的娱乐玩具，几乎无学习价值，比如纯粹的娱乐游戏，没有教育属性。", 
-                2: "2分 较差：难度超纲或过于低幼，比如生词过多，难度超纲，过于低幼等。", 
-                3: "3分 及格：基本具备教育属性，难度基本适配，但反馈生硬，缺乏层层引导，无法激发学生探索欲。", 4: "4分 极好：高度贴合目标认知，寓教于乐，层层引导，激发学生探索欲。", 
-                5: "5分 惊艳：深度洞察心理，有非常棒的防挫败机制、或者有趣的纠错引导、或者阶梯式的难度爬升脚手架极其精妙激发探索欲，能给教研老师和学生超出预期的极致感受。" 
+            d2: {
+                0: "0分 灾难：完全偏离教育目的，比如包含成人化内容，负面价值观，完全不符合教育目的。",
+                1: "1分 糟糕：纯粹的娱乐玩具，几乎无学习价值，比如纯粹的娱乐游戏，没有教育属性。",
+                2: "2分 较差：难度超纲或过于低幼，比如生词过多，难度超纲，过于低幼等。",
+                3: "3分 及格：基本具备教育属性，难度基本适配，但反馈生硬，缺乏层层引导，无法激发学生探索欲。", 4: "4分 极好：高度贴合目标认知，寓教于乐，层层引导，激发学生探索欲。",
+                5: "5分 惊艳：深度洞察心理，有非常棒的防挫败机制、或者有趣的纠错引导、或者阶梯式的难度爬升脚手架极其精妙激发探索欲，能给教研老师和学生超出预期的极致感受。"
             },
-            d3: { 
-                0: "0分 灾难：彻底白屏或黑屏卡死，彻底无法使用。", 
-                1: "1分 糟糕：存在严重阻断性Bug，几乎无法进入互动课件，比如点击无效，卡死等。", 
-                2: "2分 较差：交互不灵敏，部分点击无效，滑动不了但底部还有内容，无法继续进行游戏等。", 
-                3: "3分 及格：有一些视觉或者交互Bug，但不影响主线游戏通关。", 
-                4: "4分 极好：操作丝滑无任何Bug，稳定通关，所有交互反馈及时且准确。", 
-                5: "5分 惊艳：极其强健，完美防错容错极致优雅，能给教研老师和学生超出预期的极致感受。" 
+            d3: {
+                0: "0分 灾难：彻底白屏或黑屏卡死，彻底无法使用。",
+                1: "1分 糟糕：存在严重阻断性Bug，几乎无法进入互动课件，比如点击无效，卡死等。",
+                2: "2分 较差：交互不灵敏，部分点击无效，滑动不了但底部还有内容，无法继续进行游戏等。",
+                3: "3分 及格：有一些视觉或者交互Bug，但不影响主线游戏通关。",
+                4: "4分 极好：操作丝滑无任何Bug，稳定通关，所有交互反馈及时且准确。",
+                5: "5分 惊艳：极其强健，完美防错容错极致优雅，能给教研老师和学生超出预期的极致感受。"
             },
-            d4: { 
-                0: "0分 灾难：视觉极其杂乱无法辨认，完全无法使用，比如文字乱码，图片裂了等。", 
-                1: "1分 糟糕：界面极度简陋，素材扭曲，比如图片裂了，文字错位等。", 
-                2: "2分 较差：排版混乱拥挤，比如文字重叠，图片遮挡色彩刺眼等。", 
-                3: "3分 及格：设计中规中矩，信息清晰，符合儿童审美。", 
-                4: "4分 极好：视觉美观出众，色彩排版极佳，高度契合儿童审美。", 
-                5: "5分 惊艳：具备顶尖的视觉与情感表现力，高度契合儿童审美，能给教研老师和学生超出预期的极致感受。" 
+            d4: {
+                0: "0分 灾难：视觉极其杂乱无法辨认，完全无法使用，比如文字乱码，图片裂了等。",
+                1: "1分 糟糕：界面极度简陋，素材扭曲，比如图片裂了，文字错位等。",
+                2: "2分 较差：排版混乱拥挤，比如文字重叠，图片遮挡色彩刺眼等。",
+                3: "3分 及格：设计中规中矩，信息清晰，符合儿童审美。",
+                4: "4分 极好：视觉美观出众，色彩排版极佳，高度契合儿童审美。",
+                5: "5分 惊艳：具备顶尖的视觉与情感表现力，高度契合儿童审美，能给教研老师和学生超出预期的极致感受。"
             }
 
 请深度对比分析自研模型的优势和短板，你【必须绝对服从】以下推演逻辑：
@@ -1579,7 +1699,7 @@ d1: {
 { "strength": "一句话精炼总结核心优势（说明为什么强于竞品）", "weakness": "一句话精炼总结致命短板（必须结合V1的初版表现进行拷问）", "action": "下一步具体的研发Prompt重构或迭代建议" }`;
 
             const resultObj = await callZhipuAI("你是一个严格输出JSON格式的资深数据产品经理。", promptText);
-            
+
             if (resultObj) {
                 container.innerHTML = `
                     <div class="bg-white/10 p-4 rounded-xl border border-white/10"><div class="text-green-400 font-bold mb-2"><i class="fa-solid fa-circle-check mr-1"></i> 护城河优势</div><p class="text-sm text-slate-300 leading-relaxed">${resultObj.strength || '暂无明显优势'}</p></div>
@@ -1621,7 +1741,7 @@ ${feedbackArray.join('\n')}
 { "iteach_strengths": ["优势1", "优势2"], "iteach_weaknesses": ["劣势1", "劣势2"], "competitors_summary": ["概括1", "概括2"] }`;
 
             const resultObj = await callZhipuAI("你是一个精通NLP语义提取和JSON输出的AI分析师。", promptText);
-            
+
             if (resultObj) {
                 const buildList = (arr, iconHtml, emptyMsg) => {
                     if (!arr || arr.length === 0) return `<li class="text-sm text-slate-400 italic">${emptyMsg}</li>`;
@@ -1650,7 +1770,7 @@ ${feedbackArray.join('\n')}
 
                 const canvasRadar = document.getElementById('chartRadar');
                 const canvasBar = document.getElementById('chartBar');
-                
+
                 if (canvasRadar && ourModelData) {
                     const competitors = averagesData.filter(a => a.name !== ourModelData.name);
                     competitors.sort((a,b) => b.v5 - a.v5);
