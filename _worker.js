@@ -20,6 +20,162 @@ function buildTargetUrl(baseUrl, targetPath, search) {
     return `${parsedBase.origin}${targetPath}${search}`;
 }
 
+function base64FromArrayBuffer(buffer) {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+    return btoa(binary);
+}
+
+async function generateKpmSign(timestamp, appSecret) {
+    const key = await crypto.subtle.importKey(
+        'raw',
+        new TextEncoder().encode(appSecret),
+        { name: 'HMAC', hash: 'SHA-1' },
+        false,
+        ['sign']
+    );
+    const raw = `${timestamp}${appSecret}`;
+    const signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(raw));
+    return base64FromArrayBuffer(signature);
+}
+
+async function buildKpmAuthHeaders(env) {
+    assertEnv('KPM_APP_SECRET', env.KPM_APP_SECRET);
+    const timestamp = String(Math.floor(Date.now() / 1000));
+    return {
+        'X-App-Id': env.KPM_APP_ID || 'kpm-api',
+        'X-Sign': await generateKpmSign(timestamp, env.KPM_APP_SECRET),
+        'X-Timestamp': timestamp
+    };
+}
+
+async function verifyAdminUser(request, env) {
+    assertEnv('SUPABASE_URL', env.SUPABASE_URL);
+    assertEnv('SUPABASE_KEY', env.SUPABASE_KEY);
+    const authorization = request.headers.get('Authorization') || '';
+    if (!authorization.startsWith('Bearer ')) {
+        throw new Error('请先登录管理员账号再运行自动生成。');
+    }
+
+    const targetUrl = `${env.SUPABASE_URL.replace(/\/+$/, '')}/auth/v1/user`;
+    const response = await fetch(targetUrl, {
+        headers: {
+            apikey: env.SUPABASE_KEY,
+            Authorization: authorization
+        }
+    });
+    if (!response.ok) throw new Error('登录态校验失败，请重新登录。');
+    const user = await response.json();
+    const allowedEmails = (env.STYLE_RUN_ALLOWED_EMAILS || 'chenjialing12@xdf.cn')
+        .split(',')
+        .map(item => item.trim().toLowerCase())
+        .filter(Boolean);
+    const email = String(user.email || '').toLowerCase();
+    if (!allowedEmails.includes(email)) {
+        throw new Error('当前账号没有运行自动生成的权限。');
+    }
+    return user;
+}
+
+function extractJsonObjectsFromEventStream(text) {
+    const results = [];
+    text.split(/\r?\n/).forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed === 'data: [DONE]') return;
+        const payload = trimmed.startsWith('data:') ? trimmed.slice(5).trim() : trimmed;
+        if (!payload || payload === '[DONE]') return;
+        try {
+            results.push(JSON.parse(payload));
+        } catch (error) {}
+    });
+    return results;
+}
+
+async function runStyleLatestEffect(request, env) {
+    if (request.method !== 'POST') {
+        return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only POST is supported.' }, 405);
+    }
+
+    await verifyAdminUser(request, env);
+
+    const payload = await request.json();
+    const prompt = String(payload.prompt || '').trim();
+    const styleName = String(payload.styleName || payload.styleId || '画面风格').trim();
+    if (!prompt) {
+        return jsonResponse({ error: 'MISSING_PROMPT', message: '最新版提示词为空，不能运行。' }, 400);
+    }
+
+    const baseUrl = (env.KPM_BASE_URL || 'http://box.xdf.cn').replace(/\/+$/, '');
+    const authHeaders = await buildKpmAuthHeaders(env);
+
+    const createResponse = await fetch(`${baseUrl}/kpm-api/skill/create-same-by-one-click`, {
+        method: 'POST',
+        headers: {
+            ...authHeaders,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            creatorEmail: 'chenjialing12@xdf.cn',
+            materialName: '彩虹气球派对',
+            zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
+        })
+    });
+    const createText = await createResponse.text();
+    let createBody = {};
+    try { createBody = createText ? JSON.parse(createText) : {}; } catch (error) { createBody = { raw: createText }; }
+    if (!createResponse.ok || createBody.code !== 0 || !createBody.data?.conversationId) {
+        return jsonResponse({
+            error: 'CREATE_SAME_FAILED',
+            message: createBody.msg || createBody.message || `一键同款接口返回 ${createResponse.status}`,
+            upstream: createBody
+        }, 502);
+    }
+
+    const conversationId = createBody.data.conversationId;
+    const modifyResponse = await fetch(`${baseUrl}/kpm-api/api/material-modify`, {
+        method: 'POST',
+        headers: {
+            ...authHeaders,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            conversationId,
+            content: prompt
+        })
+    });
+    const modifyText = await modifyResponse.text();
+    if (!modifyResponse.ok) {
+        return jsonResponse({
+            error: 'MATERIAL_MODIFY_FAILED',
+            message: `素材修改接口返回 ${modifyResponse.status}`,
+            upstreamPreview: modifyText.slice(0, 500)
+        }, 502);
+    }
+
+    const events = extractJsonObjectsFromEventStream(modifyText);
+    const parsedSteps = events.map(event => {
+        let text = event.text;
+        if (typeof text === 'string') {
+            try { text = JSON.parse(text); } catch (error) {}
+        }
+        return { ...event, text };
+    });
+    const finalStep = [...parsedSteps].reverse().find(event => event.text?.finalResult);
+    const finalResult = finalStep?.text?.finalResult || null;
+
+    return jsonResponse({
+        ok: true,
+        styleName,
+        conversationId,
+        previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
+        finalResult,
+        stepCount: parsedSteps.length,
+        screenshotUrl: null,
+        message: '已完成一键同款和素材修改，预览链接已生成。截图需要接入独立截图服务后自动回填。'
+    }, 200);
+}
+
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
@@ -124,7 +280,21 @@ export default {
         }
 
         // =========================================================
-        // 4. 放行所有正常的网页静态资源请求
+        // 4. 自动运行画面风格最新版效果
+        // =========================================================
+        if (url.pathname === '/api/style-eval/run-latest') {
+            try {
+                return await runStyleLatestEffect(request, env);
+            } catch (error) {
+                return jsonResponse({
+                    error: 'STYLE_RUN_LATEST_ERROR',
+                    message: error.message
+                }, 502);
+            }
+        }
+
+        // =========================================================
+        // 5. 放行所有正常的网页静态资源请求
         // =========================================================
         return env.ASSETS.fetch(request);
     }

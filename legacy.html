@@ -34,6 +34,121 @@
         input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); box-shadow: 0 4px 8px rgba(37,99,235,0.4); }
         input[type=range]:active::-webkit-slider-thumb { cursor: grabbing; }
         input[type=range]:disabled::-webkit-slider-thumb { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
+
+        .ce-custom-select-menu {
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(148, 163, 184, 0.18);
+        }
+        .ce-tool-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 38px;
+            padding: 0 14px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all .15s ease;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+        }
+        .ce-tool-btn:hover { border-color: #94a3b8; background: #f8fafc; }
+        .ce-tool-btn-primary { border-color: #2563eb; background: #2563eb; color: #fff; box-shadow: 0 4px 10px rgba(37, 99, 235, .18); }
+        .ce-tool-btn-primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
+        .ce-tool-btn-ghost { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+        .ce-tool-btn-ghost:hover { background: #dbeafe; border-color: #93c5fd; }
+        .ce-has-tooltip {
+            position: relative;
+        }
+        .ce-has-tooltip::before,
+        .ce-has-tooltip::after {
+            position: absolute;
+            left: 50%;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+            z-index: 999998;
+        }
+        .ce-has-tooltip::before {
+            content: attr(data-tooltip);
+            bottom: calc(100% + 10px);
+            width: max-content;
+            max-width: 280px;
+            transform: translate(-50%, 4px);
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.5;
+            font-weight: 700;
+            text-align: left;
+            white-space: normal;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, .22);
+        }
+        .ce-has-tooltip::after {
+            content: "";
+            bottom: calc(100% + 4px);
+            transform: translate(-50%, 4px);
+            border: 6px solid transparent;
+            border-top-color: #0f172a;
+        }
+        .ce-has-tooltip:hover::before,
+        .ce-has-tooltip:hover::after,
+        .ce-has-tooltip:focus-visible::before,
+        .ce-has-tooltip:focus-visible::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+        .ce-has-tooltip::before,
+        .ce-has-tooltip::after {
+            display: none !important;
+        }
+        .ce-floating-tooltip {
+            position: fixed;
+            left: 0;
+            top: 0;
+            max-width: 300px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.5;
+            font-weight: 700;
+            text-align: left;
+            box-shadow: 0 16px 34px rgba(15, 23, 42, .24);
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, 4px);
+            transition: opacity .14s ease, transform .14s ease, visibility .14s ease;
+            pointer-events: none;
+            z-index: 1000002;
+        }
+        .ce-floating-tooltip.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+        .ce-floating-tooltip::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -11px;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #0f172a;
+        }
+        .ce-floating-tooltip[data-placement="bottom"]::after {
+            top: -11px;
+            bottom: auto;
+            border-top-color: transparent;
+            border-bottom-color: #0f172a;
+        }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden text-slate-800 relative">
@@ -149,13 +264,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="p-8 space-y-6">
-                        <div id="style-eval-summary" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">基础风格</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">Prompt 版本</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">已补截图</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">待入库</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
-                        </div>
+                    <div class="p-8">
                         <div class="grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)] gap-6 items-start">
                             <aside class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
                                 <div class="p-4 border-b border-slate-200 bg-slate-50">
@@ -188,19 +297,11 @@
                         </div>
                     </div>
                     <div class="p-8 space-y-6">
-                        <div id="template-prompt-summary" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">模板数量</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">首页推荐</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">已修改</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">已入库</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
-                        </div>
                         <div class="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] gap-6 items-start">
                             <aside class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
                                 <div class="p-4 border-b border-slate-200 bg-slate-50 space-y-3">
                                     <input id="template-prompt-search" oninput="filterTemplatePromptList(this.value)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="搜索模板、id、分类">
-                                    <select id="template-category-filter" onchange="filterTemplateCategory(this.value)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                                        <option value="">全部一级分类</option>
-                                    </select>
+                                    <div id="template-category-filter"></div>
                                 </div>
                                 <div id="template-prompt-list" class="max-h-[680px] overflow-y-auto custom-scrollbar"></div>
                             </aside>
@@ -280,11 +381,8 @@
                         <div class="grid grid-cols-12 gap-6 mb-6">
                             <div class="col-span-4">
                                 <label class="block text-sm font-bold text-slate-700 mb-2">学科分类 <span class="text-red-500">*</span></label>
-                                <select id="form-subject" class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
-                                    <option value="英语">英语 (English)</option>
-                                    <option value="数学">数学 (Math)</option>
-                                    <option value="语文">语文 (Chinese)</option>
-                                </select>
+                                <input type="hidden" id="form-subject" value="英语">
+                                <div id="form-subject-select"></div>
                             </div>
                             <div class="col-span-8">
                                 <label class="block text-sm font-bold text-slate-700 mb-2">互动课件名称 <span class="text-red-500">*</span></label>
@@ -541,9 +639,78 @@
         </div>
     </div>
 
+    <div id="image-preview-modal" class="fixed inset-0 bg-slate-900/75 hidden z-[999995] flex items-center justify-center backdrop-blur-sm p-6" onclick="closeImagePreview()">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden" onclick="event.stopPropagation()">
+            <div class="h-14 px-5 border-b border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
+                <div id="image-preview-title" class="font-black text-slate-800 truncate">图片预览</div>
+                <button type="button" onclick="closeImagePreview()" class="w-9 h-9 rounded-lg text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="bg-slate-100 p-4">
+                <img id="image-preview-img" src="" alt="图片预览" class="w-full max-h-[76vh] object-contain rounded-xl bg-white border border-slate-200">
+            </div>
+        </div>
+    </div>
+
     <script>
         // ================= 0. 自定义 UI 组件引擎 =================
         let toastTimer = null;
+        let floatingTooltipEl = null;
+
+        function ensureFloatingTooltip() {
+            if (floatingTooltipEl) return floatingTooltipEl;
+            floatingTooltipEl = document.createElement('div');
+            floatingTooltipEl.className = 'ce-floating-tooltip';
+            floatingTooltipEl.setAttribute('role', 'tooltip');
+            document.body.appendChild(floatingTooltipEl);
+            return floatingTooltipEl;
+        }
+
+        function showFloatingTooltip(target) {
+            const message = target?.getAttribute('data-tooltip');
+            if (!message) return;
+            const tooltip = ensureFloatingTooltip();
+            tooltip.textContent = message;
+            tooltip.dataset.placement = 'top';
+            tooltip.classList.add('is-visible');
+
+            const targetRect = target.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+            const margin = 12;
+            let left = targetRect.left + targetRect.width / 2;
+            left = Math.max(margin + tooltipRect.width / 2, Math.min(window.innerWidth - margin - tooltipRect.width / 2, left));
+
+            let top = targetRect.top - tooltipRect.height - 12;
+            if (top < margin) {
+                top = targetRect.bottom + 12;
+                tooltip.dataset.placement = 'bottom';
+            }
+
+            tooltip.style.left = `${Math.round(left)}px`;
+            tooltip.style.top = `${Math.round(top)}px`;
+        }
+
+        function hideFloatingTooltip() {
+            if (floatingTooltipEl) floatingTooltipEl.classList.remove('is-visible');
+        }
+
+        document.addEventListener('mouseover', event => {
+            const target = event.target.closest('[data-tooltip]');
+            if (target) showFloatingTooltip(target);
+        });
+        document.addEventListener('mouseout', event => {
+            const target = event.target.closest('[data-tooltip]');
+            if (target && !target.contains(event.relatedTarget)) hideFloatingTooltip();
+        });
+        document.addEventListener('focusin', event => {
+            const target = event.target.closest('[data-tooltip]');
+            if (target) showFloatingTooltip(target);
+        });
+        document.addEventListener('focusout', hideFloatingTooltip);
+        document.addEventListener('scroll', hideFloatingTooltip, true);
+        window.addEventListener('resize', hideFloatingTooltip);
+
         function showToast(message, type = 'info') {
             const toast = document.getElementById('custom-toast');
             const msgEl = document.getElementById('custom-toast-msg');
@@ -573,6 +740,25 @@
             const newBtnCancel = btnCancel.cloneNode(true); btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
             newBtnOk.addEventListener('click', () => { modal.classList.add('hidden'); if (onConfirm) onConfirm(); });
             newBtnCancel.addEventListener('click', () => { modal.classList.add('hidden'); });
+        }
+
+        function openImagePreview(url, title = '图片预览') {
+            if (!url) return;
+            const modal = document.getElementById('image-preview-modal');
+            const img = document.getElementById('image-preview-img');
+            const titleEl = document.getElementById('image-preview-title');
+            if (!modal || !img || !titleEl) return;
+            img.src = url;
+            img.alt = title;
+            titleEl.innerText = title;
+            modal.classList.remove('hidden');
+        }
+
+        function closeImagePreview() {
+            const modal = document.getElementById('image-preview-modal');
+            const img = document.getElementById('image-preview-img');
+            if (modal) modal.classList.add('hidden');
+            if (img) img.src = '';
         }
 
         // ================= 1. 核心状态与安全初始化 =================
@@ -806,7 +992,7 @@
             if (currentUser) {
                 const name = currentUser.email.split('@')[0];
                 const role = (currentUser.email === ADMIN_EMAIL) ? '产品经理 / 管理员' : '教研评测员';
-                container.innerHTML = `<div class="flex items-center justify-between w-full"><div class="flex items-center"><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563eb&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-600" alt="Avatar"><div class="ml-3"><p class="text-sm font-bold truncate max-w-[110px]" title="${currentUser.email}">${name}</p><p class="text-xs text-blue-400">${role}</p></div></div><button onclick="performLogout()" class="text-slate-400 hover:text-red-400 ml-2" title="退出"><i class="fa-solid fa-arrow-right-from-bracket"></i></button></div>`;
+                container.innerHTML = `<div class="flex items-center justify-between w-full"><div class="flex items-center"><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563eb&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-600" alt="Avatar"><div class="ml-3"><p class="ce-has-tooltip text-sm font-bold truncate max-w-[110px]" data-tooltip="${escapeAttr(currentUser.email)}">${name}</p><p class="text-xs text-blue-400">${role}</p></div></div><button onclick="performLogout()" class="ce-has-tooltip text-slate-400 hover:text-red-400 ml-2" data-tooltip="退出" aria-label="退出"><i class="fa-solid fa-arrow-right-from-bracket"></i></button></div>`;
             } else {
                 container.innerHTML = `<button onclick="promptLogin()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition shadow-md flex items-center justify-center"><i class="fa-solid fa-right-to-bracket mr-2"></i> 登录后打分</button>`;
             }
@@ -857,7 +1043,7 @@
         async function ensureStyleEvalData() {
             if (hasLoadedStyleEval) return;
             try {
-                const res = await fetch('./data/style-eval-seed.json');
+                const res = await fetch('./data/style-eval-seed.json?v=20260704-style-v6', { cache: 'no-store' });
                 styleEvalData = await res.json();
                 styleEvalData.styles = styleEvalData.styles || [];
                 if (!styleEvalState.selectedStyleId && styleEvalData.styles[0]) {
@@ -885,35 +1071,75 @@
             return [...(style.versions || [])].reverse().find(v => v.finalCandidate || v.effectUrl || v.prompt) || (style.versions || [])[0] || {};
         }
 
+        function getStyleFinalCandidateVersion(style) {
+            return [...(style.versions || [])].reverse().find(v => v.finalCandidate && v.prompt) ||
+                [...(style.versions || [])].reverse().find(v => v.prompt) ||
+                {};
+        }
+
         function getStyleVersionRecord(styleId, versionId) {
             const record = getStyleRecord(styleId);
             if (!record.versions[versionId]) record.versions[versionId] = {};
             return record.versions[versionId];
         }
 
+        function getStyleStatusOptions() {
+            return [
+                { value: 'todo', label: '待补齐' },
+                { value: 'issue', label: '有问题' },
+                { value: 'reviewed', label: '已评审' },
+                { value: 'ready', label: '可入库' }
+            ];
+        }
+
+        function getStyleStatusLabel(status) {
+            const option = getStyleStatusOptions().find(item => item.value === status);
+            return option ? option.label : status;
+        }
+
+        function getStyleStatusClass(status) {
+            if (status === 'ready') return 'bg-green-100 text-green-700';
+            if (status === 'issue') return 'bg-red-100 text-red-700';
+            if (status === 'reviewed') return 'bg-blue-100 text-blue-700';
+            return 'bg-amber-100 text-amber-700';
+        }
+
+        function normalizeLatestStyleScreenshots(record) {
+            if (!record.latest) record.latest = {};
+            const screenshots = Array.isArray(record.latest.screenshots) ? record.latest.screenshots.filter(Boolean) : [];
+            if (record.latest.screenshot && !screenshots.includes(record.latest.screenshot)) {
+                screenshots.unshift(record.latest.screenshot);
+            }
+            record.latest.screenshots = screenshots;
+            if (!Number.isInteger(record.latest.screenshotIndex)) record.latest.screenshotIndex = 0;
+            if (record.latest.screenshotIndex < 0) record.latest.screenshotIndex = 0;
+            if (screenshots.length && record.latest.screenshotIndex >= screenshots.length) record.latest.screenshotIndex = screenshots.length - 1;
+            if (!screenshots.length) record.latest.screenshotIndex = 0;
+            return screenshots;
+        }
+
+        function getStyleLatestStatus(style) {
+            const record = getStyleRecord(style.id);
+            const latest = getLatestStyleVersion(style);
+            return record.latest.status || latest.status || style.status || 'todo';
+        }
+
+        function getStyleReferenceImage(style) {
+            return style.referenceImageUrl || style.referenceImage || '';
+        }
+
         function renderStyleEvalWorkbench() {
-            const summary = document.getElementById('style-eval-summary');
             const list = document.getElementById('style-eval-list');
             const detail = document.getElementById('style-eval-detail');
-            if (!summary || !list || !detail) return;
+            if (!list || !detail) return;
 
             if (!hasLoadedStyleEval) {
-                summary.innerHTML = `<div class="col-span-full bg-white border border-slate-200 rounded-xl p-6 text-slate-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在读取 19 种基础风格...</div>`;
+                list.innerHTML = `<div class="p-5 text-sm text-slate-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在读取 19 种基础风格...</div>`;
                 detail.innerHTML = '';
                 return;
             }
 
             const styles = styleEvalData.styles || [];
-            const versionCount = styles.reduce((sum, item) => sum + ((item.versions || []).length), 0);
-            const screenshotCount = Object.values(styleEvalState.records || {}).filter(item => item.latest && item.latest.screenshot).length;
-            const libraryCount = Object.values(styleEvalState.records || {}).filter(item => item.libraryQueued).length;
-            summary.innerHTML = `
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">基础风格</p><p class="text-3xl font-black text-slate-800 mt-2">${styles.length}</p></div>
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">Prompt 版本</p><p class="text-3xl font-black text-slate-800 mt-2">${versionCount}</p></div>
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">已补截图</p><p class="text-3xl font-black text-slate-800 mt-2">${screenshotCount}</p></div>
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">待入库</p><p class="text-3xl font-black text-slate-800 mt-2">${libraryCount}</p></div>
-            `;
-
             const filtered = styles.filter(style => style.displayName.toLowerCase().includes(styleEvalQuery.toLowerCase()));
             if (!filtered.find(style => style.id === styleEvalState.selectedStyleId) && filtered[0]) {
                 styleEvalState.selectedStyleId = filtered[0].id;
@@ -927,20 +1153,27 @@
             const latest = getLatestStyleVersion(style);
             const record = getStyleRecord(style.id);
             const latestState = record.latest || {};
-            const status = latestState.status || latest.status || style.status || 'todo';
+            const status = getStyleLatestStatus(style);
             const score = latestState.score || '-';
             const active = style.id === styleEvalState.selectedStyleId;
-            const statusMap = { ready: '可入库', issue: '有问题', todo: '待补齐', reviewed: '已评审' };
+            const referenceImage = getStyleReferenceImage(style);
             return `
                 <button onclick="selectStyleEval('${style.id}')" class="w-full text-left p-4 border-b border-slate-100 hover:bg-slate-50 transition ${active ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''}">
-                    <div class="flex items-start justify-between gap-3">
-                        <div class="min-w-0">
-                            <div class="font-black text-slate-800 truncate">${escapeHtml(style.displayName)}</div>
-                            <div class="text-xs text-slate-500 mt-1">${escapeHtml(latest.label || '最新版')} · 共 ${(style.versions || []).length} 版</div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-16 h-12 rounded-lg border border-slate-200 bg-slate-100 overflow-hidden shrink-0">
+                            ${referenceImage ? `<img src="${escapeAttr(referenceImage)}" onclick="event.stopPropagation(); openImagePreview(${escapeAttr(jsString(referenceImage))}, ${escapeAttr(jsString(style.displayName + '参考图'))})" class="w-full h-full object-cover cursor-zoom-in" loading="lazy" alt="${escapeAttr(style.displayName)}参考图">` : `<div class="w-full h-full flex items-center justify-center text-slate-300"><i class="fa-regular fa-image"></i></div>`}
                         </div>
-                        <span class="text-xs font-bold px-2 py-1 rounded-full ${status === 'ready' ? 'bg-green-100 text-green-700' : status === 'issue' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${statusMap[status] || status}</span>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="min-w-0">
+                                    <div class="font-black text-slate-800 truncate">${escapeHtml(style.displayName)}</div>
+                                    <div class="text-xs text-slate-500 mt-1">${escapeHtml(latest.label || '最新版')} · 共 ${(style.versions || []).length} 版</div>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 rounded-full shrink-0 ${getStyleStatusClass(status)}">${getStyleStatusLabel(status)}</span>
+                            </div>
+                            <div class="text-xs text-slate-400 mt-2">当前评分：${escapeHtml(score)}</div>
+                        </div>
                     </div>
-                    <div class="text-xs text-slate-400 mt-2">当前评分：${escapeHtml(score)}</div>
                 </button>
             `;
         }
@@ -949,11 +1182,14 @@
             const latest = getLatestStyleVersion(style);
             const record = getStyleRecord(style.id);
             const latestState = record.latest || {};
+            const screenshots = normalizeLatestStyleScreenshots(record);
             const latestUrl = latestState.effectUrl || latest.effectUrl || '';
             const issueText = latestState.issues ?? latest.issue ?? '';
             const solutionText = latestState.solution || '';
             const nextPrompt = latestState.nextPrompt || buildNextPromptDraft(style, latest, issueText, solutionText);
-            const versionCards = [...(style.versions || [])].reverse().map(version => renderStyleVersionHistory(style, version)).join('');
+            const historyVersions = [...(style.versions || [])].reverse().filter(version => version.id !== latest.id);
+            const versionCards = historyVersions.map(version => renderStyleVersionHistory(style, version)).join('');
+            const isRunningLatest = latestState.runStatus === 'running';
             return `
                 <div class="space-y-6">
                     <section class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
@@ -963,14 +1199,15 @@
                                 <p class="text-sm text-slate-500 mt-1">默认先看最新版效果；过程版效果保留在下方用于追溯。</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="runLatestStyleEffect('${style.id}')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700">
-                                    <i class="fa-solid fa-play mr-1"></i> 跑最新版效果
+                                <button onclick="runLatestStyleEffect('${style.id}')" ${isRunningLatest ? 'disabled' : ''} data-tooltip="登录管理员后自动调用一键同款和素材修改接口，跑出最新版效果并回填链接。" class="ce-has-tooltip px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed">
+                                    <i class="fa-solid ${isRunningLatest ? 'fa-circle-notch fa-spin' : 'fa-play'} mr-1"></i> ${isRunningLatest ? '生成中' : '跑最新版效果'}
                                 </button>
-                                <button onclick="saveNextStylePrompt('${style.id}')" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50">
+                                <button onclick="saveNextStylePrompt('${style.id}')" data-tooltip="只把右侧“下一版本参考提示词”保存到本机草稿，不会下载 Excel，也不会写入开发库。" class="ce-has-tooltip px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50">
                                     <i class="fa-solid fa-floppy-disk mr-1"></i> 保存下一版提示词
                                 </button>
                             </div>
                         </div>
+                        ${renderStyleRunNotice(latestState)}
                         <div class="p-6 grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_420px] gap-6">
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between">
@@ -980,37 +1217,43 @@
                                     </div>
                                     <span class="px-3 py-1 rounded-full text-xs font-bold ${latest.finalCandidate ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}">${latest.finalCandidate ? '最终候选' : '最新记录'}</span>
                                 </div>
-                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
-                                    ${latestState.screenshot ? `<img src="${latestState.screenshot}" class="w-full aspect-video object-cover bg-white" alt="最新版效果截图">` : `<div class="aspect-video flex flex-col items-center justify-center text-slate-400 bg-white"><i class="fa-regular fa-image text-5xl mb-3"></i><div class="text-sm font-bold">待上传最新版截图</div><div class="text-xs mt-1">截图比私有链接更适合跨团队评审</div></div>`}
-                                </div>
+                                ${renderStyleScreenshotCarousel(style.id, screenshots)}
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <label class="text-sm font-bold text-slate-700">效果链接
-                                        <input value="${escapeAttr(latestUrl)}" oninput="updateStyleLatestField('${style.id}', 'effectUrl', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="粘贴最新版课件链接">
+                                        ${renderUrlInputWithOpen(latestUrl, `updateStyleLatestField(${jsString(style.id)}, 'effectUrl', this.value)`, '粘贴最新版课件链接')}
                                     </label>
                                     <label class="text-sm font-bold text-slate-700">上传截图
-                                        <input type="file" accept="image/*" onchange="uploadStyleScreenshot('${style.id}', this.files[0])" class="mt-1 w-full text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white">
+                                        ${renderFileUploadButton(`style-upload-${style.id}`, `uploadStyleScreenshot(${jsString(style.id)}, this.files[0])`, '选择截图')}
                                     </label>
                                     <label class="text-sm font-bold text-slate-700">评分
                                         <input type="number" min="0" max="5" step="0.5" value="${escapeAttr(latestState.score || '')}" oninput="updateStyleLatestField('${style.id}', 'score', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="0-5">
                                     </label>
-                                    <label class="text-sm font-bold text-slate-700">状态
-                                        <select onchange="updateStyleLatestField('${style.id}', 'status', this.value, true)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                                            ${renderStyleStatusOptions(latestState.status || latest.status || style.status || 'todo')}
-                                        </select>
-                                    </label>
+                                    <div class="text-sm font-bold text-slate-700">状态
+                                        <div class="mt-1">${renderCustomSelect({
+                                            id: `style-status-${style.id}`,
+                                            value: latestState.status || latest.status || style.status || 'todo',
+                                            options: getStyleStatusOptions(),
+                                            onSelect: value => `updateStyleLatestField(${jsString(style.id)}, 'status', ${jsString(value)}, true)`
+                                        })}</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="space-y-4">
-                                <label class="block text-sm font-bold text-slate-700">最新版问题
-                                    <textarea id="style-issues-${style.id}" oninput="updateStyleLatestField('${style.id}', 'issues', this.value, false)" class="mt-1 w-full h-28 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录效果问题">${escapeHtml(issueText)}</textarea>
-                                </label>
+                                <div>
+                                    <div class="flex items-center justify-between gap-3 mb-1">
+                                        <label class="text-sm font-bold text-slate-700" for="style-issues-${style.id}">最新版问题</label>
+                                        <button onclick="regenerateStylePromptDraft('${style.id}')" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs">
+                                            <i class="fa-solid fa-wand-magic-sparkles"></i> 生成下一版
+                                        </button>
+                                    </div>
+                                    <textarea id="style-issues-${style.id}" oninput="updateStyleLatestField('${style.id}', 'issues', this.value, false)" class="w-full h-28 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录效果问题">${escapeHtml(issueText)}</textarea>
+                                </div>
                                 <label class="block text-sm font-bold text-slate-700">解决方法
                                     <textarea id="style-solution-${style.id}" oninput="updateStyleLatestField('${style.id}', 'solution', this.value, false)" class="mt-1 w-full h-24 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="写清楚下一版要怎么修">${escapeHtml(solutionText)}</textarea>
                                 </label>
                                 <div>
                                     <div class="flex items-center justify-between gap-3 mb-1">
                                         <label class="text-sm font-bold text-slate-700" for="style-next-prompt-${style.id}">下一版本参考提示词</label>
-                                        <button onclick="regenerateStylePromptDraft('${style.id}')" class="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-200">重新覆盖生成</button>
                                     </div>
                                     <textarea id="style-next-prompt-${style.id}" oninput="updateStyleLatestField('${style.id}', 'nextPrompt', this.value, false)" class="w-full h-56 border border-slate-300 rounded-lg px-3 py-2 text-xs leading-relaxed outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHtml(nextPrompt)}</textarea>
                                 </div>
@@ -1019,10 +1262,10 @@
                     </section>
                     <section class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
                         <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
-                            <h3 class="text-lg font-black text-slate-800">过程版效果</h3>
-                            <p class="text-sm text-slate-500 mt-1">按时间倒序展示历史版本，方便看每版提示词解决了什么、又引入了什么问题。</p>
+                            <h3 class="text-lg font-black text-slate-800">历史过程版</h3>
+                            <p class="text-sm text-slate-500 mt-1">只展示最新版之前的版本，方便追溯每版提示词解决了什么、又引入了什么问题。</p>
                         </div>
-                        <div class="divide-y divide-slate-100">${versionCards}</div>
+                        <div class="divide-y divide-slate-100">${versionCards || '<div class="p-6 text-sm text-slate-400">暂无历史过程版。</div>'}</div>
                     </section>
                 </div>
             `;
@@ -1043,8 +1286,8 @@
                             ${local.screenshot ? `<img src="${local.screenshot}" class="w-full aspect-video object-cover" alt="${escapeAttr(version.label)} 截图">` : `<div class="aspect-video flex items-center justify-center text-xs text-slate-400">未补截图</div>`}
                         </div>
                         <div class="mt-3 flex flex-wrap gap-2">
-                            ${effectUrl ? `<a href="${escapeAttr(effectUrl)}" target="_blank" rel="noreferrer" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50">打开链接</a>` : ''}
-                            <label class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">补截图<input type="file" accept="image/*" onchange="uploadStyleVersionScreenshot('${style.id}', '${version.id}', this.files[0])" class="hidden"></label>
+                            ${effectUrl ? `<a href="${escapeAttr(effectUrl)}" target="_blank" rel="noreferrer" class="ce-tool-btn h-8 px-3 text-xs">打开链接</a>` : ''}
+                            <label class="ce-tool-btn h-8 px-3 text-xs cursor-pointer">补截图<input type="file" accept="image/*" onchange="uploadStyleVersionScreenshot('${style.id}', '${version.id}', this.files[0])" class="hidden"></label>
                         </div>
                     </div>
                     <div class="min-w-0 space-y-3">
@@ -1052,9 +1295,14 @@
                             <label class="text-sm font-bold text-slate-700 md:col-span-2">效果链接
                                 <input value="${escapeAttr(effectUrl)}" oninput="updateStyleVersionField('${style.id}', '${version.id}', 'effectUrl', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
                             </label>
-                            <label class="text-sm font-bold text-slate-700">状态
-                                <select onchange="updateStyleVersionField('${style.id}', '${version.id}', 'status', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">${renderStyleStatusOptions(local.status || version.status || 'todo')}</select>
-                            </label>
+                            <div class="text-sm font-bold text-slate-700">状态
+                                <div class="mt-1">${renderCustomSelect({
+                                    id: `style-status-${style.id}-${version.id}`,
+                                    value: local.status || version.status || 'todo',
+                                    options: getStyleStatusOptions(),
+                                    onSelect: value => `updateStyleVersionField(${jsString(style.id)}, ${jsString(version.id)}, 'status', ${jsString(value)})`
+                                })}</div>
+                            </div>
                         </div>
                         <label class="block text-sm font-bold text-slate-700">问题记录
                             <textarea oninput="updateStyleVersionField('${style.id}', '${version.id}', 'issue', this.value)" class="mt-1 w-full h-20 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHtml(issue)}</textarea>
@@ -1068,9 +1316,62 @@
             `;
         }
 
-        function renderStyleStatusOptions(selected) {
-            const options = { todo: '待补齐', issue: '有问题', reviewed: '已评审', ready: '可入库' };
-            return Object.entries(options).map(([value, label]) => `<option value="${value}" ${selected === value ? 'selected' : ''}>${label}</option>`).join('');
+        function renderStyleRunNotice(latestState) {
+            if (!latestState.runStatus && !latestState.runError && !latestState.generatedAt) return '';
+            if (latestState.runStatus === 'running') {
+                return `<div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-sm font-bold text-blue-700"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在调用一键同款和素材修改接口生成最新版效果，请不要重复点击。</div>`;
+            }
+            if (latestState.runStatus === 'failed') {
+                return `<div class="px-6 py-3 bg-red-50 border-b border-red-100 text-sm font-bold text-red-700"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${escapeHtml(latestState.runError || '最新版效果生成失败')}</div>`;
+            }
+            if (latestState.generatedAt) {
+                return `<div class="px-6 py-3 bg-green-50 border-b border-green-100 text-sm font-bold text-green-700"><i class="fa-solid fa-circle-check mr-2"></i>最新版效果已生成并回填链接。截图自动回填需要接入截图服务。</div>`;
+            }
+            return '';
+        }
+
+        function renderStyleScreenshotCarousel(styleId, screenshots) {
+            const record = getStyleRecord(styleId);
+            const index = record.latest.screenshotIndex || 0;
+            if (!screenshots.length) {
+                return `
+                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+                        <div class="aspect-video flex flex-col items-center justify-center text-slate-400 bg-white">
+                            <i class="fa-regular fa-images text-5xl mb-3"></i>
+                            <div class="text-sm font-bold">待上传最新版截图</div>
+                            <div class="text-xs mt-1">支持多张截图轮播，适合放封面、关键交互页和问题页</div>
+                        </div>
+                    </div>
+                `;
+            }
+            return `
+                <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+                    <div class="relative bg-white">
+                        <img src="${screenshots[index]}" class="w-full aspect-video object-contain bg-white" alt="最新版效果截图 ${index + 1}">
+                        ${screenshots.length > 1 ? `
+                            <button type="button" onclick="moveStyleScreenshot('${styleId}', -1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/75 text-white hover:bg-slate-900 shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" onclick="moveStyleScreenshot('${styleId}', 1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/75 text-white hover:bg-slate-900 shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                        ` : ''}
+                        <div class="absolute left-3 bottom-3 px-2.5 py-1 rounded-full bg-slate-900/75 text-white text-xs font-bold">${index + 1} / ${screenshots.length}</div>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 px-3 py-2 border-t border-slate-200 bg-slate-50">
+                        <div class="flex gap-1.5">
+                            ${screenshots.map((_, i) => `<button type="button" onclick="setStyleScreenshotIndex('${styleId}', ${i})" class="w-2.5 h-2.5 rounded-full ${i === index ? 'bg-blue-600' : 'bg-slate-300 hover:bg-slate-400'}" aria-label="查看第 ${i + 1} 张截图"></button>`).join('')}
+                        </div>
+                        <button type="button" onclick="removeStyleScreenshot('${styleId}')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100">删除当前图</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function normalizePreviewUrl(url) {
+            const raw = String(url || '').trim();
+            if (!raw) return '';
+            try {
+                const parsed = new URL(raw);
+                if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return parsed.href;
+            } catch (e) {}
+            return '';
         }
 
         function selectStyleEval(styleId) {
@@ -1100,7 +1401,39 @@
         async function uploadStyleScreenshot(styleId, file) {
             if (!file) return;
             const record = getStyleRecord(styleId);
-            record.latest.screenshot = await readImageAsDataUrl(file, 1280, 0.84);
+            const screenshots = normalizeLatestStyleScreenshots(record);
+            screenshots.push(await readImageAsDataUrl(file, 1280, 0.84));
+            record.latest.screenshotIndex = screenshots.length - 1;
+            record.latest.screenshot = screenshots[0] || '';
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+        }
+
+        function moveStyleScreenshot(styleId, step) {
+            const record = getStyleRecord(styleId);
+            const screenshots = normalizeLatestStyleScreenshots(record);
+            if (!screenshots.length) return;
+            record.latest.screenshotIndex = (record.latest.screenshotIndex + step + screenshots.length) % screenshots.length;
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+        }
+
+        function setStyleScreenshotIndex(styleId, index) {
+            const record = getStyleRecord(styleId);
+            const screenshots = normalizeLatestStyleScreenshots(record);
+            if (!screenshots.length) return;
+            record.latest.screenshotIndex = Math.max(0, Math.min(index, screenshots.length - 1));
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+        }
+
+        function removeStyleScreenshot(styleId) {
+            const record = getStyleRecord(styleId);
+            const screenshots = normalizeLatestStyleScreenshots(record);
+            if (!screenshots.length) return;
+            screenshots.splice(record.latest.screenshotIndex || 0, 1);
+            record.latest.screenshotIndex = Math.max(0, Math.min(record.latest.screenshotIndex || 0, screenshots.length - 1));
+            record.latest.screenshot = screenshots[0] || '';
             saveStyleEvalState();
             renderStyleEvalWorkbench();
         }
@@ -1135,21 +1468,76 @@
             });
         }
 
-        function runLatestStyleEffect(styleId) {
+        async function runLatestStyleEffect(styleId) {
             const style = (styleEvalData.styles || []).find(item => item.id === styleId);
             if (!style) return;
             const latest = getLatestStyleVersion(style);
             const record = getStyleRecord(styleId);
-            const url = record.latest.effectUrl || latest.effectUrl || '';
-            if (url) {
-                window.open(url, '_blank', 'noopener,noreferrer');
-                showToast('已打开最新版效果链接。跑完后把截图和新链接回填到本页。', 'info');
-            } else {
-                navigator.clipboard?.writeText(record.latest.nextPrompt || style.finalPrompt || latest.prompt || '');
-                showToast('该风格还没有效果链接，已复制最新版提示词，可去生成平台运行。', 'warning');
+            if (!dbClient) return showToast('当前环境无法校验登录态，不能调用自动生成接口。', 'error');
+            const { data: { session } } = await dbClient.auth.getSession();
+            if (!session || !currentUser) {
+                promptLogin();
+                return;
             }
-            record.latest.lastRunAt = new Date().toISOString();
+            if (currentUser.email !== ADMIN_EMAIL) {
+                return showToast(`仅管理员 ${ADMIN_EMAIL} 可以运行自动生成，避免误触发线上生成资源。`, 'error');
+            }
+            if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') {
+                return showToast('当前是本地静态服务，没有 Cloudflare Worker 代理。部署到线上并配置密钥后才能自动生成。', 'warning');
+            }
+
+            const prompt = latest.prompt || style.finalPrompt || '';
+            if (!prompt.trim()) return showToast('最新版提示词为空，不能运行。', 'warning');
+
+            record.latest.runStatus = 'running';
+            record.latest.runError = '';
+            record.latest.runStartedAt = new Date().toISOString();
             saveStyleEvalState();
+            renderStyleEvalWorkbench();
+
+            try {
+                const response = await fetch('/api/style-eval/run-latest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({
+                        styleId: style.id,
+                        styleName: style.displayName,
+                        versionId: latest.id || '',
+                        versionLabel: latest.label || '',
+                        prompt
+                    })
+                });
+                const text = await response.text();
+                let body = {};
+                try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
+                if (!response.ok || body.error) {
+                    throw new Error(body.message || body.error || `接口返回 ${response.status}`);
+                }
+
+                record.latest.effectUrl = body.previewUrl || '';
+                record.latest.conversationId = body.conversationId || '';
+                record.latest.finalResult = body.finalResult || null;
+                record.latest.runStatus = 'done';
+                record.latest.generatedAt = new Date().toISOString();
+                record.latest.runMessage = body.message || '';
+                if (body.screenshotUrl) {
+                    const screenshots = normalizeLatestStyleScreenshots(record);
+                    if (!screenshots.includes(body.screenshotUrl)) screenshots.unshift(body.screenshotUrl);
+                    record.latest.screenshot = screenshots[0] || '';
+                    record.latest.screenshotIndex = 0;
+                }
+                showToast('最新版效果已生成，效果链接已自动回填。', 'success');
+            } catch (error) {
+                record.latest.runStatus = 'failed';
+                record.latest.runError = error.message || String(error);
+                showToast(`自动生成失败：${record.latest.runError}`, 'error');
+            } finally {
+                saveStyleEvalState();
+                renderStyleEvalWorkbench();
+            }
         }
 
         function buildNextPromptDraft(style, latest, issueText, solutionText) {
@@ -1193,47 +1581,30 @@
 
         function exportStyleEvalExcel() {
             if (!window.XLSX) return showToast('Excel 导出组件还没加载完成，请稍后再试。', 'warning');
-            const rows = [];
-            (styleEvalData.styles || []).forEach(style => {
-                const latest = getLatestStyleVersion(style);
-                const record = getStyleRecord(style.id);
-                const latestState = record.latest || {};
-                rows.push({
-                    '风格ID': style.id,
-                    '风格名称': style.displayName,
-                    '记录类型': '最新版',
-                    '版本': latest.label || '',
-                    '效果链接': latestState.effectUrl || latest.effectUrl || '',
-                    '评分': latestState.score || '',
-                    '状态': latestState.status || latest.status || style.status || '',
-                    '问题': latestState.issues ?? latest.issue ?? '',
-                    '解决方法': latestState.solution || '',
-                    '下一版参考提示词': latestState.nextPrompt || buildNextPromptDraft(style, latest, latestState.issues ?? latest.issue ?? '', latestState.solution || ''),
-                    '是否待入库': record.libraryQueued ? '是' : '否',
-                    '入库时间': record.libraryQueuedAt || ''
-                });
-                [...(style.versions || [])].reverse().forEach(version => {
-                    const local = getStyleVersionRecord(style.id, version.id);
-                    rows.push({
-                        '风格ID': style.id,
-                        '风格名称': style.displayName,
-                        '记录类型': '过程版',
-                        '版本': version.label || version.id,
-                        '效果链接': local.effectUrl || version.effectUrl || '',
-                        '评分': local.score || '',
-                        '状态': local.status || version.status || '',
-                        '问题': local.issue ?? version.issue ?? '',
-                        '解决方法': '',
-                        '下一版参考提示词': '',
-                        '是否待入库': '',
-                        '入库时间': ''
-                    });
-                });
+            const headers = ['styleCode', 'displayName', 'userDescription', 'recommendedUse', '图片URL地址', '风格提示词'];
+            const rows = (styleEvalData.styles || []).map(style => {
+                const finalCandidate = getStyleFinalCandidateVersion(style);
+                return {
+                    styleCode: style.styleCode || style.id || '',
+                    displayName: style.displayName || '',
+                    userDescription: style.userDescription || '',
+                    recommendedUse: style.recommendedUse || '',
+                    '图片URL地址': getStyleReferenceImage(style),
+                    '风格提示词': finalCandidate.prompt || style.finalPrompt || ''
+                };
             });
-            const worksheet = XLSX.utils.json_to_sheet(rows);
+            const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+            worksheet['!cols'] = [
+                { wch: 24 },
+                { wch: 18 },
+                { wch: 42 },
+                { wch: 42 },
+                { wch: 80 },
+                { wch: 110 }
+            ];
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, '画面风格调整');
-            XLSX.writeFile(workbook, `画面风格调整测评_${new Date().toISOString().slice(0,10)}.xlsx`);
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+            XLSX.writeFile(workbook, `调整画面风格_开发入库_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
 
         // ================= 效果自评：套用玩法提示词工作台 =================
@@ -1256,7 +1627,7 @@
         async function ensureTemplatePromptData() {
             if (hasLoadedTemplatePromptData) return;
             try {
-                const res = await fetch('./data/inspiration-template-seed.json');
+                const res = await fetch('./data/inspiration-template-seed.json?v=20260704-template-prompts', { cache: 'no-store' });
                 templatePromptData = await res.json();
                 templatePromptData.templates = templatePromptData.templates || [];
                 templatePromptData.columns = templatePromptData.columns || [];
@@ -1281,35 +1652,44 @@
             return templatePromptState.records[templateId];
         }
 
+        function getTemplateCoverUrl(item) {
+            return item.coverUrl || item['新增字段-coverurl'] || item.coverurl || '';
+        }
+
+        function getTemplateSourceHash(item) {
+            return item.promptSourceHash || '';
+        }
+
+        function hasCurrentTemplateDraft(item, latest = {}) {
+            return !!(latest.nextPrompt && latest.promptSourceHash && latest.promptSourceHash === getTemplateSourceHash(item));
+        }
+
+        function getTemplateCurrentPrompt(item, latest = {}) {
+            return hasCurrentTemplateDraft(item, latest) ? latest.nextPrompt : (item.adaptationText || '');
+        }
+
         function renderTemplatePromptWorkbench() {
-            const summary = document.getElementById('template-prompt-summary');
             const list = document.getElementById('template-prompt-list');
             const detail = document.getElementById('template-prompt-detail');
-            const categorySelect = document.getElementById('template-category-filter');
-            if (!summary || !list || !detail) return;
+            const categoryFilter = document.getElementById('template-category-filter');
+            if (!list || !detail) return;
 
             if (!hasLoadedTemplatePromptData) {
-                summary.innerHTML = `<div class="col-span-full bg-white border border-slate-200 rounded-xl p-6 text-slate-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在读取灵感推荐区模板...</div>`;
+                list.innerHTML = `<div class="p-5 text-sm text-slate-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在读取灵感推荐区模板...</div>`;
                 detail.innerHTML = '';
                 return;
             }
 
             const templates = templatePromptData.templates || [];
             const categories = [...new Set(templates.map(item => item.primaryCategory).filter(Boolean))].sort();
-            if (categorySelect && categorySelect.dataset.ready !== 'true') {
-                categorySelect.innerHTML = `<option value="">全部一级分类</option>${categories.map(item => `<option value="${escapeAttr(item)}">${escapeHtml(item)}</option>`).join('')}`;
-                categorySelect.dataset.ready = 'true';
+            if (categoryFilter) {
+                categoryFilter.innerHTML = renderCustomSelect({
+                    id: 'template-category-select',
+                    value: templateCategoryQuery,
+                    options: [{ value: '', label: '全部一级分类' }, ...categories.map(item => ({ value: item, label: item }))],
+                    onSelect: value => `filterTemplateCategory(${jsString(value)})`
+                });
             }
-
-            const editedCount = Object.values(templatePromptState.records || {}).filter(item => item.latest && (item.latest.nextPrompt || item.latest.issue || item.latest.solution || item.latest.effectUrl || item.latest.screenshot)).length;
-            const syncedCount = Object.values(templatePromptState.records || {}).filter(item => item.latest && item.latest.syncedAt).length;
-            const featuredCount = templates.filter(item => item.isFeatured === true || item.isFeatured === 'TRUE' || item.isFeatured === 'true').length;
-            summary.innerHTML = `
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">模板数量</p><p class="text-3xl font-black text-slate-800 mt-2">${templates.length}</p></div>
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">首页推荐</p><p class="text-3xl font-black text-slate-800 mt-2">${featuredCount}</p></div>
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">已修改</p><p class="text-3xl font-black text-slate-800 mt-2">${editedCount}</p></div>
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">已入库</p><p class="text-3xl font-black text-slate-800 mt-2">${syncedCount}</p></div>
-            `;
 
             const query = templatePromptQuery.toLowerCase();
             const filtered = templates.filter(item => {
@@ -1331,16 +1711,24 @@
             const active = item.id === templatePromptState.selectedTemplateId;
             const status = latest.syncedAt ? '已入库' : latest.nextPrompt ? '已修改' : '原始';
             const statusClass = latest.syncedAt ? 'bg-green-100 text-green-700' : latest.nextPrompt ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600';
+            const coverUrl = getTemplateCoverUrl(item);
             return `
                 <button onclick="selectTemplatePrompt('${escapeAttr(item.id)}')" class="w-full text-left p-4 border-b border-slate-100 hover:bg-slate-50 transition ${active ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''}">
-                    <div class="flex items-start justify-between gap-3">
-                        <div class="min-w-0">
-                            <div class="font-black text-slate-800 truncate">${escapeHtml(item.displayTitle || item.id)}</div>
-                            <div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(item.id)}</div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-16 h-12 rounded-lg border border-slate-200 bg-slate-100 overflow-hidden shrink-0">
+                            ${coverUrl ? `<img src="${escapeAttr(coverUrl)}" onclick="event.stopPropagation(); openImagePreview(${escapeAttr(jsString(coverUrl))}, ${escapeAttr(jsString((item.displayTitle || item.id) + '封面'))})" class="w-full h-full object-cover cursor-zoom-in" loading="lazy" alt="${escapeAttr(item.displayTitle || item.id)}封面">` : `<div class="w-full h-full flex items-center justify-center text-slate-300"><i class="fa-regular fa-image"></i></div>`}
                         </div>
-                        <span class="text-xs font-bold px-2 py-1 rounded-full ${statusClass}">${status}</span>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="min-w-0">
+                                    <div class="font-black text-slate-800 truncate">${escapeHtml(item.displayTitle || item.id)}</div>
+                                    <div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(item.id)}</div>
+                                </div>
+                                <span class="text-xs font-bold px-2 py-1 rounded-full shrink-0 ${statusClass}">${status}</span>
+                            </div>
+                            <div class="text-xs text-slate-500 mt-2 truncate">${escapeHtml(item.primaryCategory || '-')} · ${escapeHtml(item.secondaryLabel || '-')} · ${escapeHtml(item.ageText || '-')}</div>
+                        </div>
                     </div>
-                    <div class="text-xs text-slate-500 mt-2">${escapeHtml(item.primaryCategory || '-')} · ${escapeHtml(item.secondaryLabel || '-')} · ${escapeHtml(item.ageText || '-')}</div>
                 </button>
             `;
         }
@@ -1348,7 +1736,7 @@
         function renderTemplatePromptDetail(item) {
             const record = getTemplateRecord(item.id);
             const latest = record.latest || {};
-            const currentPrompt = latest.nextPrompt || item.adaptationText || '';
+            const currentPrompt = getTemplateCurrentPrompt(item, latest);
             const exampleUrl = latest.effectUrl || buildTemplateExampleUrl(item);
             const history = (record.history || []).map((historyItem, index) => renderTemplatePromptHistory(historyItem, index)).join('');
             return `
@@ -1360,33 +1748,28 @@
                                 <p class="text-sm text-slate-500 mt-1 font-mono break-all">templateId: ${escapeHtml(item.id)}</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="runTemplatePromptEffect('${escapeAttr(item.id)}')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700">
+                                <button onclick="runTemplatePromptEffect('${escapeAttr(item.id)}')" data-tooltip="打开该模板的示例/最新版效果链接；没有链接时复制当前提示词。" class="ce-has-tooltip px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700">
                                     <i class="fa-solid fa-play mr-1"></i> 跑最新版效果
                                 </button>
-                                <button onclick="saveTemplatePromptDraft('${escapeAttr(item.id)}')" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50">
+                                <button onclick="saveTemplatePromptDraft('${escapeAttr(item.id)}')" data-tooltip="把当前 textarea 里的提示词保存到本机，并生成一条过程版快照。" class="ce-has-tooltip px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50">
                                     <i class="fa-solid fa-floppy-disk mr-1"></i> 保存提示词
                                 </button>
-                                <button onclick="updateTemplatePromptById('${escapeAttr(item.id)}')" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700">
+                                <button onclick="updateTemplatePromptById('${escapeAttr(item.id)}')" data-tooltip="调用开发提供的接口，把当前提示词写入该 templateId 对应的线上模板库。" class="ce-has-tooltip px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700">
                                     <i class="fa-solid fa-cloud-arrow-up mr-1"></i> 入库此模板
                                 </button>
                             </div>
                         </div>
                         <div class="p-6 grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_430px] gap-6">
                             <div class="space-y-4">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><div class="text-xs font-bold text-slate-500">一级分类</div><div class="mt-1 font-black text-slate-800">${escapeHtml(item.primaryCategory || '-')}</div></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><div class="text-xs font-bold text-slate-500">二级标签</div><div class="mt-1 font-black text-slate-800">${escapeHtml(item.secondaryLabel || '-')}</div></div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><div class="text-xs font-bold text-slate-500">年龄段</div><div class="mt-1 font-black text-slate-800">${escapeHtml(item.ageText || '-')}</div></div>
-                                </div>
                                 <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
                                     ${latest.screenshot ? `<img src="${latest.screenshot}" class="w-full aspect-video object-cover bg-white" alt="套用玩法效果截图">` : `<div class="aspect-video flex flex-col items-center justify-center text-slate-400 bg-white"><i class="fa-regular fa-image text-5xl mb-3"></i><div class="text-sm font-bold">待上传最新版效果截图</div><div class="text-xs mt-1">先跑效果，再记录问题和下一版提示词</div></div>`}
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <label class="text-sm font-bold text-slate-700">效果链接
-                                        <input value="${escapeAttr(exampleUrl)}" oninput="updateTemplateLatestField('${escapeAttr(item.id)}', 'effectUrl', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                        ${renderUrlInputWithOpen(exampleUrl, `updateTemplateLatestField(${jsString(item.id)}, 'effectUrl', this.value)`, '粘贴最新版效果链接')}
                                     </label>
                                     <label class="text-sm font-bold text-slate-700">上传截图
-                                        <input type="file" accept="image/*" onchange="uploadTemplateScreenshot('${escapeAttr(item.id)}', this.files[0])" class="mt-1 w-full text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white">
+                                        ${renderFileUploadButton(`template-upload-${item.id}`, `uploadTemplateScreenshot(${jsString(item.id)}, this.files[0])`, '选择截图')}
                                     </label>
                                     <label class="text-sm font-bold text-slate-700">评分
                                         <input type="number" min="0" max="5" step="0.5" value="${escapeAttr(latest.score || '')}" oninput="updateTemplateLatestField('${escapeAttr(item.id)}', 'score', this.value, true)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="0-5">
@@ -1395,26 +1778,23 @@
                                         <input value="${latest.syncedAt ? '已入库 ' + latest.syncedAt.slice(0, 10) : '未入库'}" readonly class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-slate-50 text-slate-500">
                                     </label>
                                 </div>
-                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-700 leading-relaxed">
-                                    <div class="font-bold text-slate-800 mb-1">卡片描述</div>
-                                    ${escapeHtml(item.shortDesc || '-')}
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-700 leading-relaxed"><div class="font-bold text-slate-800 mb-1">适用标签</div>${escapeHtml(item.suitableTags || '-')}</div>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-700 leading-relaxed"><div class="font-bold text-slate-800 mb-1">玩法流程</div>${escapeHtml(item.flowSteps || '-')}</div>
-                                </div>
                             </div>
                             <div class="space-y-4">
-                                <label class="block text-sm font-bold text-slate-700">最新版问题
-                                    <textarea id="template-issue-${escapeAttr(item.id)}" oninput="updateTemplateLatestField('${escapeAttr(item.id)}', 'issue', this.value, false)" class="mt-1 w-full h-24 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录套用后跑偏、玩法骨架丢失、交互不完整等问题">${escapeHtml(latest.issue || '')}</textarea>
-                                </label>
+                                <div>
+                                    <div class="flex items-center justify-between gap-3 mb-1">
+                                        <label class="text-sm font-bold text-slate-700" for="template-issue-${escapeAttr(item.id)}">最新版问题</label>
+                                        <button onclick="regenerateTemplatePromptDraft('${escapeAttr(item.id)}')" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs">
+                                            <i class="fa-solid fa-wand-magic-sparkles"></i> 生成下一版
+                                        </button>
+                                    </div>
+                                    <textarea id="template-issue-${escapeAttr(item.id)}" oninput="updateTemplateLatestField('${escapeAttr(item.id)}', 'issue', this.value, false)" class="w-full h-24 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录套用后跑偏、玩法骨架丢失、交互不完整等问题">${escapeHtml(latest.issue || '')}</textarea>
+                                </div>
                                 <label class="block text-sm font-bold text-slate-700">解决方法
                                     <textarea id="template-solution-${escapeAttr(item.id)}" oninput="updateTemplateLatestField('${escapeAttr(item.id)}', 'solution', this.value, false)" class="mt-1 w-full h-24 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="写清楚下一版提示词要怎么约束">${escapeHtml(latest.solution || '')}</textarea>
                                 </label>
                                 <div>
                                     <div class="flex items-center justify-between gap-3 mb-1">
                                         <label class="text-sm font-bold text-slate-700" for="template-next-prompt-${escapeAttr(item.id)}">当前/下一版套用玩法提示词</label>
-                                        <button onclick="regenerateTemplatePromptDraft('${escapeAttr(item.id)}')" class="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-200">重新覆盖生成</button>
                                     </div>
                                     <textarea id="template-next-prompt-${escapeAttr(item.id)}" oninput="updateTemplateLatestField('${escapeAttr(item.id)}', 'nextPrompt', this.value, false)" class="w-full h-72 border border-slate-300 rounded-lg px-3 py-2 text-xs leading-relaxed outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHtml(currentPrompt)}</textarea>
                                 </div>
@@ -1470,6 +1850,11 @@
         function updateTemplateLatestField(templateId, field, value, rerender = false) {
             const record = getTemplateRecord(templateId);
             record.latest[field] = value;
+            if (field === 'nextPrompt') {
+                const item = (templatePromptData.templates || []).find(template => template.id === templateId);
+                record.latest.promptSourceHash = item ? getTemplateSourceHash(item) : '';
+                record.latest.promptSourceFile = item ? (item.promptSourceFile || item.sourcePath || '') : '';
+            }
             saveTemplatePromptState();
             if (rerender) renderTemplatePromptWorkbench();
         }
@@ -1496,7 +1881,7 @@
                 window.open(url, '_blank', 'noopener,noreferrer');
                 showToast('已打开示例/效果链接。跑完后把截图、问题和下一版提示词回填到本页。', 'info');
             } else {
-                navigator.clipboard?.writeText(record.latest.nextPrompt || item.adaptationText || '');
+                navigator.clipboard?.writeText(getTemplateCurrentPrompt(item, record.latest || {}));
                 showToast('该模板没有示例链接，已复制当前提示词。', 'warning');
             }
             record.latest.lastRunAt = new Date().toISOString();
@@ -1534,6 +1919,9 @@
                 solution: record.latest.solution || ''
             };
             record.latest.nextPrompt = area.value;
+            const item = (templatePromptData.templates || []).find(template => template.id === templateId) || {};
+            record.latest.promptSourceHash = getTemplateSourceHash(item);
+            record.latest.promptSourceFile = item.promptSourceFile || item.sourcePath || '';
             record.history = [snapshot, ...(record.history || [])].slice(0, 12);
             saveTemplatePromptState();
             renderTemplatePromptWorkbench();
@@ -1555,7 +1943,7 @@
             if (!item) return showToast('未找到模板数据。', 'error');
             const record = getTemplateRecord(templateId);
             const area = document.getElementById(`template-next-prompt-${templateId}`);
-            const prompt = (area?.value || record.latest.nextPrompt || item.adaptationText || '').trim();
+            const prompt = (area?.value || getTemplateCurrentPrompt(item, record.latest || {})).trim();
             if (!prompt) return showToast('提示词为空，不能入库。', 'warning');
             record.latest.syncing = true;
             saveTemplatePromptState();
@@ -1576,6 +1964,8 @@
                 try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
                 if (!res.ok) throw new Error(body.message || body.error || `接口返回 ${res.status}`);
                 record.latest.nextPrompt = prompt;
+                record.latest.promptSourceHash = getTemplateSourceHash(item);
+                record.latest.promptSourceFile = item.promptSourceFile || item.sourcePath || '';
                 record.latest.syncedAt = new Date().toISOString();
                 record.latest.syncResult = body;
                 showToast('套用玩法提示词已调用接口入库。', 'success');
@@ -1594,13 +1984,13 @@
             const columns = templatePromptData.columns || [];
             const rows = (templatePromptData.templates || []).map(item => {
                 const record = getTemplateRecord(item.id);
-                const latestPrompt = record.latest.nextPrompt || item.adaptationText || '';
+                const latestPrompt = getTemplateCurrentPrompt(item, record.latest || {});
                 return columns.map(column => column === 'adaptationText' ? latestPrompt : (item[column] ?? ''));
             });
             const worksheet = XLSX.utils.aoa_to_sheet([columns, ...rows]);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, '开发入库使用表');
-            XLSX.writeFile(workbook, `灵感推荐区_开发入库使用表_${new Date().toISOString().slice(0,10)}.xlsx`);
+            XLSX.utils.book_append_sheet(workbook, worksheet, '审核版开发使用表');
+            XLSX.writeFile(workbook, `灵感推荐区_审核版开发使用表_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
 
         function escapeHtml(value) {
@@ -1609,6 +1999,95 @@
 
         function escapeAttr(value) {
             return escapeHtml(value).replace(/`/g, '&#096;');
+        }
+
+        function jsString(value) {
+            return JSON.stringify(String(value ?? '')).replace(/</g, '\\u003C');
+        }
+
+        function renderCustomSelect(config) {
+            const id = config.id;
+            const value = String(config.value ?? '');
+            const options = config.options || [];
+            const selected = options.find(option => String(option.value) === value) || options[0] || { value: '', label: '请选择' };
+            return `
+                <div class="ce-custom-select relative">
+                    <button type="button" onclick="toggleCustomSelect(${escapeAttr(jsString(id))}, event)" class="w-full h-[38px] border border-slate-300 rounded-lg px-3 bg-white text-sm font-bold text-slate-700 outline-none hover:border-blue-400 focus:ring-2 focus:ring-blue-500 flex items-center justify-between gap-3">
+                        <span class="truncate">${escapeHtml(selected.label)}</span>
+                        <i id="${escapeAttr(id)}-icon" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform"></i>
+                    </button>
+                    <div id="${escapeAttr(id)}-menu" class="ce-custom-select-menu hidden absolute z-50 mt-1 w-full min-w-[150px] rounded-xl border border-slate-200 bg-white p-1.5 max-h-64 overflow-auto custom-scrollbar">
+                        ${options.map(option => {
+                            const optionValue = String(option.value ?? '');
+                            const isActive = optionValue === value;
+                            const action = config.onSelect ? config.onSelect(optionValue) : '';
+                            return `
+                                <button type="button" onclick="${escapeAttr(action)}; closeCustomSelect(${escapeAttr(jsString(id))})" class="w-full text-left px-3 py-2 rounded-lg text-sm font-bold flex items-center justify-between ${isActive ? 'bg-blue-50 text-blue-700' : 'text-slate-700 hover:bg-slate-50'}">
+                                    <span class="truncate">${escapeHtml(option.label)}</span>
+                                    ${isActive ? '<i class="fa-solid fa-check text-blue-600 text-xs ml-2"></i>' : ''}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleCustomSelect(id, event) {
+            if (event) event.stopPropagation();
+            document.querySelectorAll('.ce-custom-select-menu').forEach(menu => {
+                if (menu.id !== `${id}-menu`) menu.classList.add('hidden');
+            });
+            document.querySelectorAll('.ce-custom-select [id$="-icon"]').forEach(icon => {
+                if (icon.id !== `${id}-icon`) icon.classList.remove('rotate-180');
+            });
+            const menu = document.getElementById(`${id}-menu`);
+            const icon = document.getElementById(`${id}-icon`);
+            if (!menu) return;
+            const willOpen = menu.classList.contains('hidden');
+            menu.classList.toggle('hidden', !willOpen);
+            if (icon) icon.classList.toggle('rotate-180', willOpen);
+        }
+
+        function closeCustomSelect(id) {
+            const menu = document.getElementById(`${id}-menu`);
+            const icon = document.getElementById(`${id}-icon`);
+            if (menu) menu.classList.add('hidden');
+            if (icon) icon.classList.remove('rotate-180');
+        }
+
+        function closeAllCustomSelects() {
+            document.querySelectorAll('.ce-custom-select-menu').forEach(menu => menu.classList.add('hidden'));
+            document.querySelectorAll('.ce-custom-select [id$="-icon"]').forEach(icon => icon.classList.remove('rotate-180'));
+        }
+
+        function renderUrlInputWithOpen(value, onInputAction, placeholder = '粘贴效果链接') {
+            const openAction = `openEffectUrlFromInput(this.previousElementSibling)`;
+            return `
+                <div class="mt-1 flex items-center gap-2">
+                    <input value="${escapeAttr(value)}" oninput="${escapeAttr(onInputAction)}" class="w-full h-[38px] border border-slate-300 rounded-lg px-3 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="${escapeAttr(placeholder)}">
+                    <button type="button" onclick="${openAction}" class="ce-tool-btn ce-tool-btn-ghost ce-has-tooltip shrink-0" data-tooltip="打开效果链接">
+                        <i class="fa-solid fa-up-right-from-square"></i> 打开
+                    </button>
+                </div>
+            `;
+        }
+
+        function openEffectUrlFromInput(input) {
+            const url = String(input?.value || '').trim();
+            if (!normalizePreviewUrl(url)) return showToast('请先填写有效的效果链接。', 'warning');
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        function renderFileUploadButton(inputId, onchangeAction, label = '上传截图') {
+            return `
+                <div class="mt-1">
+                    <input id="${escapeAttr(inputId)}" type="file" accept="image/*" onchange="${escapeAttr(onchangeAction)}" class="hidden">
+                    <button type="button" onclick="document.getElementById(${escapeAttr(jsString(inputId))}).click()" class="ce-tool-btn w-full">
+                        <i class="fa-regular fa-image"></i> ${escapeHtml(label)}
+                    </button>
+                </div>
+            `;
         }
 
         // ================= 路由与视图控制 =================
@@ -1812,7 +2291,7 @@
                     if (model.sysPrompt) {
                         sysPromptHtml = `<div class="mt-2 text-xs text-orange-600 bg-orange-50/80 p-3 rounded-lg border border-orange-100 flex flex-col items-start w-full relative"><b class="mb-1 text-orange-800"><i class="fa-solid fa-terminal mr-1"></i>系统提示词：</b><div class="line-clamp-4 text-orange-800/80 leading-relaxed text-justify w-full">${model.sysPrompt}</div><button onclick="showSysPromptModal('${encodeURIComponent(model.sysPrompt)}')" class="text-blue-600 mt-1 font-bold hover:underline flex items-center">查看更多 <i class="fa-solid fa-angles-right text-[10px] ml-1"></i></button></div>`;
                     }
-                    const overlayHtml = !isLogged ? `<div class="absolute inset-0 z-20 cursor-pointer" onclick="promptLogin()" title="点击登录后打分"></div>` : '';
+                    const overlayHtml = !isLogged ? `<div class="ce-has-tooltip absolute inset-0 z-20 cursor-pointer" onclick="promptLogin()" data-tooltip="点击登录后打分"></div>` : '';
                     const isLocked = currentTab === 'done' || !isLogged; const cursorClass = isLocked ? 'opacity-50 cursor-not-allowed' : ''; const disabledAttr = isLocked ? 'disabled="disabled"' : '';
 
                     modelRows += `<div class="grid grid-cols-12 gap-8 p-6 border-b ${highlightClass} last:border-0 items-start relative"><div class="col-span-2 pt-2 flex flex-col pr-2 border-r border-slate-200/60 min-h-full"><div class="text-slate-800 font-bold text-base mb-1">${model.name}</div>${model.isOwn ? '<span class="text-[11px] bg-blue-600 text-white px-2 py-0.5 rounded shadow-sm w-fit mb-3">业务模型</span>' : '<div class="h-3"></div>'}${sysPromptHtml}</div><div class="col-span-5 bg-slate-50 rounded-xl p-6 border border-slate-200 relative"><div class="flex justify-between items-center mb-6 pb-3 border-b border-slate-200"><span class="text-sm font-bold text-slate-600">第1次效果 (V1)</span><button onclick="previewUrl('${model.v1}')" class="text-xs bg-white border border-slate-300 px-3 py-1.5 rounded-lg text-slate-700 hover:text-blue-600 hover:border-blue-400 transition flex items-center shadow-sm font-medium"><i class="fa-solid fa-play-circle mr-1 text-blue-500 text-sm"></i> 预览课件</button></div><div class="space-y-5">
@@ -1838,7 +2317,7 @@
                     </div>
                     <div class="divide-y divide-slate-100 bg-slate-50/20">${modelRows}</div>
                     <div class="bg-slate-50 p-6 border-t border-slate-200 relative">
-                        ${!isLogged ? `<div class="absolute inset-0 z-20 cursor-pointer" onclick="promptLogin()" title="点击登录后评价"></div>` : ''}
+                        ${!isLogged ? `<div class="ce-has-tooltip absolute inset-0 z-20 cursor-pointer" onclick="promptLogin()" data-tooltip="点击登录后评价"></div>` : ''}
                         <label class="block text-sm font-bold text-slate-700 mb-3 flex items-center"><i class="fa-regular fa-comment-dots text-blue-500 mr-2 text-lg"></i>整体主观评价与建议<span class="text-slate-400 font-normal ml-2 text-xs">(选填，仅对管理员和自己可见)</span></label>
                         <textarea class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition resize-none ${isLocked ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : ''}" rows="2" placeholder="${isLocked ? '未填写任何评价' : '请在此输入您对这几个模型产出课件的整体主观感受、优缺点对比或改进建议...'}" oninput="updateFeedback(${task.id}, this.value)" ${isLocked ? 'disabled' : ''}>${feedbackText}</textarea>
                     </div>
@@ -1863,6 +2342,28 @@
                 const statusBadge = t.status === 'pending' ? `<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">未评测</span>` : `<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">已完成</span>`;
                 tbody.innerHTML += `<tr class="hover:bg-slate-50 transition border-b border-slate-100"><td class="py-4 px-6 text-slate-500 font-mono">#${t.id}</td><td class="py-4 px-6"><span class="bg-slate-100 px-2 py-1 rounded text-xs font-bold text-slate-600">${t.subject}</span></td><td class="py-4 px-6 font-bold text-slate-700">${t.title}</td><td class="py-4 px-6">${len} 个</td><td class="py-4 px-6">${statusBadge}</td><td class="py-4 px-6 text-right">${t.status === 'pending' ? `<button onclick="markTaskDone(${t.id})" class="text-green-600 hover:underline font-bold text-sm mr-4"><i class="fa-solid fa-check mr-1"></i>强制归档</button>` : ''}<button onclick="editAdminTask(${t.id})" class="text-blue-600 hover:underline font-bold text-sm mr-4"><i class="fa-solid fa-pen-to-square mr-1"></i>编辑</button><button onclick="deleteAdminTask(${t.id})" class="text-red-500 hover:underline text-sm"><i class="fa-solid fa-trash-can mr-1"></i>删除</button></td></tr>`;
             });
+        }
+
+        function renderAdminSubjectSelect() {
+            const holder = document.getElementById('form-subject-select');
+            const input = document.getElementById('form-subject');
+            if (!holder || !input) return;
+            holder.innerHTML = renderCustomSelect({
+                id: 'form-subject-custom',
+                value: input.value || '英语',
+                options: [
+                    { value: '英语', label: '英语 (English)' },
+                    { value: '数学', label: '数学 (Math)' },
+                    { value: '语文', label: '语文 (Chinese)' }
+                ],
+                onSelect: value => `setAdminSubject(${jsString(value)})`
+            });
+        }
+
+        function setAdminSubject(value) {
+            const input = document.getElementById('form-subject');
+            if (input) input.value = value || '英语';
+            renderAdminSubjectSelect();
         }
 
         function markTaskDone(id) {
@@ -1892,6 +2393,7 @@
             currentEditingTaskId = null;
             document.getElementById('admin-form-title').innerText = "发布新评测任务";
             document.getElementById('form-title').value = ""; document.getElementById('admin-models-wrapper').innerHTML = '';
+            setAdminSubject('英语');
             PRESET_MODELS.forEach(preset => addNewAdminModelRow(preset, preset.includes("Jolin") || preset.includes("ITeach")));
             toggleAdminTaskView('form');
         }
@@ -1910,6 +2412,7 @@
 
             if(t1) t1.innerText = "编辑评测任务";
             if(t2) t2.value = task.subject || "英语";
+            renderAdminSubjectSelect();
             if(t3) t3.value = task.title || "";
             if(t4) t4.value = task.knowledge || "";
             if(t5) t5.value = task.prompt || "";
@@ -2211,6 +2714,7 @@
 
         // 点击空白处关闭下拉框
         document.addEventListener('click', (e) => {
+            if (!e.target.closest('.ce-custom-select')) closeAllCustomSelects();
             const menu = document.getElementById('rater-dropdown-menu');
             const display = document.getElementById('rater-filter-display');
             if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && (!display || !display.contains(e.target))) {
@@ -2246,7 +2750,7 @@
                 html += `
                     <label class="flex items-center px-3 py-2 hover:bg-slate-100 rounded-lg cursor-pointer transition group">
                         <input type="checkbox" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 custom-rater-checkbox" value="${r}" ${isChecked ? 'checked' : ''}>
-                        <span class="ml-3 text-sm text-slate-700 font-medium truncate group-hover:text-blue-600 flex items-center w-full" title="${r}">${icon}${r.split('@')[0]}</span>
+                        <span class="ce-has-tooltip ml-3 text-sm text-slate-700 font-medium truncate group-hover:text-blue-600 flex items-center w-full" data-tooltip="${escapeAttr(r)}">${icon}${r.split('@')[0]}</span>
                     </label>
                 `;
             });
@@ -2450,14 +2954,14 @@
                         <div>
                             <div class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">V1 初稿最佳</div>
                             <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-indigo-600 truncate w-16" title="${v1BestDim.name}">${v1BestDim.name}</span>
+                                <span class="ce-has-tooltip text-xs font-bold text-indigo-600 truncate w-16" data-tooltip="${escapeAttr(v1BestDim.name)}">${v1BestDim.name}</span>
                                 <span class="text-xs font-mono bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded">${v1BestDim['v1_'+d].toFixed(1)}</span>
                             </div>
                         </div>
                         <div>
                             <div class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">V5 终稿最佳</div>
                             <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-emerald-600 truncate w-16" title="${v5BestDim.name}">${v5BestDim.name}</span>
+                                <span class="ce-has-tooltip text-xs font-bold text-emerald-600 truncate w-16" data-tooltip="${escapeAttr(v5BestDim.name)}">${v5BestDim.name}</span>
                                 <span class="text-xs font-mono bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">${v5BestDim['v5_'+d].toFixed(1)}</span>
                             </div>
                         </div>
