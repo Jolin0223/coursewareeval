@@ -67,6 +67,28 @@ async function fetchWithTimeout(url, options, timeoutMs) {
     }
 }
 
+async function startMaterialModify(baseUrl, authHeaders, conversationId, prompt) {
+    const response = await fetchWithTimeout(`${baseUrl}/kpm-api/api/material-modify`, {
+        method: 'POST',
+        headers: {
+            ...authHeaders,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            conversationId,
+            content: prompt
+        })
+    }, 25000);
+    if (response.body) {
+        try {
+            await response.body.cancel();
+        } catch (error) {}
+    }
+    if (!response.ok) {
+        throw new Error(`素材修改接口返回 ${response.status}`);
+    }
+}
+
 async function verifyAdminUser(request, env) {
     if (!env.SUPABASE_URL || typeof env.SUPABASE_URL !== 'string') {
         return {
@@ -198,30 +220,11 @@ async function runStyleLatestEffect(request, env, ctx) {
     }
 
     const conversationId = createBody.data.conversationId;
-    const modifyResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/api/material-modify`, {
-        method: 'POST',
-        headers: {
-            ...authHeaders,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            conversationId,
-            content: prompt
-        })
-    }, 25000);
-    if (!modifyResponse.ok) {
-        const modifyText = await modifyResponse.text();
-        return jsonResponse({
-            error: 'MATERIAL_MODIFY_FAILED',
-            message: `素材修改接口返回 ${modifyResponse.status}`,
-            upstreamPreview: modifyText.slice(0, 500)
-        }, 502);
-    }
-
-    if (modifyResponse.body) {
-        try {
-            await modifyResponse.body.cancel();
-        } catch (error) {}
+    const modifyPromise = startMaterialModify(baseUrl, authHeaders, conversationId, prompt).catch(error => {
+        console.warn('material-modify background start failed', error);
+    });
+    if (ctx?.waitUntil) {
+        ctx.waitUntil(modifyPromise);
     }
 
     return jsonResponse({
@@ -232,7 +235,7 @@ async function runStyleLatestEffect(request, env, ctx) {
         finalResult: null,
         stepCount: null,
         screenshotUrl: null,
-        message: '已发起一键同款和素材修改，预览链接已回填。生成完成需要等待上游处理；截图自动回填还需要接入独立截图服务。'
+        message: '已创建一键同款会话，素材修改已在后台发起，预览链接已回填。生成完成需要等待上游处理；截图自动回填还需要接入独立截图服务。'
     }, 200);
 }
 
