@@ -223,10 +223,6 @@ async function runStyleLatestEffect(request, env, ctx) {
     }
 
     const conversationId = createBody.data.conversationId;
-    startMaterialModify(baseUrl, authHeaders, conversationId, prompt).catch(error => {
-        console.warn('material-modify background start failed', error);
-    });
-
     return jsonResponse({
         ok: true,
         styleName,
@@ -235,7 +231,7 @@ async function runStyleLatestEffect(request, env, ctx) {
         finalResult: null,
         stepCount: null,
         screenshotUrl: null,
-        message: '已创建一键同款会话，素材修改已在后台发起，预览链接已回填。生成完成需要等待上游处理；截图自动回填还需要接入独立截图服务。'
+        message: '已创建一键同款会话，预览链接已回填。当前为接口隔离诊断模式：暂未触发素材修改长流。'
     }, 200);
 }
 
