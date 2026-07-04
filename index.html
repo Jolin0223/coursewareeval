@@ -1514,7 +1514,8 @@
                 let body = {};
                 try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
                 if (!response.ok || body.error) {
-                    throw new Error(body.message || body.error || `接口返回 ${response.status}`);
+                    const code = body.error ? `（${body.error}）` : '';
+                    throw new Error(`${body.message || `接口返回 ${response.status}`}${code}`);
                 }
 
                 record.latest.effectUrl = body.previewUrl || '';

@@ -14,6 +14,13 @@ function assertEnv(name, value) {
     }
 }
 
+function apiErrorResponse(error, fallbackStatus = 500) {
+    return jsonResponse({
+        error: error.code || 'WORKER_ERROR',
+        message: error.message || '接口运行失败，请查看 Cloudflare Worker 日志。'
+    }, error.status || fallbackStatus);
+}
+
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
     const parsedBase = new URL(normalizedBase);
@@ -51,21 +58,62 @@ async function buildKpmAuthHeaders(env) {
 }
 
 async function verifyAdminUser(request, env) {
-    assertEnv('SUPABASE_URL', env.SUPABASE_URL);
-    assertEnv('SUPABASE_KEY', env.SUPABASE_KEY);
+    if (!env.SUPABASE_URL || typeof env.SUPABASE_URL !== 'string') {
+        return {
+            ok: false,
+            response: jsonResponse({
+                error: 'MISSING_ENV',
+                message: '线上缺少 Cloudflare 环境变量：SUPABASE_URL'
+            }, 500)
+        };
+    }
+    if (!env.SUPABASE_KEY || typeof env.SUPABASE_KEY !== 'string') {
+        return {
+            ok: false,
+            response: jsonResponse({
+                error: 'MISSING_ENV',
+                message: '线上缺少 Cloudflare 环境变量：SUPABASE_KEY'
+            }, 500)
+        };
+    }
     const authorization = request.headers.get('Authorization') || '';
     if (!authorization.startsWith('Bearer ')) {
-        throw new Error('请先登录管理员账号再运行自动生成。');
+        return {
+            ok: false,
+            response: jsonResponse({
+                error: 'MISSING_AUTH',
+                message: '请先登录管理员账号再运行自动生成。'
+            }, 401)
+        };
     }
 
     const targetUrl = `${env.SUPABASE_URL.replace(/\/+$/, '')}/auth/v1/user`;
-    const response = await fetch(targetUrl, {
-        headers: {
-            apikey: env.SUPABASE_KEY,
-            Authorization: authorization
-        }
-    });
-    if (!response.ok) throw new Error('登录态校验失败，请重新登录。');
+    let response;
+    try {
+        response = await fetch(targetUrl, {
+            headers: {
+                apikey: env.SUPABASE_KEY,
+                Authorization: authorization
+            }
+        });
+    } catch (error) {
+        return {
+            ok: false,
+            response: jsonResponse({
+                error: 'AUTH_UPSTREAM_ERROR',
+                message: `Supabase 登录态校验请求失败：${error.message}`
+            }, 502)
+        };
+    }
+    if (!response.ok) {
+        return {
+            ok: false,
+            response: jsonResponse({
+                error: 'INVALID_AUTH',
+                message: '登录态校验失败，请重新登录。'
+            }, 401)
+        };
+    }
     const user = await response.json();
     const allowedEmails = (env.STYLE_RUN_ALLOWED_EMAILS || 'chenjialing12@xdf.cn')
         .split(',')
@@ -73,9 +121,15 @@ async function verifyAdminUser(request, env) {
         .filter(Boolean);
     const email = String(user.email || '').toLowerCase();
     if (!allowedEmails.includes(email)) {
-        throw new Error('当前账号没有运行自动生成的权限。');
+        return {
+            ok: false,
+            response: jsonResponse({
+                error: 'FORBIDDEN_USER',
+                message: '当前账号没有运行自动生成的权限。'
+            }, 403)
+        };
     }
-    return user;
+    return { ok: true, user };
 }
 
 function extractJsonObjectsFromEventStream(text) {
@@ -97,7 +151,8 @@ async function runStyleLatestEffect(request, env) {
         return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only POST is supported.' }, 405);
     }
 
-    await verifyAdminUser(request, env);
+    const adminCheck = await verifyAdminUser(request, env);
+    if (!adminCheck.ok) return adminCheck.response;
 
     const payload = await request.json();
     const prompt = String(payload.prompt || '').trim();
@@ -286,10 +341,8 @@ export default {
             try {
                 return await runStyleLatestEffect(request, env);
             } catch (error) {
-                return jsonResponse({
-                    error: 'STYLE_RUN_LATEST_ERROR',
-                    message: error.message
-                }, 502);
+                error.code = error.code || 'STYLE_RUN_LATEST_ERROR';
+                return apiErrorResponse(error, error.status || 502);
             }
         }
 
