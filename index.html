@@ -1325,7 +1325,7 @@
                 return `<div class="px-6 py-3 bg-red-50 border-b border-red-100 text-sm font-bold text-red-700"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${escapeHtml(latestState.runError || '最新版效果生成失败')}</div>`;
             }
             if (latestState.generatedAt) {
-                return `<div class="px-6 py-3 bg-green-50 border-b border-green-100 text-sm font-bold text-green-700"><i class="fa-solid fa-circle-check mr-2"></i>最新版效果已生成并回填链接。截图自动回填需要接入截图服务。</div>`;
+                return `<div class="px-6 py-3 bg-green-50 border-b border-green-100 text-sm font-bold text-green-700"><i class="fa-solid fa-circle-check mr-2"></i>最新版效果已发起生成并回填链接。生成完成需要等待上游处理，截图自动回填需要接入截图服务。</div>`;
             }
             return '';
         }
@@ -1530,7 +1530,7 @@
                     record.latest.screenshot = screenshots[0] || '';
                     record.latest.screenshotIndex = 0;
                 }
-                showToast('最新版效果已生成，效果链接已自动回填。', 'success');
+                showToast(body.message || '最新版效果已发起生成，效果链接已自动回填。', 'success');
             } catch (error) {
                 record.latest.runStatus = 'failed';
                 record.latest.runError = error.message || String(error);

@@ -57,6 +57,25 @@ async function buildKpmAuthHeaders(env) {
     };
 }
 
+async function fetchWithTimeout(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+async function drainResponseStream(response) {
+    if (!response.body) return;
+    const reader = response.body.getReader();
+    while (true) {
+        const { done } = await reader.read();
+        if (done) break;
+    }
+}
+
 async function verifyAdminUser(request, env) {
     if (!env.SUPABASE_URL || typeof env.SUPABASE_URL !== 'string') {
         return {
@@ -146,7 +165,7 @@ function extractJsonObjectsFromEventStream(text) {
     return results;
 }
 
-async function runStyleLatestEffect(request, env) {
+async function runStyleLatestEffect(request, env, ctx) {
     if (request.method !== 'POST') {
         return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only POST is supported.' }, 405);
     }
@@ -164,7 +183,7 @@ async function runStyleLatestEffect(request, env) {
     const baseUrl = (env.KPM_BASE_URL || 'http://box.xdf.cn').replace(/\/+$/, '');
     const authHeaders = await buildKpmAuthHeaders(env);
 
-    const createResponse = await fetch(`${baseUrl}/kpm-api/skill/create-same-by-one-click`, {
+    const createResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/create-same-by-one-click`, {
         method: 'POST',
         headers: {
             ...authHeaders,
@@ -175,7 +194,7 @@ async function runStyleLatestEffect(request, env) {
             materialName: '彩虹气球派对',
             zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
         })
-    });
+    }, 25000);
     const createText = await createResponse.text();
     let createBody = {};
     try { createBody = createText ? JSON.parse(createText) : {}; } catch (error) { createBody = { raw: createText }; }
@@ -188,7 +207,7 @@ async function runStyleLatestEffect(request, env) {
     }
 
     const conversationId = createBody.data.conversationId;
-    const modifyResponse = await fetch(`${baseUrl}/kpm-api/api/material-modify`, {
+    const modifyResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/api/material-modify`, {
         method: 'POST',
         headers: {
             ...authHeaders,
@@ -198,9 +217,9 @@ async function runStyleLatestEffect(request, env) {
             conversationId,
             content: prompt
         })
-    });
-    const modifyText = await modifyResponse.text();
+    }, 25000);
     if (!modifyResponse.ok) {
+        const modifyText = await modifyResponse.text();
         return jsonResponse({
             error: 'MATERIAL_MODIFY_FAILED',
             message: `素材修改接口返回 ${modifyResponse.status}`,
@@ -208,31 +227,27 @@ async function runStyleLatestEffect(request, env) {
         }, 502);
     }
 
-    const events = extractJsonObjectsFromEventStream(modifyText);
-    const parsedSteps = events.map(event => {
-        let text = event.text;
-        if (typeof text === 'string') {
-            try { text = JSON.parse(text); } catch (error) {}
-        }
-        return { ...event, text };
+    const drainPromise = drainResponseStream(modifyResponse).catch(error => {
+        console.warn('material-modify stream drain failed', error);
     });
-    const finalStep = [...parsedSteps].reverse().find(event => event.text?.finalResult);
-    const finalResult = finalStep?.text?.finalResult || null;
+    if (ctx?.waitUntil) {
+        ctx.waitUntil(drainPromise);
+    }
 
     return jsonResponse({
         ok: true,
         styleName,
         conversationId,
         previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
-        finalResult,
-        stepCount: parsedSteps.length,
+        finalResult: null,
+        stepCount: null,
         screenshotUrl: null,
-        message: '已完成一键同款和素材修改，预览链接已生成。截图需要接入独立截图服务后自动回填。'
+        message: '已发起一键同款和素材修改，预览链接已回填。生成完成需要等待上游处理；截图自动回填还需要接入独立截图服务。'
     }, 200);
 }
 
 export default {
-    async fetch(request, env) {
+    async fetch(request, env, ctx) {
         const url = new URL(request.url);
 
         // =========================================================
@@ -339,7 +354,7 @@ export default {
         // =========================================================
         if (url.pathname === '/api/style-eval/run-latest') {
             try {
-                return await runStyleLatestEffect(request, env);
+                return await runStyleLatestEffect(request, env, ctx);
             } catch (error) {
                 error.code = error.code || 'STYLE_RUN_LATEST_ERROR';
                 return apiErrorResponse(error, error.status || 502);
