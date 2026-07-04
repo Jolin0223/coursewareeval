@@ -133,21 +133,37 @@
 
             <div id="view-self-style" class="hidden max-w-7xl mx-auto space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
-                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
-                            <i class="fa-solid fa-palette text-blue-600 mr-2"></i> 画面风格调整
-                        </h3>
-                        <p class="text-sm text-slate-500 mt-1">用于维护 19 种基础风格的 Prompt 版本、效果截图、问题记录和最终入库稿。</p>
-                    </div>
-                    <div class="p-8">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">基础风格</p><p class="text-3xl font-black text-slate-800 mt-2">19</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">Prompt 版本</p><p class="text-3xl font-black text-slate-800 mt-2">76</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">当前重点</p><p class="text-xl font-black text-slate-800 mt-3">截图补齐</p></div>
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">维护方式</p><p class="text-xl font-black text-slate-800 mt-3">版本追踪</p></div>
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                                <i class="fa-solid fa-palette text-blue-600 mr-2"></i> 画面风格调整
+                            </h3>
+                            <p class="text-sm text-slate-500 mt-1">基于同一个课件批量测试 19 种基础风格，沉淀每版效果、问题、解决方法和下一版参考提示词。</p>
                         </div>
-                        <div class="border border-dashed border-slate-300 rounded-xl p-8 text-center text-slate-500">
-                            后续在这里承接“7月2日调整画面风格效果测试”的结构化录入和截图评审。
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="exportStyleEvalExcel()" class="px-4 py-2 bg-green-50 text-green-700 text-sm font-bold rounded-lg hover:bg-green-100 transition shadow-sm border border-green-200">
+                                <i class="fa-solid fa-file-excel mr-1"></i> 下载开发 Excel
+                            </button>
+                            <button onclick="queueStyleLibraryUpdate()" class="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition shadow-sm">
+                                <i class="fa-solid fa-database mr-1"></i> 一键入库
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-8 space-y-6">
+                        <div id="style-eval-summary" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">基础风格</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">Prompt 版本</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">已补截图</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">待入库</p><p class="text-3xl font-black text-slate-800 mt-2">-</p></div>
+                        </div>
+                        <div class="grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)] gap-6 items-start">
+                            <aside class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
+                                <div class="p-4 border-b border-slate-200 bg-slate-50">
+                                    <input id="style-eval-search" oninput="filterStyleEvalList(this.value)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="搜索风格名称">
+                                </div>
+                                <div id="style-eval-list" class="max-h-[680px] overflow-y-auto custom-scrollbar"></div>
+                            </aside>
+                            <section id="style-eval-detail" class="min-w-0"></section>
                         </div>
                     </div>
                 </div>
@@ -554,6 +570,11 @@
         let targetAdminView = '';
         let currentEditingTaskId = null;
         let currentTab = 'pending';
+        const STYLE_EVAL_STORAGE_KEY = 'coursewareeval.style-workbench.v1';
+        let styleEvalData = { styles: [] };
+        let styleEvalState = loadStyleEvalState();
+        let styleEvalQuery = '';
+        let hasLoadedStyleEval = false;
 
         // 【新增】：多选筛选器状态
         let availableRaters = [];
@@ -789,6 +810,413 @@
         function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); targetAdminView = ''; }
         async function performLogout() { if (dbClient) await dbClient.auth.signOut(); window.location.reload(); }
 
+        // ================= 效果自评：画面风格调整工作台 =================
+        function loadStyleEvalState() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(STYLE_EVAL_STORAGE_KEY) || '{}');
+                return {
+                    selectedStyleId: parsed.selectedStyleId || '',
+                    records: parsed.records || {}
+                };
+            } catch (e) {
+                return { selectedStyleId: '', records: {} };
+            }
+        }
+
+        function saveStyleEvalState() {
+            localStorage.setItem(STYLE_EVAL_STORAGE_KEY, JSON.stringify(styleEvalState));
+        }
+
+        async function ensureStyleEvalData() {
+            if (hasLoadedStyleEval) return;
+            try {
+                const res = await fetch('./data/style-eval-seed.json');
+                styleEvalData = await res.json();
+                styleEvalData.styles = styleEvalData.styles || [];
+                if (!styleEvalState.selectedStyleId && styleEvalData.styles[0]) {
+                    styleEvalState.selectedStyleId = styleEvalData.styles[0].id;
+                    saveStyleEvalState();
+                }
+                hasLoadedStyleEval = true;
+                renderStyleEvalWorkbench();
+            } catch (e) {
+                const detail = document.getElementById('style-eval-detail');
+                if (detail) detail.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-6 text-sm font-bold">画面风格数据加载失败，请检查 data/style-eval-seed.json。</div>`;
+            }
+        }
+
+        function getStyleRecord(styleId) {
+            if (!styleEvalState.records[styleId]) {
+                styleEvalState.records[styleId] = { latest: {}, versions: {}, libraryQueued: false };
+            }
+            if (!styleEvalState.records[styleId].latest) styleEvalState.records[styleId].latest = {};
+            if (!styleEvalState.records[styleId].versions) styleEvalState.records[styleId].versions = {};
+            return styleEvalState.records[styleId];
+        }
+
+        function getLatestStyleVersion(style) {
+            return [...(style.versions || [])].reverse().find(v => v.finalCandidate || v.effectUrl || v.prompt) || (style.versions || [])[0] || {};
+        }
+
+        function getStyleVersionRecord(styleId, versionId) {
+            const record = getStyleRecord(styleId);
+            if (!record.versions[versionId]) record.versions[versionId] = {};
+            return record.versions[versionId];
+        }
+
+        function renderStyleEvalWorkbench() {
+            const summary = document.getElementById('style-eval-summary');
+            const list = document.getElementById('style-eval-list');
+            const detail = document.getElementById('style-eval-detail');
+            if (!summary || !list || !detail) return;
+
+            if (!hasLoadedStyleEval) {
+                summary.innerHTML = `<div class="col-span-full bg-white border border-slate-200 rounded-xl p-6 text-slate-500"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在读取 19 种基础风格...</div>`;
+                detail.innerHTML = '';
+                return;
+            }
+
+            const styles = styleEvalData.styles || [];
+            const versionCount = styles.reduce((sum, item) => sum + ((item.versions || []).length), 0);
+            const screenshotCount = Object.values(styleEvalState.records || {}).filter(item => item.latest && item.latest.screenshot).length;
+            const libraryCount = Object.values(styleEvalState.records || {}).filter(item => item.libraryQueued).length;
+            summary.innerHTML = `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">基础风格</p><p class="text-3xl font-black text-slate-800 mt-2">${styles.length}</p></div>
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">Prompt 版本</p><p class="text-3xl font-black text-slate-800 mt-2">${versionCount}</p></div>
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">已补截图</p><p class="text-3xl font-black text-slate-800 mt-2">${screenshotCount}</p></div>
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5"><p class="text-sm font-bold text-slate-500">待入库</p><p class="text-3xl font-black text-slate-800 mt-2">${libraryCount}</p></div>
+            `;
+
+            const filtered = styles.filter(style => style.displayName.toLowerCase().includes(styleEvalQuery.toLowerCase()));
+            if (!filtered.find(style => style.id === styleEvalState.selectedStyleId) && filtered[0]) {
+                styleEvalState.selectedStyleId = filtered[0].id;
+            }
+            list.innerHTML = filtered.map(style => renderStyleEvalListItem(style)).join('') || `<div class="p-5 text-sm text-slate-400">没有匹配的风格。</div>`;
+            const selected = styles.find(style => style.id === styleEvalState.selectedStyleId) || filtered[0] || styles[0];
+            detail.innerHTML = selected ? renderStyleEvalDetail(selected) : `<div class="bg-white border border-slate-200 rounded-2xl p-8 text-center text-slate-400">暂无风格数据。</div>`;
+        }
+
+        function renderStyleEvalListItem(style) {
+            const latest = getLatestStyleVersion(style);
+            const record = getStyleRecord(style.id);
+            const latestState = record.latest || {};
+            const status = latestState.status || latest.status || style.status || 'todo';
+            const score = latestState.score || '-';
+            const active = style.id === styleEvalState.selectedStyleId;
+            const statusMap = { ready: '可入库', issue: '有问题', todo: '待补齐', reviewed: '已评审' };
+            return `
+                <button onclick="selectStyleEval('${style.id}')" class="w-full text-left p-4 border-b border-slate-100 hover:bg-slate-50 transition ${active ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''}">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-black text-slate-800 truncate">${escapeHtml(style.displayName)}</div>
+                            <div class="text-xs text-slate-500 mt-1">${escapeHtml(latest.label || '最新版')} · 共 ${(style.versions || []).length} 版</div>
+                        </div>
+                        <span class="text-xs font-bold px-2 py-1 rounded-full ${status === 'ready' ? 'bg-green-100 text-green-700' : status === 'issue' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${statusMap[status] || status}</span>
+                    </div>
+                    <div class="text-xs text-slate-400 mt-2">当前评分：${escapeHtml(score)}</div>
+                </button>
+            `;
+        }
+
+        function renderStyleEvalDetail(style) {
+            const latest = getLatestStyleVersion(style);
+            const record = getStyleRecord(style.id);
+            const latestState = record.latest || {};
+            const latestUrl = latestState.effectUrl || latest.effectUrl || '';
+            const issueText = latestState.issues ?? latest.issue ?? '';
+            const solutionText = latestState.solution || '';
+            const nextPrompt = latestState.nextPrompt || buildNextPromptDraft(style, latest, issueText, solutionText);
+            const versionCards = [...(style.versions || [])].reverse().map(version => renderStyleVersionHistory(style, version)).join('');
+            return `
+                <div class="space-y-6">
+                    <section class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                            <div>
+                                <h3 class="text-xl font-black text-slate-900">${escapeHtml(style.displayName)}</h3>
+                                <p class="text-sm text-slate-500 mt-1">默认先看最新版效果；过程版效果保留在下方用于追溯。</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="runLatestStyleEffect('${style.id}')" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700">
+                                    <i class="fa-solid fa-play mr-1"></i> 跑最新版效果
+                                </button>
+                                <button onclick="saveNextStylePrompt('${style.id}')" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50">
+                                    <i class="fa-solid fa-floppy-disk mr-1"></i> 保存下一版提示词
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_420px] gap-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-bold text-blue-600">最新版</div>
+                                        <div class="text-lg font-black text-slate-800">${escapeHtml(latest.label || '最新版')}</div>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold ${latest.finalCandidate ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'}">${latest.finalCandidate ? '最终候选' : '最新记录'}</span>
+                                </div>
+                                <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+                                    ${latestState.screenshot ? `<img src="${latestState.screenshot}" class="w-full aspect-video object-cover bg-white" alt="最新版效果截图">` : `<div class="aspect-video flex flex-col items-center justify-center text-slate-400 bg-white"><i class="fa-regular fa-image text-5xl mb-3"></i><div class="text-sm font-bold">待上传最新版截图</div><div class="text-xs mt-1">截图比私有链接更适合跨团队评审</div></div>`}
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <label class="text-sm font-bold text-slate-700">效果链接
+                                        <input value="${escapeAttr(latestUrl)}" oninput="updateStyleLatestField('${style.id}', 'effectUrl', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="粘贴最新版课件链接">
+                                    </label>
+                                    <label class="text-sm font-bold text-slate-700">上传截图
+                                        <input type="file" accept="image/*" onchange="uploadStyleScreenshot('${style.id}', this.files[0])" class="mt-1 w-full text-sm border border-slate-300 rounded-lg px-3 py-2 bg-white">
+                                    </label>
+                                    <label class="text-sm font-bold text-slate-700">评分
+                                        <input type="number" min="0" max="5" step="0.5" value="${escapeAttr(latestState.score || '')}" oninput="updateStyleLatestField('${style.id}', 'score', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="0-5">
+                                    </label>
+                                    <label class="text-sm font-bold text-slate-700">状态
+                                        <select onchange="updateStyleLatestField('${style.id}', 'status', this.value, true)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                                            ${renderStyleStatusOptions(latestState.status || latest.status || style.status || 'todo')}
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <label class="block text-sm font-bold text-slate-700">最新版问题
+                                    <textarea id="style-issues-${style.id}" oninput="updateStyleLatestField('${style.id}', 'issues', this.value, false)" class="mt-1 w-full h-28 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录效果问题">${escapeHtml(issueText)}</textarea>
+                                </label>
+                                <label class="block text-sm font-bold text-slate-700">解决方法
+                                    <textarea id="style-solution-${style.id}" oninput="updateStyleLatestField('${style.id}', 'solution', this.value, false)" class="mt-1 w-full h-24 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="写清楚下一版要怎么修">${escapeHtml(solutionText)}</textarea>
+                                </label>
+                                <div>
+                                    <div class="flex items-center justify-between gap-3 mb-1">
+                                        <label class="text-sm font-bold text-slate-700" for="style-next-prompt-${style.id}">下一版本参考提示词</label>
+                                        <button onclick="regenerateStylePromptDraft('${style.id}')" class="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-200">重新覆盖生成</button>
+                                    </div>
+                                    <textarea id="style-next-prompt-${style.id}" oninput="updateStyleLatestField('${style.id}', 'nextPrompt', this.value, false)" class="w-full h-56 border border-slate-300 rounded-lg px-3 py-2 text-xs leading-relaxed outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHtml(nextPrompt)}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+                            <h3 class="text-lg font-black text-slate-800">过程版效果</h3>
+                            <p class="text-sm text-slate-500 mt-1">按时间倒序展示历史版本，方便看每版提示词解决了什么、又引入了什么问题。</p>
+                        </div>
+                        <div class="divide-y divide-slate-100">${versionCards}</div>
+                    </section>
+                </div>
+            `;
+        }
+
+        function renderStyleVersionHistory(style, version) {
+            const local = getStyleVersionRecord(style.id, version.id);
+            const effectUrl = local.effectUrl || version.effectUrl || '';
+            const issue = local.issue ?? version.issue ?? '';
+            return `
+                <article class="p-5 grid grid-cols-1 xl:grid-cols-[260px_minmax(0,1fr)] gap-5">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-black text-slate-800">${escapeHtml(version.label)}</h4>
+                            ${version.finalCandidate ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">候选</span>' : ''}
+                        </div>
+                        <div class="mt-3 border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+                            ${local.screenshot ? `<img src="${local.screenshot}" class="w-full aspect-video object-cover" alt="${escapeAttr(version.label)} 截图">` : `<div class="aspect-video flex items-center justify-center text-xs text-slate-400">未补截图</div>`}
+                        </div>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            ${effectUrl ? `<a href="${escapeAttr(effectUrl)}" target="_blank" rel="noreferrer" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50">打开链接</a>` : ''}
+                            <label class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">补截图<input type="file" accept="image/*" onchange="uploadStyleVersionScreenshot('${style.id}', '${version.id}', this.files[0])" class="hidden"></label>
+                        </div>
+                    </div>
+                    <div class="min-w-0 space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="text-sm font-bold text-slate-700 md:col-span-2">效果链接
+                                <input value="${escapeAttr(effectUrl)}" oninput="updateStyleVersionField('${style.id}', '${version.id}', 'effectUrl', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                            </label>
+                            <label class="text-sm font-bold text-slate-700">状态
+                                <select onchange="updateStyleVersionField('${style.id}', '${version.id}', 'status', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">${renderStyleStatusOptions(local.status || version.status || 'todo')}</select>
+                            </label>
+                        </div>
+                        <label class="block text-sm font-bold text-slate-700">问题记录
+                            <textarea oninput="updateStyleVersionField('${style.id}', '${version.id}', 'issue', this.value)" class="mt-1 w-full h-20 border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHtml(issue)}</textarea>
+                        </label>
+                        <details>
+                            <summary class="text-sm font-bold text-blue-600 cursor-pointer">查看本版 Prompt</summary>
+                            <pre class="mt-2 max-h-64 overflow-auto whitespace-pre-wrap text-xs leading-relaxed bg-slate-50 border border-slate-200 rounded-xl p-4 text-slate-700">${escapeHtml(version.prompt || '未记录 Prompt')}</pre>
+                        </details>
+                    </div>
+                </article>
+            `;
+        }
+
+        function renderStyleStatusOptions(selected) {
+            const options = { todo: '待补齐', issue: '有问题', reviewed: '已评审', ready: '可入库' };
+            return Object.entries(options).map(([value, label]) => `<option value="${value}" ${selected === value ? 'selected' : ''}>${label}</option>`).join('');
+        }
+
+        function selectStyleEval(styleId) {
+            styleEvalState.selectedStyleId = styleId;
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+        }
+
+        function filterStyleEvalList(value) {
+            styleEvalQuery = value || '';
+            renderStyleEvalWorkbench();
+        }
+
+        function updateStyleLatestField(styleId, field, value, rerender = false) {
+            const record = getStyleRecord(styleId);
+            record.latest[field] = value;
+            saveStyleEvalState();
+            if (rerender) renderStyleEvalWorkbench();
+        }
+
+        function updateStyleVersionField(styleId, versionId, field, value) {
+            const record = getStyleVersionRecord(styleId, versionId);
+            record[field] = value;
+            saveStyleEvalState();
+        }
+
+        async function uploadStyleScreenshot(styleId, file) {
+            if (!file) return;
+            const record = getStyleRecord(styleId);
+            record.latest.screenshot = await readImageAsDataUrl(file, 1280, 0.84);
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+        }
+
+        async function uploadStyleVersionScreenshot(styleId, versionId, file) {
+            if (!file) return;
+            const record = getStyleVersionRecord(styleId, versionId);
+            record.screenshot = await readImageAsDataUrl(file, 1280, 0.84);
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+        }
+
+        function readImageAsDataUrl(file, maxWidth, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const image = new Image();
+                    image.onload = () => {
+                        const scale = Math.min(1, maxWidth / image.width);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.round(image.width * scale);
+                        canvas.height = Math.round(image.height * scale);
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    image.onerror = reject;
+                    image.src = reader.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function runLatestStyleEffect(styleId) {
+            const style = (styleEvalData.styles || []).find(item => item.id === styleId);
+            if (!style) return;
+            const latest = getLatestStyleVersion(style);
+            const record = getStyleRecord(styleId);
+            const url = record.latest.effectUrl || latest.effectUrl || '';
+            if (url) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+                showToast('已打开最新版效果链接。跑完后把截图和新链接回填到本页。', 'info');
+            } else {
+                navigator.clipboard?.writeText(record.latest.nextPrompt || style.finalPrompt || latest.prompt || '');
+                showToast('该风格还没有效果链接，已复制最新版提示词，可去生成平台运行。', 'warning');
+            }
+            record.latest.lastRunAt = new Date().toISOString();
+            saveStyleEvalState();
+        }
+
+        function buildNextPromptDraft(style, latest, issueText, solutionText) {
+            const basePrompt = style.finalPrompt || latest.prompt || '';
+            const issue = (issueText || '').trim();
+            const solution = (solutionText || '').trim();
+            if (!issue && !solution) return basePrompt;
+            return `${basePrompt}\n\n【下一版本修正规则】\n${issue ? `1. 本轮发现的问题：${issue}\n` : ''}${solution ? `2. 下一版解决方法：${solution}\n` : ''}3. 保持原课件内容、题型、交互流程和按钮功能不变，只修正上述效果问题。`;
+        }
+
+        function regenerateStylePromptDraft(styleId) {
+            const style = (styleEvalData.styles || []).find(item => item.id === styleId);
+            if (!style) return;
+            const latest = getLatestStyleVersion(style);
+            const issue = document.getElementById(`style-issues-${styleId}`)?.value || '';
+            const solution = document.getElementById(`style-solution-${styleId}`)?.value || '';
+            const draft = buildNextPromptDraft(style, latest, issue, solution);
+            const area = document.getElementById(`style-next-prompt-${styleId}`);
+            if (area) area.value = draft;
+            updateStyleLatestField(styleId, 'nextPrompt', draft, false);
+            showToast('已按问题和解决方法重新覆盖生成下一版参考提示词。', 'success');
+        }
+
+        function saveNextStylePrompt(styleId) {
+            const area = document.getElementById(`style-next-prompt-${styleId}`);
+            if (!area) return;
+            updateStyleLatestField(styleId, 'nextPrompt', area.value, false);
+            showToast('下一版参考提示词已保存到本机。', 'success');
+        }
+
+        function queueStyleLibraryUpdate() {
+            const styleId = styleEvalState.selectedStyleId;
+            if (!styleId) return showToast('请先选择一个风格。', 'warning');
+            const record = getStyleRecord(styleId);
+            record.libraryQueued = true;
+            record.libraryQueuedAt = new Date().toISOString();
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+            showToast('已标记待入库。未来接开发接口后，这里会直接写入风格库。', 'success');
+        }
+
+        function exportStyleEvalExcel() {
+            if (!window.XLSX) return showToast('Excel 导出组件还没加载完成，请稍后再试。', 'warning');
+            const rows = [];
+            (styleEvalData.styles || []).forEach(style => {
+                const latest = getLatestStyleVersion(style);
+                const record = getStyleRecord(style.id);
+                const latestState = record.latest || {};
+                rows.push({
+                    '风格ID': style.id,
+                    '风格名称': style.displayName,
+                    '记录类型': '最新版',
+                    '版本': latest.label || '',
+                    '效果链接': latestState.effectUrl || latest.effectUrl || '',
+                    '评分': latestState.score || '',
+                    '状态': latestState.status || latest.status || style.status || '',
+                    '问题': latestState.issues ?? latest.issue ?? '',
+                    '解决方法': latestState.solution || '',
+                    '下一版参考提示词': latestState.nextPrompt || buildNextPromptDraft(style, latest, latestState.issues ?? latest.issue ?? '', latestState.solution || ''),
+                    '是否待入库': record.libraryQueued ? '是' : '否',
+                    '入库时间': record.libraryQueuedAt || ''
+                });
+                [...(style.versions || [])].reverse().forEach(version => {
+                    const local = getStyleVersionRecord(style.id, version.id);
+                    rows.push({
+                        '风格ID': style.id,
+                        '风格名称': style.displayName,
+                        '记录类型': '过程版',
+                        '版本': version.label || version.id,
+                        '效果链接': local.effectUrl || version.effectUrl || '',
+                        '评分': local.score || '',
+                        '状态': local.status || version.status || '',
+                        '问题': local.issue ?? version.issue ?? '',
+                        '解决方法': '',
+                        '下一版参考提示词': '',
+                        '是否待入库': '',
+                        '入库时间': ''
+                    });
+                });
+            });
+            const worksheet = XLSX.utils.json_to_sheet(rows);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '画面风格调整');
+            XLSX.writeFile(workbook, `画面风格调整测评_${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
+        }
+
+        function escapeAttr(value) {
+            return escapeHtml(value).replace(/`/g, '&#096;');
+        }
+
         // ================= 路由与视图控制 =================
         function switchView(viewName) {
             try {
@@ -816,6 +1244,7 @@
                 const titleEl = document.getElementById('page-title'); if(titleEl) titleEl.innerText = viewTitles[viewName] || '互动课件效果测评台';
 
                 if (viewName === 'teacher') renderTeacherList();
+                if (viewName === 'self-style') { renderStyleEvalWorkbench(); ensureStyleEvalData(); }
                 if (viewName === 'admin-task') toggleAdminTaskView('list');
 
                 if (viewName === 'admin-stats') {

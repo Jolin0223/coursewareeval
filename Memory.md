@@ -23,3 +23,4 @@
 - User decided the main product should be based on the old Ant Design-like admin shell, not a separate custom workspace shell.
 - Main navigation now separates `效果自评` for internal product iteration evaluation from `竞品测评` for external vertical competitor comparison.
 - Current self-evaluation submenu priorities: `课件生成效果`, `画面风格调整`, `套用玩法`, `一键同款`.
+- `画面风格调整` should work as an iteration workbench: always show the latest version first, keep historical versions below, allow screenshot/link/score/problem capture, generate and manually edit next-version reference prompts, export developer-facing Excel, and reserve a future one-click style-library update hook.
