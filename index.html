@@ -1105,6 +1105,9 @@
             latest.runMessage = statusBody.message || latest.runMessage || '';
             latest.lastStepName = statusBody.lastStepName || latest.lastStepName || '';
             latest.stepCount = statusBody.stepCount ?? latest.stepCount ?? null;
+            latest.chunkCount = statusBody.chunkCount ?? latest.chunkCount ?? null;
+            latest.unparsedLineCount = statusBody.unparsedLineCount ?? latest.unparsedLineCount ?? null;
+            latest.rawPreview = statusBody.rawPreview || latest.rawPreview || '';
             latest.effectUrl = statusBody.previewUrl || latest.effectUrl || '';
             latest.conversationId = statusBody.conversationId || latest.conversationId || '';
             if (statusBody.finalResult) latest.finalResult = statusBody.finalResult;
@@ -1422,7 +1425,8 @@
             if (['running', 'submitted', 'modifying', 'created'].includes(latestState.runStatus)) {
                 const progress = latestState.lastStepName ? ` 当前进度：${escapeHtml(latestState.lastStepName)}。` : '';
                 const message = latestState.runMessage ? ` ${escapeHtml(latestState.runMessage)}` : '';
-                return `<div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-sm font-bold text-blue-700"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>已发起一键同款和素材修改，链接会先回填，后台完整生成通常需要 5-10 分钟。${progress}${message}</div>`;
+                const streamStats = latestState.chunkCount != null ? ` 流片段：${escapeHtml(latestState.chunkCount)}，已解析步骤：${escapeHtml(latestState.stepCount ?? 0)}。` : '';
+                return `<div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-sm font-bold text-blue-700"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>已发起一键同款和素材修改，链接会先回填，后台完整生成通常需要 5-10 分钟。${progress}${streamStats}${message}</div>`;
             }
             if (latestState.runStatus === 'failed') {
                 return `<div class="px-6 py-3 bg-red-50 border-b border-red-100 text-sm font-bold text-red-700"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${escapeHtml(latestState.runError || '最新版效果生成失败')}</div>`;
@@ -1601,6 +1605,9 @@
             record.latest.pollErrorCount = 0;
             record.latest.lastStepName = '';
             record.latest.stepCount = null;
+            record.latest.chunkCount = null;
+            record.latest.unparsedLineCount = null;
+            record.latest.rawPreview = '';
             delete record.latest.generatedAt;
             delete record.latest.finalResult;
             record.latest.runStartedAt = new Date().toISOString();
@@ -1713,6 +1720,9 @@
             latest.runMessage = event.message || latest.runMessage || '';
             latest.lastStepName = event.stepName || event.lastStepName || latest.lastStepName || '';
             latest.stepCount = event.stepCount ?? latest.stepCount ?? null;
+            latest.chunkCount = event.chunkCount ?? latest.chunkCount ?? null;
+            latest.unparsedLineCount = event.unparsedLineCount ?? latest.unparsedLineCount ?? null;
+            latest.rawPreview = event.rawPreview || latest.rawPreview || '';
             if (event.finalResult) latest.finalResult = event.finalResult;
             if (event.status === 'creating' || event.status === 'created' || event.status === 'progress') {
                 latest.runStatus = 'running';

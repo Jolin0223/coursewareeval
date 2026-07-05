@@ -88,7 +88,7 @@ function parseMaterialModifyEventLine(line) {
 }
 
 async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
-    if (!response.body) return { finalResult: null, stepCount: 0, lastStepName: '', timedOut: false };
+    if (!response.body) return { finalResult: null, stepCount: 0, lastStepName: '', timedOut: false, chunkCount: 0, unparsedLineCount: 0, rawPreview: '' };
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     const deadline = Date.now() + maxDurationMs;
@@ -96,6 +96,9 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
     let stepCount = 0;
     let lastStepName = '';
     let finalResult = null;
+    let chunkCount = 0;
+    let unparsedLineCount = 0;
+    let rawPreview = '';
 
     while (Date.now() < deadline) {
         const timeoutMs = Math.max(1, Math.min(5000, deadline - Date.now()));
@@ -104,27 +107,33 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
         if (result.timeout) continue;
         if (result.done) break;
 
-        buffer += decoder.decode(result.value, { stream: true });
+        const chunkText = decoder.decode(result.value, { stream: true });
+        chunkCount += 1;
+        if (rawPreview.length < 500) rawPreview += chunkText;
+        buffer += chunkText;
         const lines = buffer.split(/\r?\n/);
         buffer = lines.pop() || '';
         for (const line of lines) {
             const event = parseMaterialModifyEventLine(line);
-            if (!event) continue;
+            if (!event) {
+                if (line.trim()) unparsedLineCount += 1;
+                continue;
+            }
             stepCount += 1;
             lastStepName = event.text?.stepName || event.stepName || lastStepName;
             if (onEvent) {
-                await onEvent({ event, stepCount, lastStepName });
+                await onEvent({ event, stepCount, lastStepName, chunkCount, unparsedLineCount, rawPreview });
             }
             if (event.text?.finalResult) {
                 finalResult = event.text.finalResult;
                 try { await reader.cancel(); } catch (error) {}
-                return { finalResult, stepCount, lastStepName, timedOut: false };
+                return { finalResult, stepCount, lastStepName, timedOut: false, chunkCount, unparsedLineCount, rawPreview };
             }
         }
     }
 
     try { await reader.cancel(); } catch (error) {}
-    return { finalResult, stepCount, lastStepName, timedOut: true };
+    return { finalResult, stepCount, lastStepName, timedOut: true, chunkCount, unparsedLineCount, rawPreview };
 }
 
 async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt, onEvent) {
@@ -145,6 +154,22 @@ async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt, o
             errorPreview = (await response.text()).replace(/\s+/g, ' ').slice(0, 200);
         } catch (error) {}
         throw new Error(`素材修改接口返回 ${response.status}${errorPreview ? `：${errorPreview}` : ''}`);
+    }
+    if (onEvent) {
+        await onEvent({
+            event: {
+                text: {
+                    stepName: '素材修改接口已连接',
+                    stepType: 0,
+                    finalResult: null
+                }
+            },
+            stepCount: 0,
+            lastStepName: '素材修改接口已连接',
+            chunkCount: 0,
+            unparsedLineCount: 0,
+            rawPreview: ''
+        });
     }
     return readMaterialModifyStream(response, MATERIAL_MODIFY_TIMEOUT_MS, onEvent);
 }
@@ -437,7 +462,7 @@ async function runStyleLatestEffect(request, env, ctx) {
                 message: '已创建一键同款会话，正在启动素材修改。'
             });
 
-            const modifyResult = await runMaterialModify(baseUrl, authHeaders, conversationId, prompt, async ({ event, stepCount, lastStepName }) => {
+            const modifyResult = await runMaterialModify(baseUrl, authHeaders, conversationId, prompt, async ({ event, stepCount, lastStepName, chunkCount, unparsedLineCount, rawPreview }) => {
                 const text = event.text || {};
                 const status = text.finalResult ? 'done' : 'progress';
                 const statusBody = {
@@ -449,6 +474,9 @@ async function runStyleLatestEffect(request, env, ctx) {
                     stepName: text.stepName || lastStepName,
                     stepType: text.stepType || null,
                     finalResult: text.finalResult || null,
+                    chunkCount,
+                    unparsedLineCount,
+                    rawPreview: rawPreview ? rawPreview.replace(/\s+/g, ' ').slice(0, 240) : '',
                     message: text.finalResult ? '素材修改已完成。' : `素材修改进度：${text.stepName || lastStepName || '处理中'}`
                 };
                 await putStyleRunStatus(url.origin, runId, statusBody);
@@ -463,7 +491,10 @@ async function runStyleLatestEffect(request, env, ctx) {
                     previewUrl,
                     stepCount: modifyResult.stepCount,
                     lastStepName: modifyResult.lastStepName,
-                    message: `素材修改仍在上游处理中，${Math.round(MATERIAL_MODIFY_TIMEOUT_MS / 1000)} 秒内未收到最终完成信号。`
+                    chunkCount: modifyResult.chunkCount,
+                    unparsedLineCount: modifyResult.unparsedLineCount,
+                    rawPreview: modifyResult.rawPreview ? modifyResult.rawPreview.replace(/\s+/g, ' ').slice(0, 240) : '',
+                    message: `素材修改仍在上游处理中，${Math.round(MATERIAL_MODIFY_TIMEOUT_MS / 1000)} 秒内未收到最终完成信号。已收到 ${modifyResult.chunkCount} 个流片段，成功解析 ${modifyResult.stepCount} 个步骤。${modifyResult.rawPreview ? ` 原始片段：${modifyResult.rawPreview.replace(/\s+/g, ' ').slice(0, 120)}` : ''}`
                 };
                 await putStyleRunStatus(url.origin, runId, timeoutBody);
                 await writeJsonLine(writer, { ok: false, runId, ...timeoutBody });
