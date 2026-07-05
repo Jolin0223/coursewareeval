@@ -224,9 +224,16 @@ async function runStyleLatestEffect(request, env, ctx) {
     }
 
     const conversationId = createBody.data.conversationId;
-    startMaterialModify(baseUrl, authHeaders, conversationId, prompt).catch(error => {
-        console.warn('material-modify background start failed', error);
-    });
+    try {
+        await startMaterialModify(baseUrl, authHeaders, conversationId, prompt);
+    } catch (error) {
+        return jsonResponse({
+            error: 'MATERIAL_MODIFY_START_FAILED',
+            message: `一键同款已创建，但素材修改接口未成功接收：${error.message}`,
+            conversationId,
+            previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`
+        }, 502);
+    }
 
     return jsonResponse({
         ok: true,
@@ -236,7 +243,7 @@ async function runStyleLatestEffect(request, env, ctx) {
         finalResult: null,
         stepCount: null,
         screenshotUrl: null,
-        message: '已创建一键同款会话，素材修改已在后台发起，预览链接已回填。生成完成需要等待上游处理；截图自动回填还需要接入独立截图服务。'
+        message: '已创建一键同款会话，素材修改接口已接收风格提示词，预览链接已回填。生成完成需要等待上游处理；截图自动回填还需要接入独立截图服务。'
     }, 200);
 }
 
