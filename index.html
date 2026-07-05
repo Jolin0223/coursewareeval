@@ -1212,15 +1212,17 @@
             const { data: { session } } = await dbClient.auth.getSession();
             if (!session?.access_token) return;
             Object.entries(styleEvalState.records || {}).forEach(([styleId, record]) => {
-                if (isStyleRunActive(record.latest)) {
-                    startStyleRunPolling(styleId, record.latest.runId, session.access_token);
-                }
+                ensureStyleMaterialRuns(styleId);
+                Object.values(record.materialRuns || {}).forEach(run => {
+                    if (isStyleRunActive(run)) {
+                        startStyleRunPolling(styleId, run.runId, session.access_token, run.materialName);
+                    }
+                });
             });
         }
 
-        function applyStyleRunStatus(styleId, statusBody) {
-            const record = getStyleRecord(styleId);
-            const latest = record.latest;
+        function applyStyleRunStatus(styleId, statusBody, materialName = '') {
+            const latest = getStyleMaterialRun(styleId, materialName || statusBody.materialName || '');
             latest.runStatus = statusBody.status || latest.runStatus || 'modifying';
             latest.runUpdatedAt = statusBody.updatedAt || new Date().toISOString();
             latest.runMessage = statusBody.message || latest.runMessage || '';
@@ -1243,7 +1245,7 @@
             renderStyleEvalWorkbench();
         }
 
-        function startStyleRunPolling(styleId, runId, accessToken) {
+        function startStyleRunPolling(styleId, runId, accessToken, materialName = '') {
             if (!runId || !accessToken) return;
             clearStyleRunPolling(styleId);
             const poll = async () => {
@@ -1256,18 +1258,18 @@
                     let body = {};
                     try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
                     if (!response.ok || body.error) {
-                        const record = getStyleRecord(styleId);
-                        record.latest.pollErrorCount = (record.latest.pollErrorCount || 0) + 1;
-                        record.latest.runMessage = body.message || `暂时查不到后台状态（${response.status}）`;
+                        const latestState = getStyleMaterialRun(styleId, materialName || body.materialName || '');
+                        latestState.pollErrorCount = (latestState.pollErrorCount || 0) + 1;
+                        latestState.runMessage = body.message || `暂时查不到后台状态（${response.status}）`;
                         saveStyleEvalState();
-                        if (record.latest.pollErrorCount >= 6) {
+                        if (latestState.pollErrorCount >= 6) {
                             renderStyleEvalWorkbench();
                             return;
                         }
                     } else {
-                        applyStyleRunStatus(styleId, body);
-                        const record = getStyleRecord(styleId);
-                        record.latest.pollErrorCount = 0;
+                        applyStyleRunStatus(styleId, body, materialName || body.materialName || '');
+                        const latestState = getStyleMaterialRun(styleId, materialName || body.materialName || '');
+                        latestState.pollErrorCount = 0;
                         if (['done', 'failed', 'timeout'].includes(body.status)) {
                             clearStyleRunPolling(styleId);
                             if (body.status === 'done') showToast('最新版素材修改已完成，效果链接已回填。', 'success');
@@ -1275,11 +1277,11 @@
                         }
                     }
                 } catch (error) {
-                    const record = getStyleRecord(styleId);
-                    record.latest.pollErrorCount = (record.latest.pollErrorCount || 0) + 1;
-                    record.latest.runMessage = `后台状态查询失败：${error.message || error}`;
+                    const latestState = getStyleMaterialRun(styleId, materialName || '');
+                    latestState.pollErrorCount = (latestState.pollErrorCount || 0) + 1;
+                    latestState.runMessage = `后台状态查询失败：${error.message || error}`;
                     saveStyleEvalState();
-                    if (record.latest.pollErrorCount >= 6) {
+                    if (latestState.pollErrorCount >= 6) {
                         renderStyleEvalWorkbench();
                         return;
                     }
@@ -1326,24 +1328,94 @@
             return 'bg-amber-100 text-amber-700';
         }
 
-        function normalizeLatestStyleScreenshots(record) {
-            if (!record.latest) record.latest = {};
-            const screenshots = Array.isArray(record.latest.screenshots) ? record.latest.screenshots.filter(Boolean) : [];
-            if (record.latest.screenshot && !screenshots.includes(record.latest.screenshot)) {
-                screenshots.unshift(record.latest.screenshot);
+        function getStyleMaterialKey(materialName) {
+            return String(materialName || '').trim() || DEFAULT_STYLE_RUN_CONFIG.materialName;
+        }
+
+        function cloneStyleLatestState(latest = {}) {
+            const cloned = { ...latest };
+            if (Array.isArray(latest.screenshots)) cloned.screenshots = [...latest.screenshots];
+            return cloned;
+        }
+
+        function ensureStyleMaterialRuns(styleId) {
+            const record = getStyleRecord(styleId);
+            if (!record.materialRuns || typeof record.materialRuns !== 'object' || Array.isArray(record.materialRuns)) {
+                record.materialRuns = {};
             }
-            record.latest.screenshots = screenshots;
-            if (!Number.isInteger(record.latest.screenshotIndex)) record.latest.screenshotIndex = 0;
-            if (record.latest.screenshotIndex < 0) record.latest.screenshotIndex = 0;
-            if (screenshots.length && record.latest.screenshotIndex >= screenshots.length) record.latest.screenshotIndex = screenshots.length - 1;
-            if (!screenshots.length) record.latest.screenshotIndex = 0;
+            const defaultName = getDefaultStyleRunMaterialName(styleId);
+            if (!Object.keys(record.materialRuns).length) {
+                const legacyLatest = record.latest || {};
+                const materialName = String(legacyLatest.materialName || defaultName).trim();
+                const key = getStyleMaterialKey(materialName);
+                record.materialRuns[key] = {
+                    ...cloneStyleLatestState(legacyLatest),
+                    materialName,
+                    zipUrl: legacyLatest.zipUrl || loadStyleRunConfig(styleId).zipUrl || DEFAULT_STYLE_RUN_CONFIG.zipUrl
+                };
+                record.selectedMaterialKey = key;
+            }
+            if (!record.selectedMaterialKey || !record.materialRuns[record.selectedMaterialKey]) {
+                record.selectedMaterialKey = Object.keys(record.materialRuns)[0] || getStyleMaterialKey(defaultName);
+            }
+            if (!record.materialRuns[record.selectedMaterialKey]) {
+                record.materialRuns[record.selectedMaterialKey] = {
+                    materialName: defaultName,
+                    zipUrl: loadStyleRunConfig(styleId).zipUrl || DEFAULT_STYLE_RUN_CONFIG.zipUrl
+                };
+            }
+            return record.materialRuns;
+        }
+
+        function getStyleMaterialRun(styleId, materialName = '', zipUrl = '') {
+            const record = getStyleRecord(styleId);
+            ensureStyleMaterialRuns(styleId);
+            const name = String(materialName || record.materialRuns[record.selectedMaterialKey]?.materialName || getDefaultStyleRunMaterialName(styleId)).trim();
+            const key = getStyleMaterialKey(name);
+            if (!record.materialRuns[key]) {
+                record.materialRuns[key] = { materialName: name };
+            }
+            record.materialRuns[key].materialName = name;
+            if (zipUrl) record.materialRuns[key].zipUrl = zipUrl;
+            if (!record.materialRuns[key].zipUrl) record.materialRuns[key].zipUrl = loadStyleRunConfig(styleId).zipUrl || DEFAULT_STYLE_RUN_CONFIG.zipUrl;
+            record.selectedMaterialKey = key;
+            return record.materialRuns[key];
+        }
+
+        function getSelectedStyleMaterialRun(styleId) {
+            const record = getStyleRecord(styleId);
+            ensureStyleMaterialRuns(styleId);
+            return record.materialRuns[record.selectedMaterialKey] || getStyleMaterialRun(styleId);
+        }
+
+        function selectStyleMaterialRun(styleId, materialKey) {
+            const record = getStyleRecord(styleId);
+            ensureStyleMaterialRuns(styleId);
+            if (record.materialRuns[materialKey]) {
+                record.selectedMaterialKey = materialKey;
+                saveStyleEvalState();
+                renderStyleEvalWorkbench();
+            }
+        }
+
+        function normalizeLatestStyleScreenshots(latestState) {
+            if (!latestState) return [];
+            const screenshots = Array.isArray(latestState.screenshots) ? latestState.screenshots.filter(Boolean) : [];
+            if (latestState.screenshot && !screenshots.includes(latestState.screenshot)) {
+                screenshots.unshift(latestState.screenshot);
+            }
+            latestState.screenshots = screenshots;
+            if (!Number.isInteger(latestState.screenshotIndex)) latestState.screenshotIndex = 0;
+            if (latestState.screenshotIndex < 0) latestState.screenshotIndex = 0;
+            if (screenshots.length && latestState.screenshotIndex >= screenshots.length) latestState.screenshotIndex = screenshots.length - 1;
+            if (!screenshots.length) latestState.screenshotIndex = 0;
             return screenshots;
         }
 
         function getStyleLatestStatus(style) {
-            const record = getStyleRecord(style.id);
+            const latestState = getSelectedStyleMaterialRun(style.id);
             const latest = getLatestStyleVersion(style);
-            return record.latest.status || latest.status || style.status || 'todo';
+            return latestState.status || latest.status || style.status || 'todo';
         }
 
         function getStyleReferenceImage(style) {
@@ -1373,8 +1445,7 @@
 
         function renderStyleEvalListItem(style) {
             const latest = getLatestStyleVersion(style);
-            const record = getStyleRecord(style.id);
-            const latestState = record.latest || {};
+            const latestState = getSelectedStyleMaterialRun(style.id);
             const status = getStyleLatestStatus(style);
             const score = latestState.score || '-';
             const active = style.id === styleEvalState.selectedStyleId;
@@ -1400,11 +1471,44 @@
             `;
         }
 
+        function renderStyleMaterialTabs(style, record) {
+            const runs = ensureStyleMaterialRuns(style.id);
+            const entries = Object.entries(runs);
+            if (entries.length <= 1) {
+                const current = entries[0]?.[1] || {};
+                return `
+                    <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                        <span class="text-xs font-bold text-slate-500">当前素材</span>
+                        <span class="min-w-0 truncate text-sm font-black text-slate-800">${escapeHtml(current.materialName || getDefaultStyleRunMaterialName(style.id))}</span>
+                    </div>
+                `;
+            }
+            return `
+                <div class="border border-slate-200 rounded-xl bg-slate-50 p-2">
+                    <div class="flex items-center gap-2 overflow-x-auto">
+                        ${entries.map(([key, run]) => {
+                            const active = key === record.selectedMaterialKey;
+                            const hasResult = !!(run.effectUrl || run.screenshot || (Array.isArray(run.screenshots) && run.screenshots.length));
+                            return `
+                                <button type="button" onclick="selectStyleMaterialRun(${jsString(style.id)}, ${jsString(key)})" class="shrink-0 max-w-[220px] h-9 px-3 rounded-lg text-sm font-bold border transition ${active ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300 hover:text-blue-700'}">
+                                    <span class="inline-flex items-center gap-1.5 min-w-0">
+                                        <i class="fa-solid ${hasResult ? 'fa-circle-check' : 'fa-layer-group'} text-xs ${active ? 'text-white' : hasResult ? 'text-green-500' : 'text-slate-400'}"></i>
+                                        <span class="truncate">${escapeHtml(run.materialName || key)}</span>
+                                    </span>
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         function renderStyleEvalDetail(style) {
             const latest = getLatestStyleVersion(style);
             const record = getStyleRecord(style.id);
-            const latestState = record.latest || {};
-            const screenshots = normalizeLatestStyleScreenshots(record);
+            ensureStyleMaterialRuns(style.id);
+            const latestState = getSelectedStyleMaterialRun(style.id);
+            const screenshots = normalizeLatestStyleScreenshots(latestState);
             const latestUrl = latestState.effectUrl || latest.effectUrl || '';
             const issueText = latestState.issues ?? latest.issue ?? '';
             const solutionText = latestState.solution || '';
@@ -1412,6 +1516,7 @@
             const historyVersions = [...(style.versions || [])].reverse().filter(version => version.id !== latest.id);
             const versionCards = historyVersions.map(version => renderStyleVersionHistory(style, version)).join('');
             const isRunningLatest = isStyleRunActive(latestState);
+            const materialTabs = renderStyleMaterialTabs(style, record);
             return `
                 <div class="space-y-6">
                     <section class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
@@ -1432,6 +1537,7 @@
                         ${renderStyleRunNotice(latestState)}
                         <div class="p-6 grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_420px] gap-6">
                             <div class="space-y-4">
+                                ${materialTabs}
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <div class="text-sm font-bold text-blue-600">最新版</div>
@@ -1562,8 +1668,8 @@
         }
 
         function renderStyleScreenshotCarousel(styleId, screenshots) {
-            const record = getStyleRecord(styleId);
-            const index = record.latest.screenshotIndex || 0;
+            const latestState = getSelectedStyleMaterialRun(styleId);
+            const index = latestState.screenshotIndex || 0;
             if (!screenshots.length) {
                 return `
                     <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
@@ -1617,8 +1723,8 @@
         }
 
         function updateStyleLatestField(styleId, field, value, rerender = false) {
-            const record = getStyleRecord(styleId);
-            record.latest[field] = value;
+            const latestState = getSelectedStyleMaterialRun(styleId);
+            latestState[field] = value;
             saveStyleEvalState();
             if (rerender) renderStyleEvalWorkbench();
         }
@@ -1631,40 +1737,40 @@
 
         async function uploadStyleScreenshot(styleId, file) {
             if (!file) return;
-            const record = getStyleRecord(styleId);
-            const screenshots = normalizeLatestStyleScreenshots(record);
+            const latestState = getSelectedStyleMaterialRun(styleId);
+            const screenshots = normalizeLatestStyleScreenshots(latestState);
             screenshots.push(await readImageAsDataUrl(file, 1280, 0.84));
-            record.latest.screenshotIndex = screenshots.length - 1;
-            record.latest.screenshot = screenshots[0] || '';
+            latestState.screenshotIndex = screenshots.length - 1;
+            latestState.screenshot = screenshots[0] || '';
             saveStyleEvalState();
             renderStyleEvalWorkbench();
         }
 
         function moveStyleScreenshot(styleId, step) {
-            const record = getStyleRecord(styleId);
-            const screenshots = normalizeLatestStyleScreenshots(record);
+            const latestState = getSelectedStyleMaterialRun(styleId);
+            const screenshots = normalizeLatestStyleScreenshots(latestState);
             if (!screenshots.length) return;
-            record.latest.screenshotIndex = (record.latest.screenshotIndex + step + screenshots.length) % screenshots.length;
+            latestState.screenshotIndex = (latestState.screenshotIndex + step + screenshots.length) % screenshots.length;
             saveStyleEvalState();
             renderStyleEvalWorkbench();
         }
 
         function setStyleScreenshotIndex(styleId, index) {
-            const record = getStyleRecord(styleId);
-            const screenshots = normalizeLatestStyleScreenshots(record);
+            const latestState = getSelectedStyleMaterialRun(styleId);
+            const screenshots = normalizeLatestStyleScreenshots(latestState);
             if (!screenshots.length) return;
-            record.latest.screenshotIndex = Math.max(0, Math.min(index, screenshots.length - 1));
+            latestState.screenshotIndex = Math.max(0, Math.min(index, screenshots.length - 1));
             saveStyleEvalState();
             renderStyleEvalWorkbench();
         }
 
         function removeStyleScreenshot(styleId) {
-            const record = getStyleRecord(styleId);
-            const screenshots = normalizeLatestStyleScreenshots(record);
+            const latestState = getSelectedStyleMaterialRun(styleId);
+            const screenshots = normalizeLatestStyleScreenshots(latestState);
             if (!screenshots.length) return;
-            screenshots.splice(record.latest.screenshotIndex || 0, 1);
-            record.latest.screenshotIndex = Math.max(0, Math.min(record.latest.screenshotIndex || 0, screenshots.length - 1));
-            record.latest.screenshot = screenshots[0] || '';
+            screenshots.splice(latestState.screenshotIndex || 0, 1);
+            latestState.screenshotIndex = Math.max(0, Math.min(latestState.screenshotIndex || 0, screenshots.length - 1));
+            latestState.screenshot = screenshots[0] || '';
             saveStyleEvalState();
             renderStyleEvalWorkbench();
         }
@@ -1703,7 +1809,6 @@
             const style = (styleEvalData.styles || []).find(item => item.id === styleId);
             if (!style) return;
             const latest = getLatestStyleVersion(style);
-            const record = getStyleRecord(styleId);
             const config = runConfig || loadStyleRunConfig(styleId);
             const materialName = String(config.materialName || '').trim();
             const zipUrl = String(config.zipUrl || '').trim();
@@ -1728,18 +1833,19 @@
             const prompt = latest.prompt || style.finalPrompt || '';
             if (!prompt.trim()) return showToast('最新版提示词为空，不能运行。', 'warning');
 
-            record.latest.runStatus = 'running';
-            record.latest.runError = '';
-            record.latest.runMessage = '';
-            record.latest.pollErrorCount = 0;
-            record.latest.lastStepName = '';
-            record.latest.stepCount = null;
-            record.latest.chunkCount = null;
-            record.latest.unparsedLineCount = null;
-            record.latest.rawPreview = '';
-            delete record.latest.generatedAt;
-            delete record.latest.finalResult;
-            record.latest.runStartedAt = new Date().toISOString();
+            const latestState = getStyleMaterialRun(styleId, materialName, zipUrl);
+            latestState.runStatus = 'running';
+            latestState.runError = '';
+            latestState.runMessage = '';
+            latestState.pollErrorCount = 0;
+            latestState.lastStepName = '';
+            latestState.stepCount = null;
+            latestState.chunkCount = null;
+            latestState.unparsedLineCount = null;
+            latestState.rawPreview = '';
+            delete latestState.generatedAt;
+            delete latestState.finalResult;
+            latestState.runStartedAt = new Date().toISOString();
             saveStyleEvalState();
             renderStyleEvalWorkbench();
 
@@ -1771,7 +1877,7 @@
                 }
 
                 if (contentType.includes('application/x-ndjson') && response.body) {
-                    await readStyleRunStream(styleId, response.body);
+                    await readStyleRunStream(styleId, response.body, materialName);
                 } else {
                     const text = await response.text();
                     let body = {};
@@ -1780,24 +1886,24 @@
                         const code = body.error ? `（${body.error}）` : '';
                         throw new Error(`${body.message || `接口返回 ${response.status}`}${code}`);
                     }
-                    applyStyleRunEvent(styleId, body);
+                    applyStyleRunEvent(styleId, body, materialName);
                     if (body.runId && body.status !== 'done') {
-                        startStyleRunPolling(styleId, body.runId, session.access_token);
+                        startStyleRunPolling(styleId, body.runId, session.access_token, materialName);
                         showToast(body.message || '已发起后台生成，效果链接已先回填。', 'info');
                     }
                 }
             } catch (error) {
                 clearStyleRunPolling(styleId);
-                record.latest.runStatus = 'failed';
-                record.latest.runError = error.message || String(error);
-                showToast(`自动生成失败：${record.latest.runError}`, 'error');
+                latestState.runStatus = 'failed';
+                latestState.runError = error.message || String(error);
+                showToast(`自动生成失败：${latestState.runError}`, 'error');
             } finally {
                 saveStyleEvalState();
                 renderStyleEvalWorkbench();
             }
         }
 
-        async function readStyleRunStream(styleId, body) {
+        async function readStyleRunStream(styleId, body, materialName = '') {
             const reader = body.getReader();
             const decoder = new TextDecoder();
             let buffer = '';
@@ -1812,30 +1918,29 @@
                     if (!line.trim()) continue;
                     let event = {};
                     try { event = JSON.parse(line); } catch (error) { continue; }
-                    const status = applyStyleRunEvent(styleId, event);
+                    const status = applyStyleRunEvent(styleId, event, materialName);
                     if (['done', 'failed', 'timeout'].includes(status)) terminalStatus = status;
                 }
             }
             if (buffer.trim()) {
                 try {
                     const event = JSON.parse(buffer);
-                    const status = applyStyleRunEvent(styleId, event);
+                    const status = applyStyleRunEvent(styleId, event, materialName);
                     if (['done', 'failed', 'timeout'].includes(status)) terminalStatus = status;
                 } catch (error) {}
             }
             if (!terminalStatus) {
-                const record = getStyleRecord(styleId);
-                record.latest.runStatus = 'failed';
-                record.latest.runError = '素材修改连接提前结束，未收到完成信号。';
+                const latestState = getStyleMaterialRun(styleId, materialName);
+                latestState.runStatus = 'failed';
+                latestState.runError = '素材修改连接提前结束，未收到完成信号。';
                 saveStyleEvalState();
                 renderStyleEvalWorkbench();
-                throw new Error(record.latest.runError);
+                throw new Error(latestState.runError);
             }
         }
 
-        function applyStyleRunEvent(styleId, event) {
-            const record = getStyleRecord(styleId);
-            const latest = record.latest;
+        function applyStyleRunEvent(styleId, event, materialName = '') {
+            const latest = getStyleMaterialRun(styleId, materialName || event.materialName || '');
             if (event.status === 'heartbeat') {
                 latest.runMessage = event.message || latest.runMessage || '';
                 latest.runUpdatedAt = event.updatedAt || new Date().toISOString();
@@ -1870,7 +1975,7 @@
                 showToast(latest.runError, event.status === 'timeout' ? 'warning' : 'error');
             }
             if (event.screenshotUrl) {
-                const screenshots = normalizeLatestStyleScreenshots(record);
+                const screenshots = normalizeLatestStyleScreenshots(latest);
                 if (!screenshots.includes(event.screenshotUrl)) screenshots.unshift(event.screenshotUrl);
                 latest.screenshot = screenshots[0] || '';
                 latest.screenshotIndex = 0;
