@@ -91,7 +91,6 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
     if (!response.body) return { finalResult: null, stepCount: 0, lastStepName: '', timedOut: false, chunkCount: 0, unparsedLineCount: 0, rawPreview: '' };
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    const deadline = Date.now() + maxDurationMs;
     let buffer = '';
     let stepCount = 0;
     let lastStepName = '';
@@ -99,6 +98,11 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
     let chunkCount = 0;
     let unparsedLineCount = 0;
     let rawPreview = '';
+    let timedOut = false;
+    const timeoutTimer = setTimeout(() => {
+        timedOut = true;
+        try { reader.cancel(); } catch (error) {}
+    }, maxDurationMs);
 
     async function handleLine(line) {
         const event = parseMaterialModifyEventLine(line);
@@ -123,11 +127,14 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
         return false;
     }
 
-    while (Date.now() < deadline) {
-        const timeoutMs = Math.max(1, Math.min(5000, deadline - Date.now()));
-        const timeout = new Promise(resolve => setTimeout(() => resolve({ timeout: true }), timeoutMs));
-        const result = await Promise.race([reader.read(), timeout]);
-        if (result.timeout) continue;
+    while (!timedOut) {
+        let result;
+        try {
+            result = await reader.read();
+        } catch (error) {
+            if (timedOut) break;
+            throw error;
+        }
         if (result.done) break;
 
         const chunkText = decoder.decode(result.value, { stream: true });
@@ -138,21 +145,24 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
         buffer = lines.pop() || '';
         for (const line of lines) {
             if (await handleLine(line)) {
+                clearTimeout(timeoutTimer);
                 try { await reader.cancel(); } catch (error) {}
                 return { finalResult, stepCount, lastStepName, timedOut: false, chunkCount, unparsedLineCount, rawPreview };
             }
         }
     }
 
+    clearTimeout(timeoutTimer);
     if (buffer.trim()) {
         if (await handleLine(buffer)) {
+            clearTimeout(timeoutTimer);
             try { await reader.cancel(); } catch (error) {}
             return { finalResult, stepCount, lastStepName, timedOut: false, chunkCount, unparsedLineCount, rawPreview };
         }
     }
 
     try { await reader.cancel(); } catch (error) {}
-    return { finalResult, stepCount, lastStepName, timedOut: true, chunkCount, unparsedLineCount, rawPreview };
+    return { finalResult, stepCount, lastStepName, timedOut, chunkCount, unparsedLineCount, rawPreview };
 }
 
 async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt, onEvent) {
