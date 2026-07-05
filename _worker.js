@@ -100,6 +100,29 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
     let unparsedLineCount = 0;
     let rawPreview = '';
 
+    async function handleLine(line) {
+        const event = parseMaterialModifyEventLine(line);
+        if (!event) {
+            if (line.trim()) unparsedLineCount += 1;
+            return false;
+        }
+        if (event.code && event.msg && !event.text) {
+            const error = new Error(`素材修改接口业务错误 ${event.code}：${event.msg}`);
+            error.upstream = event;
+            throw error;
+        }
+        stepCount += 1;
+        lastStepName = event.text?.stepName || event.stepName || lastStepName;
+        if (onEvent) {
+            await onEvent({ event, stepCount, lastStepName, chunkCount, unparsedLineCount, rawPreview });
+        }
+        if (event.text?.finalResult) {
+            finalResult = event.text.finalResult;
+            return true;
+        }
+        return false;
+    }
+
     while (Date.now() < deadline) {
         const timeoutMs = Math.max(1, Math.min(5000, deadline - Date.now()));
         const timeout = new Promise(resolve => setTimeout(() => resolve({ timeout: true }), timeoutMs));
@@ -114,21 +137,17 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
         const lines = buffer.split(/\r?\n/);
         buffer = lines.pop() || '';
         for (const line of lines) {
-            const event = parseMaterialModifyEventLine(line);
-            if (!event) {
-                if (line.trim()) unparsedLineCount += 1;
-                continue;
-            }
-            stepCount += 1;
-            lastStepName = event.text?.stepName || event.stepName || lastStepName;
-            if (onEvent) {
-                await onEvent({ event, stepCount, lastStepName, chunkCount, unparsedLineCount, rawPreview });
-            }
-            if (event.text?.finalResult) {
-                finalResult = event.text.finalResult;
+            if (await handleLine(line)) {
                 try { await reader.cancel(); } catch (error) {}
                 return { finalResult, stepCount, lastStepName, timedOut: false, chunkCount, unparsedLineCount, rawPreview };
             }
+        }
+    }
+
+    if (buffer.trim()) {
+        if (await handleLine(buffer)) {
+            try { await reader.cancel(); } catch (error) {}
+            return { finalResult, stepCount, lastStepName, timedOut: false, chunkCount, unparsedLineCount, rawPreview };
         }
     }
 
@@ -137,7 +156,7 @@ async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
 }
 
 async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt, onEvent) {
-    const response = await fetchWithTimeout(`${baseUrl}/kpm-api/api/material-modify`, {
+    const response = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/material-modify`, {
         method: 'POST',
         headers: {
             ...authHeaders,
