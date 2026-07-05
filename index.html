@@ -1628,7 +1628,8 @@
                     let body = {};
                     try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
                     const code = body.error ? `（${body.error}）` : '';
-                    throw new Error(`${body.message || `接口返回 ${response.status}`}${code}`);
+                    const rawPreview = body.raw ? `：${String(body.raw).replace(/\s+/g, ' ').slice(0, 160)}` : '';
+                    throw new Error(`${body.message || `接口返回 ${response.status}`}${code}${rawPreview}`);
                 }
 
                 if (contentType.includes('application/x-ndjson') && response.body) {
@@ -2206,29 +2207,29 @@
             return JSON.stringify(String(value ?? '')).replace(/</g, '\\u003C');
         }
 
-        async function copyTextareaValue(textareaId, label = '内容') {
+        function copyTextareaValue(textareaId, label = '内容') {
             const area = document.getElementById(textareaId);
             if (!area) return showToast('没有找到可复制内容。', 'warning');
             const value = area.value || '';
             if (!value.trim()) return showToast(`${label}为空，暂时不能复制。`, 'warning');
+            const previousActive = document.activeElement;
+            const start = area.selectionStart;
+            const end = area.selectionEnd;
             try {
-                if (navigator.clipboard?.writeText) {
-                    await navigator.clipboard.writeText(value);
-                } else {
-                    const helper = document.createElement('textarea');
-                    helper.value = value;
-                    helper.setAttribute('readonly', '');
-                    helper.style.position = 'fixed';
-                    helper.style.left = '-9999px';
-                    helper.style.top = '0';
-                    document.body.appendChild(helper);
-                    helper.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(helper);
-                }
+                area.focus();
+                area.select();
+                const copied = document.execCommand('copy');
+                if (!copied) throw new Error('execCommand copy returned false');
                 showToast(`已复制${label}。`, 'success');
             } catch (error) {
-                showToast('复制失败，请手动选中内容复制。', 'error');
+                navigator.clipboard?.writeText(value)
+                    .then(() => showToast(`已复制${label}。`, 'success'))
+                    .catch(() => showToast('复制失败，请手动选中内容复制。', 'error'));
+            } finally {
+                try {
+                    area.setSelectionRange(start, end);
+                    if (previousActive && previousActive !== area && previousActive.focus) previousActive.focus();
+                } catch (error) {}
             }
         }
 

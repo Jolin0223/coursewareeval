@@ -140,13 +140,24 @@ async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt, o
         })
     }, 25000);
     if (!response.ok) {
-        throw new Error(`素材修改接口返回 ${response.status}`);
+        let errorPreview = '';
+        try {
+            errorPreview = (await response.text()).replace(/\s+/g, ' ').slice(0, 200);
+        } catch (error) {}
+        throw new Error(`素材修改接口返回 ${response.status}${errorPreview ? `：${errorPreview}` : ''}`);
     }
     return readMaterialModifyStream(response, MATERIAL_MODIFY_TIMEOUT_MS, onEvent);
 }
 
 function streamJsonLine(controller, payload) {
     controller.enqueue(new TextEncoder().encode(`${JSON.stringify({
+        ...payload,
+        updatedAt: new Date().toISOString()
+    })}\n`));
+}
+
+async function writeJsonLine(writer, payload) {
+    await writer.write(new TextEncoder().encode(`${JSON.stringify({
         ...payload,
         updatedAt: new Date().toISOString()
     })}\n`));
@@ -359,138 +370,142 @@ async function runStyleLatestEffect(request, env, ctx) {
     const baseUrl = normalizedBaseUrl.includes('box.test.xdf.cn') ? 'https://box.xdf.cn' : normalizedBaseUrl;
     const authHeaders = await buildKpmAuthHeaders(env);
 
-    const stream = new ReadableStream({
-        async start(controller) {
-            const heartbeat = setInterval(() => {
-                try {
-                    streamJsonLine(controller, {
-                        status: 'heartbeat',
-                        message: '素材修改仍在生成中，请保持页面打开。'
-                    });
-                } catch (error) {}
-            }, 15000);
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    const streamJob = (async () => {
+        const heartbeat = setInterval(() => {
+            writeJsonLine(writer, {
+                status: 'heartbeat',
+                message: '素材修改仍在生成中，请保持页面打开。'
+            }).catch(() => {});
+        }, 15000);
 
-            let conversationId = '';
-            let previewUrl = '';
-            const runId = crypto.randomUUID();
-            try {
-                streamJsonLine(controller, {
-                    ok: true,
-                    status: 'creating',
-                    runId,
-                    styleName,
-                    message: '正在创建一键同款会话。'
+        let conversationId = '';
+        let previewUrl = '';
+        const runId = crypto.randomUUID();
+        try {
+            await writeJsonLine(writer, {
+                ok: true,
+                status: 'creating',
+                runId,
+                styleName,
+                message: '正在创建一键同款会话。'
+            });
+            const createResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/create-same-by-one-click`, {
+                method: 'POST',
+                headers: {
+                    ...authHeaders,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    creatorEmail: 'chenjialing12@xdf.cn',
+                    materialName: '彩虹气球派对',
+                    zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
+                })
+            }, 25000);
+            const createText = await createResponse.text();
+            let createBody = {};
+            try { createBody = createText ? JSON.parse(createText) : {}; } catch (error) { createBody = { raw: createText }; }
+            const createSuccess = createBody.code === 0 || createBody.code === 200;
+            if (!createResponse.ok || !createSuccess || !createBody.data?.conversationId) {
+                await writeJsonLine(writer, {
+                    ok: false,
+                    status: 'failed',
+                    error: 'CREATE_SAME_FAILED',
+                    message: createBody.msg || createBody.message || `一键同款接口返回 ${createResponse.status}`,
+                    upstream: createBody
                 });
-                const createResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/create-same-by-one-click`, {
-                    method: 'POST',
-                    headers: {
-                        ...authHeaders,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        creatorEmail: 'chenjialing12@xdf.cn',
-                        materialName: '彩虹气球派对',
-                        zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
-                    })
-                }, 25000);
-                const createText = await createResponse.text();
-                let createBody = {};
-                try { createBody = createText ? JSON.parse(createText) : {}; } catch (error) { createBody = { raw: createText }; }
-                const createSuccess = createBody.code === 0 || createBody.code === 200;
-                if (!createResponse.ok || !createSuccess || !createBody.data?.conversationId) {
-                    streamJsonLine(controller, {
-                        ok: false,
-                        status: 'failed',
-                        error: 'CREATE_SAME_FAILED',
-                        message: createBody.msg || createBody.message || `一键同款接口返回 ${createResponse.status}`,
-                        upstream: createBody
-                    });
-                    return;
-                }
+                return;
+            }
 
-                conversationId = createBody.data.conversationId;
-                previewUrl = `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`;
-                await putStyleRunStatus(url.origin, runId, {
-                    status: 'created',
-                    styleName,
-                    conversationId,
-                    previewUrl,
-                    message: '已创建一键同款会话，正在启动素材修改。'
-                });
-                streamJsonLine(controller, {
-                    ok: true,
-                    status: 'created',
-                    runId,
-                    styleName,
-                    conversationId,
-                    previewUrl,
-                    message: '已创建一键同款会话，正在启动素材修改。'
-                });
+            conversationId = createBody.data.conversationId;
+            previewUrl = `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`;
+            await putStyleRunStatus(url.origin, runId, {
+                status: 'created',
+                styleName,
+                conversationId,
+                previewUrl,
+                message: '已创建一键同款会话，正在启动素材修改。'
+            });
+            await writeJsonLine(writer, {
+                ok: true,
+                status: 'created',
+                runId,
+                styleName,
+                conversationId,
+                previewUrl,
+                message: '已创建一键同款会话，正在启动素材修改。'
+            });
 
-                const modifyResult = await runMaterialModify(baseUrl, authHeaders, conversationId, prompt, async ({ event, stepCount, lastStepName }) => {
-                    const text = event.text || {};
-                    const status = text.finalResult ? 'done' : 'progress';
-                    const statusBody = {
-                        status,
-                        styleName,
-                        conversationId,
-                        previewUrl,
-                        stepCount,
-                        stepName: text.stepName || lastStepName,
-                        stepType: text.stepType || null,
-                        finalResult: text.finalResult || null,
-                        message: text.finalResult ? '素材修改已完成。' : `素材修改进度：${text.stepName || lastStepName || '处理中'}`
-                    };
-                    await putStyleRunStatus(url.origin, runId, statusBody);
-                    streamJsonLine(controller, { ok: true, runId, ...statusBody });
-                });
-
-                if (modifyResult.timedOut && !modifyResult.finalResult) {
-                    const timeoutBody = {
-                        status: 'timeout',
-                        styleName,
-                        conversationId,
-                        previewUrl,
-                        stepCount: modifyResult.stepCount,
-                        lastStepName: modifyResult.lastStepName,
-                        message: `素材修改仍在上游处理中，${Math.round(MATERIAL_MODIFY_TIMEOUT_MS / 1000)} 秒内未收到最终完成信号。`
-                    };
-                    await putStyleRunStatus(url.origin, runId, timeoutBody);
-                    streamJsonLine(controller, { ok: false, runId, ...timeoutBody });
-                    return;
-                }
-
-                const doneBody = {
-                    status: 'done',
+            const modifyResult = await runMaterialModify(baseUrl, authHeaders, conversationId, prompt, async ({ event, stepCount, lastStepName }) => {
+                const text = event.text || {};
+                const status = text.finalResult ? 'done' : 'progress';
+                const statusBody = {
+                    status,
                     styleName,
                     conversationId,
                     previewUrl,
-                    finalResult: modifyResult.finalResult || null,
+                    stepCount,
+                    stepName: text.stepName || lastStepName,
+                    stepType: text.stepType || null,
+                    finalResult: text.finalResult || null,
+                    message: text.finalResult ? '素材修改已完成。' : `素材修改进度：${text.stepName || lastStepName || '处理中'}`
+                };
+                await putStyleRunStatus(url.origin, runId, statusBody);
+                await writeJsonLine(writer, { ok: true, runId, ...statusBody });
+            });
+
+            if (modifyResult.timedOut && !modifyResult.finalResult) {
+                const timeoutBody = {
+                    status: 'timeout',
+                    styleName,
+                    conversationId,
+                    previewUrl,
                     stepCount: modifyResult.stepCount,
                     lastStepName: modifyResult.lastStepName,
-                    screenshotUrl: null,
-                    message: '已完成一键同款和素材修改，预览链接已回填。截图自动回填还需要接入独立截图服务。'
+                    message: `素材修改仍在上游处理中，${Math.round(MATERIAL_MODIFY_TIMEOUT_MS / 1000)} 秒内未收到最终完成信号。`
                 };
-                await putStyleRunStatus(url.origin, runId, doneBody);
-                streamJsonLine(controller, { ok: true, runId, ...doneBody });
-            } catch (error) {
-                const failedBody = {
-                    status: 'failed',
-                    styleName,
-                    conversationId,
-                    previewUrl,
-                    message: `自动生成没有完成：${error.message || String(error)}`
-                };
-                await putStyleRunStatus(url.origin, runId, failedBody);
-                streamJsonLine(controller, { ok: false, runId, ...failedBody });
-            } finally {
-                clearInterval(heartbeat);
-                controller.close();
+                await putStyleRunStatus(url.origin, runId, timeoutBody);
+                await writeJsonLine(writer, { ok: false, runId, ...timeoutBody });
+                return;
             }
-        }
-    });
 
-    return new Response(stream, {
+            const doneBody = {
+                status: 'done',
+                styleName,
+                conversationId,
+                previewUrl,
+                finalResult: modifyResult.finalResult || null,
+                stepCount: modifyResult.stepCount,
+                lastStepName: modifyResult.lastStepName,
+                screenshotUrl: null,
+                message: '已完成一键同款和素材修改，预览链接已回填。截图自动回填还需要接入独立截图服务。'
+            };
+            await putStyleRunStatus(url.origin, runId, doneBody);
+            await writeJsonLine(writer, { ok: true, runId, ...doneBody });
+        } catch (error) {
+            const failedBody = {
+                status: 'failed',
+                styleName,
+                conversationId,
+                previewUrl,
+                message: `自动生成没有完成：${error.message || String(error)}`
+            };
+            await putStyleRunStatus(url.origin, runId, failedBody);
+            await writeJsonLine(writer, { ok: false, runId, ...failedBody });
+        } finally {
+            clearInterval(heartbeat);
+            await writer.close();
+        }
+    })();
+
+    if (ctx?.waitUntil) {
+        ctx.waitUntil(streamJob);
+    } else {
+        streamJob.catch(error => console.warn('style run stream failed', error));
+    }
+
+    return new Response(readable, {
         status: 200,
         headers: {
             'Content-Type': 'application/x-ndjson; charset=utf-8',
