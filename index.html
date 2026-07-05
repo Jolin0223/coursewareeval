@@ -1082,15 +1082,26 @@
             localStorage.setItem(STYLE_EVAL_STORAGE_KEY, JSON.stringify(styleEvalState));
         }
 
-        function loadStyleRunConfig() {
+        function getDefaultStyleRunMaterialName(styleId) {
+            const style = (styleEvalData.styles || []).find(item => item.id === styleId);
+            if (!style) return DEFAULT_STYLE_RUN_CONFIG.materialName;
+            const latest = getLatestStyleVersion(style);
+            const versionLabel = String(latest.label || '最新版').replace(/^提示词\s+(\d+)/, '提示词$1');
+            return `${versionLabel}:${style.displayName || style.id || '画面风格'}`;
+        }
+
+        function loadStyleRunConfig(styleId = '') {
             try {
                 const parsed = JSON.parse(localStorage.getItem(STYLE_RUN_CONFIG_STORAGE_KEY) || '{}');
                 return {
-                    materialName: String(parsed.materialName || DEFAULT_STYLE_RUN_CONFIG.materialName).trim(),
+                    materialName: getDefaultStyleRunMaterialName(styleId),
                     zipUrl: String(parsed.zipUrl || DEFAULT_STYLE_RUN_CONFIG.zipUrl).trim()
                 };
             } catch (e) {
-                return { ...DEFAULT_STYLE_RUN_CONFIG };
+                return {
+                    materialName: getDefaultStyleRunMaterialName(styleId),
+                    zipUrl: DEFAULT_STYLE_RUN_CONFIG.zipUrl
+                };
             }
         }
 
@@ -1115,7 +1126,7 @@
 
         function openStyleRunConfigModal(styleId) {
             pendingStyleRunId = styleId;
-            const config = loadStyleRunConfig();
+            const config = loadStyleRunConfig(styleId);
             const nameInput = document.getElementById('style-run-material-name');
             const zipInput = document.getElementById('style-run-zip-url');
             if (nameInput) nameInput.value = config.materialName;
@@ -1688,13 +1699,14 @@
             });
         }
 
-        async function runLatestStyleEffect(styleId, runConfig = loadStyleRunConfig()) {
+        async function runLatestStyleEffect(styleId, runConfig = null) {
             const style = (styleEvalData.styles || []).find(item => item.id === styleId);
             if (!style) return;
             const latest = getLatestStyleVersion(style);
             const record = getStyleRecord(styleId);
-            const materialName = String(runConfig.materialName || '').trim();
-            const zipUrl = String(runConfig.zipUrl || '').trim();
+            const config = runConfig || loadStyleRunConfig(styleId);
+            const materialName = String(config.materialName || '').trim();
+            const zipUrl = String(config.zipUrl || '').trim();
             if (!materialName || !/^https?:\/\//i.test(zipUrl)) {
                 openStyleRunConfigModal(styleId);
                 setStyleRunConfigError('请先补齐素材名称和有效的 ZIP 文件 URL。');
