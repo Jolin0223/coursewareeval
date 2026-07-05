@@ -1703,7 +1703,7 @@
             }
 
             latest.runId = event.runId || latest.runId || '';
-            latest.effectUrl = event.previewUrl || latest.effectUrl || '';
+            latest.effectUrl = event.finalResult?.fileUrl || event.previewUrl || latest.effectUrl || '';
             latest.conversationId = event.conversationId || latest.conversationId || '';
             latest.runUpdatedAt = event.updatedAt || new Date().toISOString();
             latest.runMessage = event.message || latest.runMessage || '';
