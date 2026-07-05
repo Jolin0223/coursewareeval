@@ -50,3 +50,4 @@
 - 2026-07-05 用户反馈 `This ReadableStream only supports a single pending read request at a time.` Root cause: `readMaterialModifyStream()` used `Promise.race([reader.read(), timeout])`; when timeout won, the previous `reader.read()` stayed pending and the next loop started a second read. Fix: use one sequential `reader.read()` and cancel the reader with a timeout timer.
 - 2026-07-05 因一键同款支持自定义 `materialName` 和 `zipUrl`，`画面风格调整` 的最新版效果证据必须按 `materialName` 分组展示。每个素材 tab 独立保存效果链接、截图、评分、状态、问题、解决方法、下一版参考提示词和生成状态，避免不同源素材的测评结果互相覆盖。旧的单条 `latest` 本地记录需要自动迁移成默认素材 tab。
 - `画面风格调整` 的最新版截图维护要支持多入口上传：点击截图占位区、点击自定义上传按钮、拖拽图片到截图区、复制截图后在截图区粘贴；同一次操作可上传多张，并保留轮播查看。不要退回浏览器默认文件上传控件。
+- 2026-07-05 已从 `/Users/jolin/Downloads/7月2日调整画面风格-效果测试 (2).csv` 的 `风格提示词7` 列入库 19 个基础风格的 V7 提示词。`data/style-eval-seed.json` 中 V7 是当前最终候选，V6 及之前版本保留为历史过程版；页面缓存版本为 `20260705-style-v7`。
