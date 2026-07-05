@@ -87,7 +87,7 @@ function parseMaterialModifyEventLine(line) {
     }
 }
 
-async function readMaterialModifyStream(response, maxDurationMs) {
+async function readMaterialModifyStream(response, maxDurationMs, onEvent) {
     if (!response.body) return { finalResult: null, stepCount: 0, lastStepName: '', timedOut: false };
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -112,6 +112,9 @@ async function readMaterialModifyStream(response, maxDurationMs) {
             if (!event) continue;
             stepCount += 1;
             lastStepName = event.text?.stepName || event.stepName || lastStepName;
+            if (onEvent) {
+                await onEvent({ event, stepCount, lastStepName });
+            }
             if (event.text?.finalResult) {
                 finalResult = event.text.finalResult;
                 try { await reader.cancel(); } catch (error) {}
@@ -124,7 +127,7 @@ async function readMaterialModifyStream(response, maxDurationMs) {
     return { finalResult, stepCount, lastStepName, timedOut: true };
 }
 
-async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt) {
+async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt, onEvent) {
     const response = await fetchWithTimeout(`${baseUrl}/kpm-api/api/material-modify`, {
         method: 'POST',
         headers: {
@@ -139,7 +142,14 @@ async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt) {
     if (!response.ok) {
         throw new Error(`素材修改接口返回 ${response.status}`);
     }
-    return readMaterialModifyStream(response, MATERIAL_MODIFY_TIMEOUT_MS);
+    return readMaterialModifyStream(response, MATERIAL_MODIFY_TIMEOUT_MS, onEvent);
+}
+
+function streamJsonLine(controller, payload) {
+    controller.enqueue(new TextEncoder().encode(`${JSON.stringify({
+        ...payload,
+        updatedAt: new Date().toISOString()
+    })}\n`));
 }
 
 function buildStyleRunStatusKey(origin, runId) {
@@ -349,59 +359,145 @@ async function runStyleLatestEffect(request, env, ctx) {
     const baseUrl = normalizedBaseUrl.includes('box.test.xdf.cn') ? 'https://box.xdf.cn' : normalizedBaseUrl;
     const authHeaders = await buildKpmAuthHeaders(env);
 
-    const createResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/create-same-by-one-click`, {
-        method: 'POST',
-        headers: {
-            ...authHeaders,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            creatorEmail: 'chenjialing12@xdf.cn',
-            materialName: '彩虹气球派对',
-            zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
-        })
-    }, 25000);
-    const createText = await createResponse.text();
-    let createBody = {};
-    try { createBody = createText ? JSON.parse(createText) : {}; } catch (error) { createBody = { raw: createText }; }
-    const createSuccess = createBody.code === 0 || createBody.code === 200;
-    if (!createResponse.ok || !createSuccess || !createBody.data?.conversationId) {
-        return jsonResponse({
-            error: 'CREATE_SAME_FAILED',
-            message: createBody.msg || createBody.message || `一键同款接口返回 ${createResponse.status}`,
-            upstream: createBody
-        }, 502);
-    }
+    const stream = new ReadableStream({
+        async start(controller) {
+            const heartbeat = setInterval(() => {
+                try {
+                    streamJsonLine(controller, {
+                        status: 'heartbeat',
+                        message: '素材修改仍在生成中，请保持页面打开。'
+                    });
+                } catch (error) {}
+            }, 15000);
 
-    const conversationId = createBody.data.conversationId;
-    const previewUrl = `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`;
-    const runId = crypto.randomUUID();
-    await putStyleRunStatus(url.origin, runId, {
-        status: 'created',
-        styleName,
-        conversationId,
-        previewUrl,
-        message: '已创建一键同款会话，正在后台启动素材修改。'
+            let conversationId = '';
+            let previewUrl = '';
+            const runId = crypto.randomUUID();
+            try {
+                streamJsonLine(controller, {
+                    ok: true,
+                    status: 'creating',
+                    runId,
+                    styleName,
+                    message: '正在创建一键同款会话。'
+                });
+                const createResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/create-same-by-one-click`, {
+                    method: 'POST',
+                    headers: {
+                        ...authHeaders,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        creatorEmail: 'chenjialing12@xdf.cn',
+                        materialName: '彩虹气球派对',
+                        zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
+                    })
+                }, 25000);
+                const createText = await createResponse.text();
+                let createBody = {};
+                try { createBody = createText ? JSON.parse(createText) : {}; } catch (error) { createBody = { raw: createText }; }
+                const createSuccess = createBody.code === 0 || createBody.code === 200;
+                if (!createResponse.ok || !createSuccess || !createBody.data?.conversationId) {
+                    streamJsonLine(controller, {
+                        ok: false,
+                        status: 'failed',
+                        error: 'CREATE_SAME_FAILED',
+                        message: createBody.msg || createBody.message || `一键同款接口返回 ${createResponse.status}`,
+                        upstream: createBody
+                    });
+                    return;
+                }
+
+                conversationId = createBody.data.conversationId;
+                previewUrl = `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`;
+                await putStyleRunStatus(url.origin, runId, {
+                    status: 'created',
+                    styleName,
+                    conversationId,
+                    previewUrl,
+                    message: '已创建一键同款会话，正在启动素材修改。'
+                });
+                streamJsonLine(controller, {
+                    ok: true,
+                    status: 'created',
+                    runId,
+                    styleName,
+                    conversationId,
+                    previewUrl,
+                    message: '已创建一键同款会话，正在启动素材修改。'
+                });
+
+                const modifyResult = await runMaterialModify(baseUrl, authHeaders, conversationId, prompt, async ({ event, stepCount, lastStepName }) => {
+                    const text = event.text || {};
+                    const status = text.finalResult ? 'done' : 'progress';
+                    const statusBody = {
+                        status,
+                        styleName,
+                        conversationId,
+                        previewUrl,
+                        stepCount,
+                        stepName: text.stepName || lastStepName,
+                        stepType: text.stepType || null,
+                        finalResult: text.finalResult || null,
+                        message: text.finalResult ? '素材修改已完成。' : `素材修改进度：${text.stepName || lastStepName || '处理中'}`
+                    };
+                    await putStyleRunStatus(url.origin, runId, statusBody);
+                    streamJsonLine(controller, { ok: true, runId, ...statusBody });
+                });
+
+                if (modifyResult.timedOut && !modifyResult.finalResult) {
+                    const timeoutBody = {
+                        status: 'timeout',
+                        styleName,
+                        conversationId,
+                        previewUrl,
+                        stepCount: modifyResult.stepCount,
+                        lastStepName: modifyResult.lastStepName,
+                        message: `素材修改仍在上游处理中，${Math.round(MATERIAL_MODIFY_TIMEOUT_MS / 1000)} 秒内未收到最终完成信号。`
+                    };
+                    await putStyleRunStatus(url.origin, runId, timeoutBody);
+                    streamJsonLine(controller, { ok: false, runId, ...timeoutBody });
+                    return;
+                }
+
+                const doneBody = {
+                    status: 'done',
+                    styleName,
+                    conversationId,
+                    previewUrl,
+                    finalResult: modifyResult.finalResult || null,
+                    stepCount: modifyResult.stepCount,
+                    lastStepName: modifyResult.lastStepName,
+                    screenshotUrl: null,
+                    message: '已完成一键同款和素材修改，预览链接已回填。截图自动回填还需要接入独立截图服务。'
+                };
+                await putStyleRunStatus(url.origin, runId, doneBody);
+                streamJsonLine(controller, { ok: true, runId, ...doneBody });
+            } catch (error) {
+                const failedBody = {
+                    status: 'failed',
+                    styleName,
+                    conversationId,
+                    previewUrl,
+                    message: `自动生成没有完成：${error.message || String(error)}`
+                };
+                await putStyleRunStatus(url.origin, runId, failedBody);
+                streamJsonLine(controller, { ok: false, runId, ...failedBody });
+            } finally {
+                clearInterval(heartbeat);
+                controller.close();
+            }
+        }
     });
-    const backgroundJob = drainMaterialModifyJob(url.origin, runId, baseUrl, authHeaders, conversationId, prompt);
-    if (ctx?.waitUntil) {
-        ctx.waitUntil(backgroundJob);
-    } else {
-        backgroundJob.catch(error => console.warn('material-modify background failed', error));
-    }
 
-    return jsonResponse({
-        ok: true,
-        status: 'modifying',
-        runId,
-        styleName,
-        conversationId,
-        previewUrl,
-        finalResult: null,
-        stepCount: null,
-        screenshotUrl: null,
-        message: '已创建一键同款会话，素材修改已在后台持续生成。链接已先回填，完整生成通常需要 5-10 分钟。'
-    }, 202);
+    return new Response(stream, {
+        status: 200,
+        headers: {
+            'Content-Type': 'application/x-ndjson; charset=utf-8',
+            'Cache-Control': 'no-store',
+            'X-Accel-Buffering': 'no'
+        }
+    });
 }
 
 export default {

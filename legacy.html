@@ -1619,35 +1619,30 @@
                         prompt
                     })
                 });
-                const text = await response.text();
-                let body = {};
-                try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
-                if (!response.ok || body.error) {
+                const contentType = response.headers.get('content-type') || '';
+                if (!response.ok) {
+                    const text = await response.text();
+                    let body = {};
+                    try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
                     const code = body.error ? `（${body.error}）` : '';
                     throw new Error(`${body.message || `接口返回 ${response.status}`}${code}`);
                 }
 
-                record.latest.effectUrl = body.previewUrl || '';
-                record.latest.conversationId = body.conversationId || '';
-                record.latest.runId = body.runId || '';
-                record.latest.finalResult = body.finalResult || null;
-                record.latest.runStatus = body.status || 'modifying';
-                record.latest.runUpdatedAt = new Date().toISOString();
-                record.latest.runMessage = body.message || '';
-                if (body.status === 'done') {
-                    record.latest.generatedAt = new Date().toISOString();
-                }
-                if (body.screenshotUrl) {
-                    const screenshots = normalizeLatestStyleScreenshots(record);
-                    if (!screenshots.includes(body.screenshotUrl)) screenshots.unshift(body.screenshotUrl);
-                    record.latest.screenshot = screenshots[0] || '';
-                    record.latest.screenshotIndex = 0;
-                }
-                if (body.runId && body.status !== 'done') {
-                    startStyleRunPolling(styleId, body.runId, session.access_token);
-                    showToast(body.message || '已发起后台生成，效果链接已先回填。', 'info');
+                if (contentType.includes('application/x-ndjson') && response.body) {
+                    await readStyleRunStream(styleId, response.body);
                 } else {
-                    showToast(body.message || '最新版效果已完成生成，效果链接已自动回填。', 'success');
+                    const text = await response.text();
+                    let body = {};
+                    try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
+                    if (body.error) {
+                        const code = body.error ? `（${body.error}）` : '';
+                        throw new Error(`${body.message || `接口返回 ${response.status}`}${code}`);
+                    }
+                    applyStyleRunEvent(styleId, body);
+                    if (body.runId && body.status !== 'done') {
+                        startStyleRunPolling(styleId, body.runId, session.access_token);
+                        showToast(body.message || '已发起后台生成，效果链接已先回填。', 'info');
+                    }
                 }
             } catch (error) {
                 clearStyleRunPolling(styleId);
@@ -1658,6 +1653,86 @@
                 saveStyleEvalState();
                 renderStyleEvalWorkbench();
             }
+        }
+
+        async function readStyleRunStream(styleId, body) {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let terminalStatus = '';
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split(/\r?\n/);
+                buffer = lines.pop() || '';
+                for (const line of lines) {
+                    if (!line.trim()) continue;
+                    let event = {};
+                    try { event = JSON.parse(line); } catch (error) { continue; }
+                    const status = applyStyleRunEvent(styleId, event);
+                    if (['done', 'failed', 'timeout'].includes(status)) terminalStatus = status;
+                }
+            }
+            if (buffer.trim()) {
+                try {
+                    const event = JSON.parse(buffer);
+                    const status = applyStyleRunEvent(styleId, event);
+                    if (['done', 'failed', 'timeout'].includes(status)) terminalStatus = status;
+                } catch (error) {}
+            }
+            if (!terminalStatus) {
+                const record = getStyleRecord(styleId);
+                record.latest.runStatus = 'failed';
+                record.latest.runError = '素材修改连接提前结束，未收到完成信号。';
+                saveStyleEvalState();
+                renderStyleEvalWorkbench();
+                throw new Error(record.latest.runError);
+            }
+        }
+
+        function applyStyleRunEvent(styleId, event) {
+            const record = getStyleRecord(styleId);
+            const latest = record.latest;
+            if (event.status === 'heartbeat') {
+                latest.runMessage = event.message || latest.runMessage || '';
+                latest.runUpdatedAt = event.updatedAt || new Date().toISOString();
+                saveStyleEvalState();
+                renderStyleEvalWorkbench();
+                return latest.runStatus || 'running';
+            }
+
+            latest.runId = event.runId || latest.runId || '';
+            latest.effectUrl = event.previewUrl || latest.effectUrl || '';
+            latest.conversationId = event.conversationId || latest.conversationId || '';
+            latest.runUpdatedAt = event.updatedAt || new Date().toISOString();
+            latest.runMessage = event.message || latest.runMessage || '';
+            latest.lastStepName = event.stepName || event.lastStepName || latest.lastStepName || '';
+            latest.stepCount = event.stepCount ?? latest.stepCount ?? null;
+            if (event.finalResult) latest.finalResult = event.finalResult;
+            if (event.status === 'creating' || event.status === 'created' || event.status === 'progress') {
+                latest.runStatus = 'running';
+            } else if (event.status) {
+                latest.runStatus = event.status;
+            }
+            if (event.status === 'done') {
+                latest.generatedAt = new Date().toISOString();
+                latest.runError = '';
+                showToast(event.message || '最新版素材修改已完成，效果链接已回填。', 'success');
+            }
+            if (event.status === 'failed' || event.status === 'timeout') {
+                latest.runError = event.message || '素材修改没有正常完成。';
+                showToast(latest.runError, event.status === 'timeout' ? 'warning' : 'error');
+            }
+            if (event.screenshotUrl) {
+                const screenshots = normalizeLatestStyleScreenshots(record);
+                if (!screenshots.includes(event.screenshotUrl)) screenshots.unshift(event.screenshotUrl);
+                latest.screenshot = screenshots[0] || '';
+                latest.screenshotIndex = 0;
+            }
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+            return latest.runStatus;
         }
 
         function buildNextPromptDraft(style, latest, issueText, solutionText) {
