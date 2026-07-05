@@ -1490,7 +1490,7 @@
                             const active = key === record.selectedMaterialKey;
                             const hasResult = !!(run.effectUrl || run.screenshot || (Array.isArray(run.screenshots) && run.screenshots.length));
                             return `
-                                <button type="button" onclick="selectStyleMaterialRun(${jsString(style.id)}, ${jsString(key)})" class="shrink-0 max-w-[220px] h-9 px-3 rounded-lg text-sm font-bold border transition ${active ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300 hover:text-blue-700'}">
+                                <button type="button" onclick="selectStyleMaterialRun(${escapeAttr(jsString(style.id))}, ${escapeAttr(jsString(key))})" class="shrink-0 max-w-[220px] h-9 px-3 rounded-lg text-sm font-bold border transition ${active ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-slate-700 border-slate-200 hover:border-blue-300 hover:text-blue-700'}">
                                     <span class="inline-flex items-center gap-1.5 min-w-0">
                                         <i class="fa-solid ${hasResult ? 'fa-circle-check' : 'fa-layer-group'} text-xs ${active ? 'text-white' : hasResult ? 'text-green-500' : 'text-slate-400'}"></i>
                                         <span class="truncate">${escapeHtml(run.materialName || key)}</span>
@@ -1551,7 +1551,7 @@
                                         ${renderUrlInputWithOpen(latestUrl, `updateStyleLatestField(${jsString(style.id)}, 'effectUrl', this.value)`, '粘贴最新版课件链接')}
                                     </label>
                                     <label class="text-sm font-bold text-slate-700">上传截图
-                                        ${renderFileUploadButton(`style-upload-${style.id}`, `uploadStyleScreenshot(${jsString(style.id)}, this.files[0])`, '选择截图')}
+                                        ${renderFileUploadButton(`style-upload-${style.id}`, `uploadStyleScreenshots(${jsString(style.id)}, this.files)`, '选择截图', true)}
                                     </label>
                                     <label class="text-sm font-bold text-slate-700">评分
                                         <input type="number" min="0" max="5" step="0.5" value="${escapeAttr(latestState.score || '')}" oninput="updateStyleLatestField('${style.id}', 'score', this.value)" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="0-5">
@@ -1670,19 +1670,22 @@
         function renderStyleScreenshotCarousel(styleId, screenshots) {
             const latestState = getSelectedStyleMaterialRun(styleId);
             const index = latestState.screenshotIndex || 0;
+            const styleIdArg = escapeAttr(jsString(styleId));
+            const uploadInputArg = escapeAttr(jsString(`style-upload-${styleId}`));
+            const dropHandlers = `ondragenter="setStyleScreenshotDrag(event, true)" ondragover="setStyleScreenshotDrag(event, true)" ondragleave="setStyleScreenshotDrag(event, false)" ondrop="dropStyleScreenshots(event, ${styleIdArg})" onpaste="pasteStyleScreenshots(event, ${styleIdArg})"`;
             if (!screenshots.length) {
                 return `
-                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
-                        <div class="aspect-video flex flex-col items-center justify-center text-slate-400 bg-white">
+                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 transition" ${dropHandlers} tabindex="0">
+                        <button type="button" onclick="document.getElementById(${uploadInputArg})?.click()" class="w-full aspect-video flex flex-col items-center justify-center text-slate-400 bg-white hover:bg-blue-50 hover:text-blue-600 transition">
                             <i class="fa-regular fa-images text-5xl mb-3"></i>
                             <div class="text-sm font-bold">待上传最新版截图</div>
-                            <div class="text-xs mt-1">支持多张截图轮播，适合放封面、关键交互页和问题页</div>
-                        </div>
+                            <div class="text-xs mt-1">点击选择、拖拽图片到这里，或粘贴截图；支持多张轮播</div>
+                        </button>
                     </div>
                 `;
             }
             return `
-                <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+                <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 transition" ${dropHandlers} tabindex="0">
                     <div class="relative bg-white">
                         <img src="${screenshots[index]}" class="w-full aspect-video object-contain bg-white" alt="最新版效果截图 ${index + 1}">
                         ${screenshots.length > 1 ? `
@@ -1695,7 +1698,11 @@
                         <div class="flex gap-1.5">
                             ${screenshots.map((_, i) => `<button type="button" onclick="setStyleScreenshotIndex('${styleId}', ${i})" class="w-2.5 h-2.5 rounded-full ${i === index ? 'bg-blue-600' : 'bg-slate-300 hover:bg-slate-400'}" aria-label="查看第 ${i + 1} 张截图"></button>`).join('')}
                         </div>
-                        <button type="button" onclick="removeStyleScreenshot('${styleId}')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100">删除当前图</button>
+                        <div class="flex items-center gap-2">
+                            <span class="hidden md:inline text-xs font-bold text-slate-400">可拖拽/粘贴继续添加</span>
+                            <button type="button" onclick="document.getElementById(${uploadInputArg})?.click()" class="px-2.5 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100">继续上传</button>
+                            <button type="button" onclick="removeStyleScreenshot('${styleId}')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-100">删除当前图</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1735,15 +1742,57 @@
             saveStyleEvalState();
         }
 
-        async function uploadStyleScreenshot(styleId, file) {
-            if (!file) return;
+        function getImageFiles(files) {
+            return Array.from(files || []).filter(file => file && /^image\//i.test(file.type || ''));
+        }
+
+        async function uploadStyleScreenshots(styleId, files) {
+            const imageFiles = getImageFiles(files);
+            if (!imageFiles.length) return showToast('请上传图片格式的截图。', 'warning');
             const latestState = getSelectedStyleMaterialRun(styleId);
             const screenshots = normalizeLatestStyleScreenshots(latestState);
-            screenshots.push(await readImageAsDataUrl(file, 1280, 0.84));
+            for (const file of imageFiles) {
+                screenshots.push(await readImageAsDataUrl(file, 1280, 0.84));
+            }
             latestState.screenshotIndex = screenshots.length - 1;
             latestState.screenshot = screenshots[0] || '';
             saveStyleEvalState();
             renderStyleEvalWorkbench();
+            showToast(`已上传 ${imageFiles.length} 张截图。`, 'success');
+        }
+
+        async function uploadStyleScreenshot(styleId, file) {
+            return uploadStyleScreenshots(styleId, file ? [file] : []);
+        }
+
+        function setStyleScreenshotDrag(event, active) {
+            event.preventDefault();
+            const target = event.currentTarget;
+            if (!target) return;
+            target.classList.toggle('ring-2', active);
+            target.classList.toggle('ring-blue-500', active);
+            target.classList.toggle('border-blue-400', active);
+            target.classList.toggle('bg-blue-50', active);
+        }
+
+        function dropStyleScreenshots(event, styleId) {
+            event.preventDefault();
+            event.stopPropagation();
+            setStyleScreenshotDrag(event, false);
+            uploadStyleScreenshots(styleId, event.dataTransfer?.files || []);
+        }
+
+        function pasteStyleScreenshots(event, styleId) {
+            const files = [];
+            Array.from(event.clipboardData?.items || []).forEach(item => {
+                if (/^image\//i.test(item.type || '')) {
+                    const file = item.getAsFile();
+                    if (file) files.push(file);
+                }
+            });
+            if (!files.length) return;
+            event.preventDefault();
+            uploadStyleScreenshots(styleId, files);
         }
 
         function moveStyleScreenshot(styleId, step) {
@@ -2553,10 +2602,10 @@
             window.open(url, '_blank', 'noopener,noreferrer');
         }
 
-        function renderFileUploadButton(inputId, onchangeAction, label = '上传截图') {
+        function renderFileUploadButton(inputId, onchangeAction, label = '上传截图', multiple = false) {
             return `
                 <div class="mt-1">
-                    <input id="${escapeAttr(inputId)}" type="file" accept="image/*" onchange="${escapeAttr(onchangeAction)}" class="hidden">
+                    <input id="${escapeAttr(inputId)}" type="file" accept="image/*" ${multiple ? 'multiple' : ''} onchange="${escapeAttr(onchangeAction)}" class="hidden">
                     <button type="button" onclick="document.getElementById(${escapeAttr(jsString(inputId))}).click()" class="ce-tool-btn w-full">
                         <i class="fa-regular fa-image"></i> ${escapeHtml(label)}
                     </button>
