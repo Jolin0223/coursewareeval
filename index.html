@@ -1596,6 +1596,10 @@
             record.latest.runError = '';
             record.latest.runMessage = '';
             record.latest.pollErrorCount = 0;
+            record.latest.lastStepName = '';
+            record.latest.stepCount = null;
+            delete record.latest.generatedAt;
+            delete record.latest.finalResult;
             record.latest.runStartedAt = new Date().toISOString();
             saveStyleEvalState();
             renderStyleEvalWorkbench();
