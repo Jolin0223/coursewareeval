@@ -1825,7 +1825,7 @@
         async function ensureTemplatePromptData() {
             if (hasLoadedTemplatePromptData) return;
             try {
-                const res = await fetch('./data/inspiration-template-seed.json?v=20260704-template-prompts', { cache: 'no-store' });
+                const res = await fetch('./data/inspiration-template-seed.json?v=20260705-template-v4', { cache: 'no-store' });
                 templatePromptData = await res.json();
                 templatePromptData.templates = templatePromptData.templates || [];
                 templatePromptData.columns = templatePromptData.columns || [];
