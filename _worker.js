@@ -67,7 +67,61 @@ async function fetchWithTimeout(url, options, timeoutMs) {
     }
 }
 
-async function startMaterialModify(baseUrl, authHeaders, conversationId, prompt) {
+function parseMaterialModifyEventLine(line) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed === 'data: [DONE]') return null;
+    const payload = trimmed.startsWith('data:') ? trimmed.slice(5).trim() : trimmed;
+    if (!payload || payload === '[DONE]') return null;
+    try {
+        const event = JSON.parse(payload);
+        let text = event.text;
+        if (typeof text === 'string') {
+            try { text = JSON.parse(text); } catch (error) {}
+        }
+        return { ...event, text };
+    } catch (error) {
+        return null;
+    }
+}
+
+async function readMaterialModifyStream(response, maxDurationMs) {
+    if (!response.body) return { finalResult: null, stepCount: 0, lastStepName: '', timedOut: false };
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    const deadline = Date.now() + maxDurationMs;
+    let buffer = '';
+    let stepCount = 0;
+    let lastStepName = '';
+    let finalResult = null;
+
+    while (Date.now() < deadline) {
+        const timeoutMs = Math.max(1, Math.min(5000, deadline - Date.now()));
+        const timeout = new Promise(resolve => setTimeout(() => resolve({ timeout: true }), timeoutMs));
+        const result = await Promise.race([reader.read(), timeout]);
+        if (result.timeout) continue;
+        if (result.done) break;
+
+        buffer += decoder.decode(result.value, { stream: true });
+        const lines = buffer.split(/\r?\n/);
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+            const event = parseMaterialModifyEventLine(line);
+            if (!event) continue;
+            stepCount += 1;
+            lastStepName = event.text?.stepName || event.stepName || lastStepName;
+            if (event.text?.finalResult) {
+                finalResult = event.text.finalResult;
+                try { await reader.cancel(); } catch (error) {}
+                return { finalResult, stepCount, lastStepName, timedOut: false };
+            }
+        }
+    }
+
+    try { await reader.cancel(); } catch (error) {}
+    return { finalResult, stepCount, lastStepName, timedOut: true };
+}
+
+async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt) {
     const response = await fetchWithTimeout(`${baseUrl}/kpm-api/api/material-modify`, {
         method: 'POST',
         headers: {
@@ -79,14 +133,10 @@ async function startMaterialModify(baseUrl, authHeaders, conversationId, prompt)
             content: prompt
         })
     }, 25000);
-    if (response.body) {
-        try {
-            await response.body.cancel();
-        } catch (error) {}
-    }
     if (!response.ok) {
         throw new Error(`素材修改接口返回 ${response.status}`);
     }
+    return readMaterialModifyStream(response, 180000);
 }
 
 async function verifyAdminUser(request, env) {
@@ -224,15 +274,25 @@ async function runStyleLatestEffect(request, env, ctx) {
     }
 
     const conversationId = createBody.data.conversationId;
+    let modifyResult;
     try {
-        await startMaterialModify(baseUrl, authHeaders, conversationId, prompt);
+        modifyResult = await runMaterialModify(baseUrl, authHeaders, conversationId, prompt);
     } catch (error) {
         return jsonResponse({
             error: 'MATERIAL_MODIFY_START_FAILED',
-            message: `一键同款已创建，但素材修改接口未成功接收：${error.message}`,
+            message: `一键同款已创建，但素材修改接口未成功生成：${error.message}`,
             conversationId,
             previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`
         }, 502);
+    }
+    if (modifyResult.timedOut && !modifyResult.finalResult) {
+        return jsonResponse({
+            error: 'MATERIAL_MODIFY_TIMEOUT',
+            message: `素材修改已发起，但 ${Math.round(180000 / 1000)} 秒内未生成完成。最后进度：${modifyResult.lastStepName || '暂无步骤'}`,
+            conversationId,
+            previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
+            stepCount: modifyResult.stepCount
+        }, 504);
     }
 
     return jsonResponse({
@@ -240,10 +300,10 @@ async function runStyleLatestEffect(request, env, ctx) {
         styleName,
         conversationId,
         previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
-        finalResult: null,
-        stepCount: null,
+        finalResult: modifyResult.finalResult || null,
+        stepCount: modifyResult.stepCount,
         screenshotUrl: null,
-        message: '已创建一键同款会话，素材修改接口已接收风格提示词，预览链接已回填。生成完成需要等待上游处理；截图自动回填还需要接入独立截图服务。'
+        message: '已完成一键同款和素材修改，预览链接已回填。截图自动回填还需要接入独立截图服务。'
     }, 200);
 }
 
