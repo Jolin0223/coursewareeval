@@ -1352,6 +1352,9 @@
                                 <div>
                                     <div class="flex items-center justify-between gap-3 mb-1">
                                         <label class="text-sm font-bold text-slate-700" for="style-next-prompt-${style.id}">下一版本参考提示词</label>
+                                        <button onclick="copyTextareaValue(${jsString(`style-next-prompt-${style.id}`)}, '下一版本参考提示词')" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs">
+                                            <i class="fa-regular fa-copy"></i> 复制
+                                        </button>
                                     </div>
                                     <textarea id="style-next-prompt-${style.id}" oninput="updateStyleLatestField('${style.id}', 'nextPrompt', this.value, false)" class="w-full h-56 border border-slate-300 rounded-lg px-3 py-2 text-xs leading-relaxed outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHtml(nextPrompt)}</textarea>
                                 </div>
@@ -1990,6 +1993,9 @@
                                 <div>
                                     <div class="flex items-center justify-between gap-3 mb-1">
                                         <label class="text-sm font-bold text-slate-700" for="template-next-prompt-${escapeAttr(item.id)}">当前/下一版套用玩法提示词</label>
+                                        <button onclick="copyTextareaValue(${jsString(`template-next-prompt-${item.id}`)}, '套用玩法提示词')" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs">
+                                            <i class="fa-regular fa-copy"></i> 复制
+                                        </button>
                                     </div>
                                     <textarea id="template-next-prompt-${escapeAttr(item.id)}" oninput="updateTemplateLatestField('${escapeAttr(item.id)}', 'nextPrompt', this.value, false)" class="w-full h-72 border border-slate-300 rounded-lg px-3 py-2 text-xs leading-relaxed outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHtml(currentPrompt)}</textarea>
                                 </div>
@@ -2198,6 +2204,32 @@
 
         function jsString(value) {
             return JSON.stringify(String(value ?? '')).replace(/</g, '\\u003C');
+        }
+
+        async function copyTextareaValue(textareaId, label = '内容') {
+            const area = document.getElementById(textareaId);
+            if (!area) return showToast('没有找到可复制内容。', 'warning');
+            const value = area.value || '';
+            if (!value.trim()) return showToast(`${label}为空，暂时不能复制。`, 'warning');
+            try {
+                if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(value);
+                } else {
+                    const helper = document.createElement('textarea');
+                    helper.value = value;
+                    helper.setAttribute('readonly', '');
+                    helper.style.position = 'fixed';
+                    helper.style.left = '-9999px';
+                    helper.style.top = '0';
+                    document.body.appendChild(helper);
+                    helper.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(helper);
+                }
+                showToast(`已复制${label}。`, 'success');
+            } catch (error) {
+                showToast('复制失败，请手动选中内容复制。', 'error');
+            }
         }
 
         function renderCustomSelect(config) {
