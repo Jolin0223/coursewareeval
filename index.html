@@ -618,6 +618,37 @@
         </div>
     </div>
 
+    <div id="style-run-config-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[999990] flex items-center justify-center modal-enter backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-[560px] max-w-full mx-4 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-black text-slate-800">配置一键同款素材</h3>
+                    <p class="text-xs text-slate-500 mt-1">系统会用这里的素材先创建会话，再用当前风格提示词生成最新版效果。</p>
+                </div>
+                <button type="button" onclick="closeStyleRunConfigModal()" class="w-9 h-9 rounded-lg text-slate-400 hover:bg-slate-200 hover:text-slate-700 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <label class="block text-sm font-bold text-slate-700">
+                    素材名称
+                    <input id="style-run-material-name" type="text" class="mt-2 w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="彩虹气球派对">
+                </label>
+                <label class="block text-sm font-bold text-slate-700">
+                    ZIP 文件 URL
+                    <input id="style-run-zip-url" type="text" class="mt-2 w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="https://aigc-cdn.xdf.cn/.../package.zip">
+                </label>
+                <div id="style-run-config-error" class="hidden text-xs font-bold text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2"></div>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
+                <button type="button" onclick="closeStyleRunConfigModal()" class="px-5 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-100 transition">取消</button>
+                <button type="button" id="style-run-submit-btn" onclick="confirmStyleRunConfig()" class="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 shadow-sm transition">
+                    <i class="fa-solid fa-play mr-2"></i>开始生成
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="custom-toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[999999] flex items-center px-5 py-3.5 bg-slate-800 text-white text-sm font-bold rounded-xl shadow-2xl pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-12">
         <i id="custom-toast-icon" class="fa-solid fa-circle-info text-blue-400 mr-3 text-lg"></i>
         <span id="custom-toast-msg" class="tracking-wide">提示信息</span>
@@ -778,6 +809,11 @@
         let currentEditingTaskId = null;
         let currentTab = 'pending';
         const STYLE_EVAL_STORAGE_KEY = 'coursewareeval.style-workbench.v1';
+        const STYLE_RUN_CONFIG_STORAGE_KEY = 'coursewareeval.style-run-config.v1';
+        const DEFAULT_STYLE_RUN_CONFIG = {
+            materialName: '彩虹气球派对',
+            zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
+        };
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
         const STYLE_RUN_POLL_INTERVAL_MS = 10000;
         const STYLE_RUN_ACTIVE_WINDOW_MS = 20 * 60 * 1000;
@@ -786,6 +822,7 @@
         let styleEvalQuery = '';
         let hasLoadedStyleEval = false;
         const styleRunPollTimers = {};
+        let pendingStyleRunId = '';
         let templatePromptData = { columns: [], templates: [] };
         let templatePromptState = loadTemplatePromptState();
         let templatePromptQuery = '';
@@ -1045,6 +1082,79 @@
             localStorage.setItem(STYLE_EVAL_STORAGE_KEY, JSON.stringify(styleEvalState));
         }
 
+        function loadStyleRunConfig() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(STYLE_RUN_CONFIG_STORAGE_KEY) || '{}');
+                return {
+                    materialName: String(parsed.materialName || DEFAULT_STYLE_RUN_CONFIG.materialName).trim(),
+                    zipUrl: String(parsed.zipUrl || DEFAULT_STYLE_RUN_CONFIG.zipUrl).trim()
+                };
+            } catch (e) {
+                return { ...DEFAULT_STYLE_RUN_CONFIG };
+            }
+        }
+
+        function saveStyleRunConfig(config) {
+            localStorage.setItem(STYLE_RUN_CONFIG_STORAGE_KEY, JSON.stringify({
+                materialName: String(config.materialName || '').trim(),
+                zipUrl: String(config.zipUrl || '').trim()
+            }));
+        }
+
+        function setStyleRunConfigError(message) {
+            const errorBox = document.getElementById('style-run-config-error');
+            if (!errorBox) return;
+            if (message) {
+                errorBox.textContent = message;
+                errorBox.classList.remove('hidden');
+            } else {
+                errorBox.textContent = '';
+                errorBox.classList.add('hidden');
+            }
+        }
+
+        function openStyleRunConfigModal(styleId) {
+            pendingStyleRunId = styleId;
+            const config = loadStyleRunConfig();
+            const nameInput = document.getElementById('style-run-material-name');
+            const zipInput = document.getElementById('style-run-zip-url');
+            if (nameInput) nameInput.value = config.materialName;
+            if (zipInput) zipInput.value = config.zipUrl;
+            setStyleRunConfigError('');
+            const modal = document.getElementById('style-run-config-modal');
+            if (modal) modal.classList.remove('hidden');
+            setTimeout(() => nameInput?.focus(), 50);
+        }
+
+        function closeStyleRunConfigModal() {
+            const modal = document.getElementById('style-run-config-modal');
+            if (modal) modal.classList.add('hidden');
+            pendingStyleRunId = '';
+            setStyleRunConfigError('');
+        }
+
+        function confirmStyleRunConfig() {
+            const styleId = pendingStyleRunId;
+            const materialName = document.getElementById('style-run-material-name')?.value.trim() || '';
+            const zipUrl = document.getElementById('style-run-zip-url')?.value.trim() || '';
+            if (!styleId) return;
+            if (!materialName) {
+                setStyleRunConfigError('请填写素材名称。');
+                return;
+            }
+            if (!/^https?:\/\//i.test(zipUrl)) {
+                setStyleRunConfigError('请填写以 http:// 或 https:// 开头的 ZIP 文件 URL。');
+                return;
+            }
+            const config = { materialName, zipUrl };
+            saveStyleRunConfig(config);
+            const modal = document.getElementById('style-run-config-modal');
+            if (modal) modal.classList.add('hidden');
+            pendingStyleRunId = '';
+            setStyleRunConfigError('');
+            runLatestStyleEffect(styleId, config);
+        }
+
         async function ensureStyleEvalData() {
             if (hasLoadedStyleEval) return;
             try {
@@ -1300,7 +1410,7 @@
                                 <p class="text-sm text-slate-500 mt-1">默认先看最新版效果；过程版效果保留在下方用于追溯。</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="runLatestStyleEffect('${style.id}')" ${isRunningLatest ? 'disabled' : ''} data-tooltip="登录管理员后自动调用一键同款和素材修改接口，后台生成完成后回填状态。" class="ce-has-tooltip px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed">
+                                <button onclick="openStyleRunConfigModal('${style.id}')" ${isRunningLatest ? 'disabled' : ''} data-tooltip="填写一键同款素材名称和 ZIP 地址后，自动调用一键同款和素材修改接口。" class="ce-has-tooltip px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed">
                                     <i class="fa-solid ${isRunningLatest ? 'fa-circle-notch fa-spin' : 'fa-play'} mr-1"></i> ${isRunningLatest ? '生成中' : '跑最新版效果'}
                                 </button>
                                 <button onclick="saveNextStylePrompt('${style.id}')" data-tooltip="只把右侧“下一版本参考提示词”保存到本机草稿，不会下载 Excel，也不会写入开发库。" class="ce-has-tooltip px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50">
@@ -1578,11 +1688,18 @@
             });
         }
 
-        async function runLatestStyleEffect(styleId) {
+        async function runLatestStyleEffect(styleId, runConfig = loadStyleRunConfig()) {
             const style = (styleEvalData.styles || []).find(item => item.id === styleId);
             if (!style) return;
             const latest = getLatestStyleVersion(style);
             const record = getStyleRecord(styleId);
+            const materialName = String(runConfig.materialName || '').trim();
+            const zipUrl = String(runConfig.zipUrl || '').trim();
+            if (!materialName || !/^https?:\/\//i.test(zipUrl)) {
+                openStyleRunConfigModal(styleId);
+                setStyleRunConfigError('请先补齐素材名称和有效的 ZIP 文件 URL。');
+                return;
+            }
             if (!dbClient) return showToast('当前环境无法校验登录态，不能调用自动生成接口。', 'error');
             const { data: { session } } = await dbClient.auth.getSession();
             if (!session || !currentUser) {
@@ -1626,6 +1743,8 @@
                         styleName: style.displayName,
                         versionId: latest.id || '',
                         versionLabel: latest.label || '',
+                        materialName,
+                        zipUrl,
                         prompt
                     })
                 });

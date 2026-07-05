@@ -414,8 +414,13 @@ async function runStyleLatestEffect(request, env, ctx) {
     const payload = await request.json();
     const prompt = String(payload.prompt || '').trim();
     const styleName = String(payload.styleName || payload.styleId || '画面风格').trim();
+    const materialName = String(payload.materialName || '彩虹气球派对').trim();
+    const zipUrl = String(payload.zipUrl || 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip').trim();
     if (!prompt) {
         return jsonResponse({ error: 'MISSING_PROMPT', message: '最新版提示词为空，不能运行。' }, 400);
+    }
+    if (!materialName || !/^https?:\/\//i.test(zipUrl)) {
+        return jsonResponse({ error: 'MISSING_CREATE_SAME_PARAMS', message: '请填写素材名称和有效的 ZIP 文件 URL。' }, 400);
     }
 
     const configuredBaseUrl = String(env.KPM_BASE_URL || 'https://box.xdf.cn').replace(/\/+$/, '');
@@ -453,8 +458,8 @@ async function runStyleLatestEffect(request, env, ctx) {
                 },
                 body: JSON.stringify({
                     creatorEmail: 'chenjialing12@xdf.cn',
-                    materialName: '彩虹气球派对',
-                    zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
+                    materialName,
+                    zipUrl
                 })
             }, 25000);
             const createText = await createResponse.text();
