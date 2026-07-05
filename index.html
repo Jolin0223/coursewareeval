@@ -779,10 +779,13 @@
         let currentTab = 'pending';
         const STYLE_EVAL_STORAGE_KEY = 'coursewareeval.style-workbench.v1';
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
+        const STYLE_RUN_POLL_INTERVAL_MS = 10000;
+        const STYLE_RUN_ACTIVE_WINDOW_MS = 20 * 60 * 1000;
         let styleEvalData = { styles: [] };
         let styleEvalState = loadStyleEvalState();
         let styleEvalQuery = '';
         let hasLoadedStyleEval = false;
+        const styleRunPollTimers = {};
         let templatePromptData = { columns: [], templates: [] };
         let templatePromptState = loadTemplatePromptState();
         let templatePromptQuery = '';
@@ -959,6 +962,7 @@
             try { if (dbClient) { const { data: { session } } = await dbClient.auth.getSession(); currentUser = session ? session.user : null; } } catch(e) {}
             try { updateUserProfileUI(); } catch(e) {}
             try { await fetchTasksFromDB(); } catch(e) {}
+            try { await resumeActiveStyleRunPolling(); } catch(e) {}
         }
 
         async function fetchTasksFromDB() {
@@ -1014,6 +1018,7 @@
                 const { data, error } = await dbClient.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 currentUser = data.user; closeLoginModal(); updateUserProfileUI(); renderTeacherList(); showToast("登录成功", "success");
+                resumeActiveStyleRunPolling();
                 if (targetAdminView) { attemptAdminAccess(targetAdminView); targetAdminView = ''; }
             } catch (e) {
                 if(errorBox) { errorBox.innerText = "账号或密码错误，请重试"; errorBox.classList.remove('hidden'); }
@@ -1065,6 +1070,99 @@
             if (!styleEvalState.records[styleId].latest) styleEvalState.records[styleId].latest = {};
             if (!styleEvalState.records[styleId].versions) styleEvalState.records[styleId].versions = {};
             return styleEvalState.records[styleId];
+        }
+
+        function isStyleRunActive(latestState) {
+            if (!latestState?.runId) return false;
+            if (!['running', 'submitted', 'modifying', 'created'].includes(latestState.runStatus)) return false;
+            const startedAt = Date.parse(latestState.runStartedAt || latestState.runUpdatedAt || '');
+            return !startedAt || (Date.now() - startedAt < STYLE_RUN_ACTIVE_WINDOW_MS);
+        }
+
+        function clearStyleRunPolling(styleId) {
+            if (styleRunPollTimers[styleId]) {
+                clearTimeout(styleRunPollTimers[styleId]);
+                delete styleRunPollTimers[styleId];
+            }
+        }
+
+        async function resumeActiveStyleRunPolling() {
+            if (!dbClient || !currentUser || currentUser.email !== ADMIN_EMAIL) return;
+            const { data: { session } } = await dbClient.auth.getSession();
+            if (!session?.access_token) return;
+            Object.entries(styleEvalState.records || {}).forEach(([styleId, record]) => {
+                if (isStyleRunActive(record.latest)) {
+                    startStyleRunPolling(styleId, record.latest.runId, session.access_token);
+                }
+            });
+        }
+
+        function applyStyleRunStatus(styleId, statusBody) {
+            const record = getStyleRecord(styleId);
+            const latest = record.latest;
+            latest.runStatus = statusBody.status || latest.runStatus || 'modifying';
+            latest.runUpdatedAt = statusBody.updatedAt || new Date().toISOString();
+            latest.runMessage = statusBody.message || latest.runMessage || '';
+            latest.lastStepName = statusBody.lastStepName || latest.lastStepName || '';
+            latest.stepCount = statusBody.stepCount ?? latest.stepCount ?? null;
+            latest.effectUrl = statusBody.previewUrl || latest.effectUrl || '';
+            latest.conversationId = statusBody.conversationId || latest.conversationId || '';
+            if (statusBody.finalResult) latest.finalResult = statusBody.finalResult;
+            if (statusBody.status === 'done') {
+                latest.generatedAt = new Date().toISOString();
+                latest.runError = '';
+            }
+            if (['failed', 'timeout'].includes(statusBody.status)) {
+                latest.runError = statusBody.message || '后台生成没有正常完成。';
+            }
+            saveStyleEvalState();
+            renderStyleEvalWorkbench();
+        }
+
+        function startStyleRunPolling(styleId, runId, accessToken) {
+            if (!runId || !accessToken) return;
+            clearStyleRunPolling(styleId);
+            const poll = async () => {
+                try {
+                    const response = await fetch(`/api/style-eval/run-status/${encodeURIComponent(runId)}`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                        cache: 'no-store'
+                    });
+                    const text = await response.text();
+                    let body = {};
+                    try { body = text ? JSON.parse(text) : {}; } catch (e) { body = { raw: text }; }
+                    if (!response.ok || body.error) {
+                        const record = getStyleRecord(styleId);
+                        record.latest.pollErrorCount = (record.latest.pollErrorCount || 0) + 1;
+                        record.latest.runMessage = body.message || `暂时查不到后台状态（${response.status}）`;
+                        saveStyleEvalState();
+                        if (record.latest.pollErrorCount >= 6) {
+                            renderStyleEvalWorkbench();
+                            return;
+                        }
+                    } else {
+                        applyStyleRunStatus(styleId, body);
+                        const record = getStyleRecord(styleId);
+                        record.latest.pollErrorCount = 0;
+                        if (['done', 'failed', 'timeout'].includes(body.status)) {
+                            clearStyleRunPolling(styleId);
+                            if (body.status === 'done') showToast('最新版素材修改已完成，效果链接已回填。', 'success');
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    const record = getStyleRecord(styleId);
+                    record.latest.pollErrorCount = (record.latest.pollErrorCount || 0) + 1;
+                    record.latest.runMessage = `后台状态查询失败：${error.message || error}`;
+                    saveStyleEvalState();
+                    if (record.latest.pollErrorCount >= 6) {
+                        renderStyleEvalWorkbench();
+                        return;
+                    }
+                }
+                styleRunPollTimers[styleId] = setTimeout(poll, STYLE_RUN_POLL_INTERVAL_MS);
+            };
+            poll();
         }
 
         function getLatestStyleVersion(style) {
@@ -1189,7 +1287,7 @@
             const nextPrompt = latestState.nextPrompt || buildNextPromptDraft(style, latest, issueText, solutionText);
             const historyVersions = [...(style.versions || [])].reverse().filter(version => version.id !== latest.id);
             const versionCards = historyVersions.map(version => renderStyleVersionHistory(style, version)).join('');
-            const isRunningLatest = latestState.runStatus === 'running';
+            const isRunningLatest = isStyleRunActive(latestState);
             return `
                 <div class="space-y-6">
                     <section class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
@@ -1199,7 +1297,7 @@
                                 <p class="text-sm text-slate-500 mt-1">默认先看最新版效果；过程版效果保留在下方用于追溯。</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button onclick="runLatestStyleEffect('${style.id}')" ${isRunningLatest ? 'disabled' : ''} data-tooltip="登录管理员后自动调用一键同款和素材修改接口，跑出最新版效果并回填链接。" class="ce-has-tooltip px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed">
+                                <button onclick="runLatestStyleEffect('${style.id}')" ${isRunningLatest ? 'disabled' : ''} data-tooltip="登录管理员后自动调用一键同款和素材修改接口，后台生成完成后回填状态。" class="ce-has-tooltip px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed">
                                     <i class="fa-solid ${isRunningLatest ? 'fa-circle-notch fa-spin' : 'fa-play'} mr-1"></i> ${isRunningLatest ? '生成中' : '跑最新版效果'}
                                 </button>
                                 <button onclick="saveNextStylePrompt('${style.id}')" data-tooltip="只把右侧“下一版本参考提示词”保存到本机草稿，不会下载 Excel，也不会写入开发库。" class="ce-has-tooltip px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg text-sm font-bold hover:bg-slate-50">
@@ -1318,11 +1416,16 @@
 
         function renderStyleRunNotice(latestState) {
             if (!latestState.runStatus && !latestState.runError && !latestState.generatedAt) return '';
-            if (latestState.runStatus === 'running') {
-                return `<div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-sm font-bold text-blue-700"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在调用一键同款和素材修改接口生成最新版效果，完整生成可能需要 5-10 分钟，请不要重复点击。</div>`;
+            if (['running', 'submitted', 'modifying', 'created'].includes(latestState.runStatus)) {
+                const progress = latestState.lastStepName ? ` 当前进度：${escapeHtml(latestState.lastStepName)}。` : '';
+                const message = latestState.runMessage ? ` ${escapeHtml(latestState.runMessage)}` : '';
+                return `<div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-sm font-bold text-blue-700"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>已发起一键同款和素材修改，链接会先回填，后台完整生成通常需要 5-10 分钟。${progress}${message}</div>`;
             }
             if (latestState.runStatus === 'failed') {
                 return `<div class="px-6 py-3 bg-red-50 border-b border-red-100 text-sm font-bold text-red-700"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${escapeHtml(latestState.runError || '最新版效果生成失败')}</div>`;
+            }
+            if (latestState.runStatus === 'timeout') {
+                return `<div class="px-6 py-3 bg-amber-50 border-b border-amber-100 text-sm font-bold text-amber-700"><i class="fa-solid fa-clock mr-2"></i>${escapeHtml(latestState.runError || latestState.runMessage || '后台生成还没有返回完成信号，请稍后打开链接确认。')}</div>`;
             }
             if (latestState.generatedAt) {
                 return `<div class="px-6 py-3 bg-green-50 border-b border-green-100 text-sm font-bold text-green-700"><i class="fa-solid fa-circle-check mr-2"></i>最新版效果已完成一键同款和素材修改，链接已回填。截图自动回填需要接入截图服务。</div>`;
@@ -1491,6 +1594,8 @@
 
             record.latest.runStatus = 'running';
             record.latest.runError = '';
+            record.latest.runMessage = '';
+            record.latest.pollErrorCount = 0;
             record.latest.runStartedAt = new Date().toISOString();
             saveStyleEvalState();
             renderStyleEvalWorkbench();
@@ -1520,18 +1625,28 @@
 
                 record.latest.effectUrl = body.previewUrl || '';
                 record.latest.conversationId = body.conversationId || '';
+                record.latest.runId = body.runId || '';
                 record.latest.finalResult = body.finalResult || null;
-                record.latest.runStatus = 'done';
-                record.latest.generatedAt = new Date().toISOString();
+                record.latest.runStatus = body.status || 'modifying';
+                record.latest.runUpdatedAt = new Date().toISOString();
                 record.latest.runMessage = body.message || '';
+                if (body.status === 'done') {
+                    record.latest.generatedAt = new Date().toISOString();
+                }
                 if (body.screenshotUrl) {
                     const screenshots = normalizeLatestStyleScreenshots(record);
                     if (!screenshots.includes(body.screenshotUrl)) screenshots.unshift(body.screenshotUrl);
                     record.latest.screenshot = screenshots[0] || '';
                     record.latest.screenshotIndex = 0;
                 }
-                showToast(body.message || '最新版效果已完成生成，效果链接已自动回填。', 'success');
+                if (body.runId && body.status !== 'done') {
+                    startStyleRunPolling(styleId, body.runId, session.access_token);
+                    showToast(body.message || '已发起后台生成，效果链接已先回填。', 'info');
+                } else {
+                    showToast(body.message || '最新版效果已完成生成，效果链接已自动回填。', 'success');
+                }
             } catch (error) {
+                clearStyleRunPolling(styleId);
                 record.latest.runStatus = 'failed';
                 record.latest.runError = error.message || String(error);
                 showToast(`自动生成失败：${record.latest.runError}`, 'error');

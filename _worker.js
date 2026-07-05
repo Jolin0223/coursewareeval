@@ -22,6 +22,7 @@ function apiErrorResponse(error, fallbackStatus = 500) {
 }
 
 const MATERIAL_MODIFY_TIMEOUT_MS = 600000;
+const STYLE_RUN_STATUS_TTL_SECONDS = 60 * 60 * 6;
 
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
@@ -141,6 +142,102 @@ async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt) {
     return readMaterialModifyStream(response, MATERIAL_MODIFY_TIMEOUT_MS);
 }
 
+function buildStyleRunStatusKey(origin, runId) {
+    return new Request(`${origin.replace(/\/+$/, '')}/api/style-eval/run-status/${encodeURIComponent(runId)}`);
+}
+
+async function putStyleRunStatus(origin, runId, status) {
+    if (!globalThis.caches?.default) return;
+    try {
+        await caches.default.put(
+            buildStyleRunStatusKey(origin, runId),
+            new Response(JSON.stringify({
+                ...status,
+                runId,
+                updatedAt: new Date().toISOString()
+            }, null, 2), {
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Cache-Control': `public, max-age=${STYLE_RUN_STATUS_TTL_SECONDS}`
+                }
+            })
+        );
+    } catch (error) {
+        console.warn('style run status cache put failed', error);
+    }
+}
+
+async function readStyleRunStatus(request, env) {
+    if (request.method !== 'GET') {
+        return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only GET is supported.' }, 405);
+    }
+    const adminCheck = await verifyAdminUser(request, env);
+    if (!adminCheck.ok) return adminCheck.response;
+
+    const url = new URL(request.url);
+    const runId = decodeURIComponent(url.pathname.replace('/api/style-eval/run-status/', '')).trim();
+    if (!runId) {
+        return jsonResponse({ error: 'MISSING_RUN_ID', message: '缺少运行任务 ID。' }, 400);
+    }
+    if (!globalThis.caches?.default) {
+        return jsonResponse({
+            error: 'RUN_STATUS_UNAVAILABLE',
+            message: '当前运行环境不支持后台状态缓存。'
+        }, 404);
+    }
+
+    const cached = await caches.default.match(buildStyleRunStatusKey(url.origin, runId));
+    if (!cached) {
+        return jsonResponse({
+            error: 'RUN_STATUS_NOT_FOUND',
+            message: '没有找到这个生成任务的后台状态，可能任务已过期或部署节点已切换。'
+        }, 404);
+    }
+    const response = new Response(cached.body, cached);
+    response.headers.set('Cache-Control', 'no-store');
+    return response;
+}
+
+async function drainMaterialModifyJob(origin, runId, baseUrl, authHeaders, conversationId, prompt) {
+    try {
+        await putStyleRunStatus(origin, runId, {
+            status: 'modifying',
+            conversationId,
+            previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
+            message: '素材修改接口已接收，正在等待最终生成结果。'
+        });
+        const modifyResult = await runMaterialModify(baseUrl, authHeaders, conversationId, prompt);
+        if (modifyResult.timedOut && !modifyResult.finalResult) {
+            await putStyleRunStatus(origin, runId, {
+                status: 'timeout',
+                conversationId,
+                previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
+                stepCount: modifyResult.stepCount,
+                lastStepName: modifyResult.lastStepName,
+                message: `素材修改仍在上游处理中，${Math.round(MATERIAL_MODIFY_TIMEOUT_MS / 1000)} 秒内未收到最终完成信号。`
+            });
+            return;
+        }
+        await putStyleRunStatus(origin, runId, {
+            status: 'done',
+            conversationId,
+            previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
+            finalResult: modifyResult.finalResult || null,
+            stepCount: modifyResult.stepCount,
+            lastStepName: modifyResult.lastStepName,
+            message: '已完成一键同款和素材修改，预览链接已回填。截图自动回填还需要接入独立截图服务。'
+        });
+    } catch (error) {
+        await putStyleRunStatus(origin, runId, {
+            status: 'failed',
+            conversationId,
+            previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
+            message: `一键同款已创建，但素材修改没有完成：${error.message || String(error)}`
+        });
+    }
+}
+
 async function verifyAdminUser(request, env) {
     if (!env.SUPABASE_URL || typeof env.SUPABASE_URL !== 'string') {
         return {
@@ -234,6 +331,7 @@ async function runStyleLatestEffect(request, env, ctx) {
     if (request.method !== 'POST') {
         return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only POST is supported.' }, 405);
     }
+    const url = new URL(request.url);
 
     const adminCheck = await verifyAdminUser(request, env);
     if (!adminCheck.ok) return adminCheck.response;
@@ -276,37 +374,34 @@ async function runStyleLatestEffect(request, env, ctx) {
     }
 
     const conversationId = createBody.data.conversationId;
-    let modifyResult;
-    try {
-        modifyResult = await runMaterialModify(baseUrl, authHeaders, conversationId, prompt);
-    } catch (error) {
-        return jsonResponse({
-            error: 'MATERIAL_MODIFY_START_FAILED',
-            message: `一键同款已创建，但素材修改接口未成功生成：${error.message}`,
-            conversationId,
-            previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`
-        }, 502);
-    }
-    if (modifyResult.timedOut && !modifyResult.finalResult) {
-        return jsonResponse({
-            error: 'MATERIAL_MODIFY_TIMEOUT',
-            message: `素材修改已发起，但 ${Math.round(MATERIAL_MODIFY_TIMEOUT_MS / 1000)} 秒内未生成完成。最后进度：${modifyResult.lastStepName || '暂无步骤'}`,
-            conversationId,
-            previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
-            stepCount: modifyResult.stepCount
-        }, 504);
+    const previewUrl = `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`;
+    const runId = crypto.randomUUID();
+    await putStyleRunStatus(url.origin, runId, {
+        status: 'created',
+        styleName,
+        conversationId,
+        previewUrl,
+        message: '已创建一键同款会话，正在后台启动素材修改。'
+    });
+    const backgroundJob = drainMaterialModifyJob(url.origin, runId, baseUrl, authHeaders, conversationId, prompt);
+    if (ctx?.waitUntil) {
+        ctx.waitUntil(backgroundJob);
+    } else {
+        backgroundJob.catch(error => console.warn('material-modify background failed', error));
     }
 
     return jsonResponse({
         ok: true,
+        status: 'modifying',
+        runId,
         styleName,
         conversationId,
-        previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
-        finalResult: modifyResult.finalResult || null,
-        stepCount: modifyResult.stepCount,
+        previewUrl,
+        finalResult: null,
+        stepCount: null,
         screenshotUrl: null,
-        message: '已完成一键同款和素材修改，预览链接已回填。截图自动回填还需要接入独立截图服务。'
-    }, 200);
+        message: '已创建一键同款会话，素材修改已在后台持续生成。链接已先回填，完整生成通常需要 5-10 分钟。'
+    }, 202);
 }
 
 export default {
@@ -420,6 +515,15 @@ export default {
                 return await runStyleLatestEffect(request, env, ctx);
             } catch (error) {
                 error.code = error.code || 'STYLE_RUN_LATEST_ERROR';
+                return apiErrorResponse(error, error.status || 502);
+            }
+        }
+
+        if (url.pathname.startsWith('/api/style-eval/run-status/')) {
+            try {
+                return await readStyleRunStatus(request, env);
+            } catch (error) {
+                error.code = error.code || 'STYLE_RUN_STATUS_ERROR';
                 return apiErrorResponse(error, error.status || 502);
             }
         }
