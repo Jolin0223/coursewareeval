@@ -1319,7 +1319,7 @@
         function renderStyleRunNotice(latestState) {
             if (!latestState.runStatus && !latestState.runError && !latestState.generatedAt) return '';
             if (latestState.runStatus === 'running') {
-                return `<div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-sm font-bold text-blue-700"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在调用一键同款和素材修改接口生成最新版效果，请不要重复点击。</div>`;
+                return `<div class="px-6 py-3 bg-blue-50 border-b border-blue-100 text-sm font-bold text-blue-700"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>正在调用一键同款和素材修改接口生成最新版效果，完整生成可能需要 5-10 分钟，请不要重复点击。</div>`;
             }
             if (latestState.runStatus === 'failed') {
                 return `<div class="px-6 py-3 bg-red-50 border-b border-red-100 text-sm font-bold text-red-700"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${escapeHtml(latestState.runError || '最新版效果生成失败')}</div>`;

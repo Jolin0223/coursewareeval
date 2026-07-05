@@ -21,6 +21,8 @@ function apiErrorResponse(error, fallbackStatus = 500) {
     }, error.status || fallbackStatus);
 }
 
+const MATERIAL_MODIFY_TIMEOUT_MS = 600000;
+
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
     const parsedBase = new URL(normalizedBase);
@@ -136,7 +138,7 @@ async function runMaterialModify(baseUrl, authHeaders, conversationId, prompt) {
     if (!response.ok) {
         throw new Error(`素材修改接口返回 ${response.status}`);
     }
-    return readMaterialModifyStream(response, 180000);
+    return readMaterialModifyStream(response, MATERIAL_MODIFY_TIMEOUT_MS);
 }
 
 async function verifyAdminUser(request, env) {
@@ -288,7 +290,7 @@ async function runStyleLatestEffect(request, env, ctx) {
     if (modifyResult.timedOut && !modifyResult.finalResult) {
         return jsonResponse({
             error: 'MATERIAL_MODIFY_TIMEOUT',
-            message: `素材修改已发起，但 ${Math.round(180000 / 1000)} 秒内未生成完成。最后进度：${modifyResult.lastStepName || '暂无步骤'}`,
+            message: `素材修改已发起，但 ${Math.round(MATERIAL_MODIFY_TIMEOUT_MS / 1000)} 秒内未生成完成。最后进度：${modifyResult.lastStepName || '暂无步骤'}`,
             conversationId,
             previewUrl: `${baseUrl.replace(/^http:/, 'https:')}/kpm/${conversationId}`,
             stepCount: modifyResult.stepCount
