@@ -1169,7 +1169,7 @@
         async function ensureStyleEvalData() {
             if (hasLoadedStyleEval) return;
             try {
-                const res = await fetch('./data/style-eval-seed.json?v=20260706-style-v9', { cache: 'no-store' });
+                const res = await fetch('./data/style-eval-seed.json?v=20260706-style-v10', { cache: 'no-store' });
                 styleEvalData = await res.json();
                 styleEvalData.styles = styleEvalData.styles || [];
                 if (!styleEvalState.selectedStyleId && styleEvalData.styles[0]) {
