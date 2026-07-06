@@ -1169,7 +1169,7 @@
         async function ensureStyleEvalData() {
             if (hasLoadedStyleEval) return;
             try {
-                const res = await fetch('./data/style-eval-seed.json?v=20260706-style-v8-r3', { cache: 'no-store' });
+                const res = await fetch('./data/style-eval-seed.json?v=20260706-style-v8-r4', { cache: 'no-store' });
                 styleEvalData = await res.json();
                 styleEvalData.styles = styleEvalData.styles || [];
                 if (!styleEvalState.selectedStyleId && styleEvalData.styles[0]) {
@@ -1512,7 +1512,7 @@
             const latestUrl = latestState.effectUrl || latest.effectUrl || '';
             const issueText = latestState.issues ?? latest.issue ?? '';
             const solutionText = latestState.solution || '';
-            const nextPrompt = latestState.nextPrompt || buildNextPromptDraft(style, latest, issueText, solutionText);
+            const nextPrompt = stripPromptRevisionNotes(latestState.nextPrompt || buildNextPromptDraft(style, latest, issueText, solutionText));
             const historyVersions = [...(style.versions || [])].reverse().filter(version => version.id !== latest.id);
             const versionCards = historyVersions.map(version => renderStyleVersionHistory(style, version)).join('');
             const isRunningLatest = isStyleRunActive(latestState);
@@ -2034,12 +2034,12 @@
             return latest.runStatus;
         }
 
+        function stripPromptRevisionNotes(value = '') {
+            return String(value || '').replace(/\n{2,}【下一版本修正规则】[\s\S]*$/m, '').trim();
+        }
+
         function buildNextPromptDraft(style, latest, issueText, solutionText) {
-            const basePrompt = style.finalPrompt || latest.prompt || '';
-            const issue = (issueText || '').trim();
-            const solution = (solutionText || '').trim();
-            if (!issue && !solution) return basePrompt;
-            return `${basePrompt}\n\n【下一版本修正规则】\n${issue ? `1. 本轮发现的问题：${issue}\n` : ''}${solution ? `2. 下一版解决方法：${solution}\n` : ''}3. 保持原课件内容、题型、交互流程和按钮功能不变，只修正上述效果问题。`;
+            return stripPromptRevisionNotes(style.finalPrompt || latest.prompt || '');
         }
 
         function regenerateStylePromptDraft(styleId) {
@@ -2052,13 +2052,15 @@
             const area = document.getElementById(`style-next-prompt-${styleId}`);
             if (area) area.value = draft;
             updateStyleLatestField(styleId, 'nextPrompt', draft, false);
-            showToast('已按问题和解决方法重新覆盖生成下一版参考提示词。', 'success');
+            showToast('已用最新版正式提示词覆盖下一版参考提示词。', 'success');
         }
 
         function saveNextStylePrompt(styleId) {
             const area = document.getElementById(`style-next-prompt-${styleId}`);
             if (!area) return;
-            updateStyleLatestField(styleId, 'nextPrompt', area.value, false);
+            const cleanPrompt = stripPromptRevisionNotes(area.value);
+            area.value = cleanPrompt;
+            updateStyleLatestField(styleId, 'nextPrompt', cleanPrompt, false);
             showToast('下一版参考提示词已保存到本机。', 'success');
         }
 
@@ -2159,7 +2161,7 @@
         }
 
         function getTemplateCurrentPrompt(item, latest = {}) {
-            return hasCurrentTemplateDraft(item, latest) ? latest.nextPrompt : (item.adaptationText || '');
+            return stripPromptRevisionNotes(hasCurrentTemplateDraft(item, latest) ? latest.nextPrompt : (item.adaptationText || ''));
         }
 
         function renderTemplatePromptWorkbench() {
@@ -2346,7 +2348,7 @@
 
         function updateTemplateLatestField(templateId, field, value, rerender = false) {
             const record = getTemplateRecord(templateId);
-            record.latest[field] = value;
+            record.latest[field] = field === 'nextPrompt' ? stripPromptRevisionNotes(value) : value;
             if (field === 'nextPrompt') {
                 const item = (templatePromptData.templates || []).find(template => template.id === templateId);
                 record.latest.promptSourceHash = item ? getTemplateSourceHash(item) : '';
@@ -2386,11 +2388,7 @@
         }
 
         function buildTemplatePromptDraft(item, issueText, solutionText) {
-            const basePrompt = item.adaptationText || '';
-            const issue = (issueText || '').trim();
-            const solution = (solutionText || '').trim();
-            if (!issue && !solution) return basePrompt;
-            return `${basePrompt}\n\n【下一版本修正规则】\n${issue ? `1. 本轮发现的问题：${issue}\n` : ''}${solution ? `2. 下一版解决方法：${solution}\n` : ''}3. 保留原模板的核心玩法骨架、适用学科迁移方式和互动流程，只修正上述套用效果问题。`;
+            return stripPromptRevisionNotes(item.adaptationText || '');
         }
 
         function regenerateTemplatePromptDraft(templateId) {
@@ -2402,20 +2400,22 @@
             const area = document.getElementById(`template-next-prompt-${templateId}`);
             if (area) area.value = draft;
             updateTemplateLatestField(templateId, 'nextPrompt', draft, false);
-            showToast('已按问题和解决方法重新覆盖生成套用玩法提示词。', 'success');
+            showToast('已用当前正式提示词覆盖套用玩法提示词。', 'success');
         }
 
         function saveTemplatePromptDraft(templateId) {
             const record = getTemplateRecord(templateId);
             const area = document.getElementById(`template-next-prompt-${templateId}`);
             if (!area) return;
+            const cleanPrompt = stripPromptRevisionNotes(area.value);
+            area.value = cleanPrompt;
             const snapshot = {
                 savedAt: new Date().toISOString(),
-                prompt: area.value,
+                prompt: cleanPrompt,
                 issue: record.latest.issue || '',
                 solution: record.latest.solution || ''
             };
-            record.latest.nextPrompt = area.value;
+            record.latest.nextPrompt = cleanPrompt;
             const item = (templatePromptData.templates || []).find(template => template.id === templateId) || {};
             record.latest.promptSourceHash = getTemplateSourceHash(item);
             record.latest.promptSourceFile = item.promptSourceFile || item.sourcePath || '';
@@ -2440,7 +2440,8 @@
             if (!item) return showToast('未找到模板数据。', 'error');
             const record = getTemplateRecord(templateId);
             const area = document.getElementById(`template-next-prompt-${templateId}`);
-            const prompt = (area?.value || getTemplateCurrentPrompt(item, record.latest || {})).trim();
+            const prompt = stripPromptRevisionNotes(area?.value || getTemplateCurrentPrompt(item, record.latest || {})).trim();
+            if (area) area.value = prompt;
             if (!prompt) return showToast('提示词为空，不能入库。', 'warning');
             record.latest.syncing = true;
             saveTemplatePromptState();
