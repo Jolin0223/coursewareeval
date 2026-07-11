@@ -63,6 +63,14 @@ async function buildKpmAuthHeaders(env) {
     };
 }
 
+function buildKpmStreamHeaders(authHeaders) {
+    return {
+        ...authHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'text/event-stream; charset=utf-8'
+    };
+}
+
 async function fetchWithTimeout(url, options, timeoutMs) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -724,18 +732,17 @@ async function runGenerationPromptVersion(request, env, ctx) {
                 status: 'designing',
                 message: '正在调用方案设计接口。'
             });
-            const designResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/material-design`, {
+            const designUrl = `${baseUrl}/kpm-api/skill/material-design`;
+            const designRequestBody = JSON.stringify({ content: designContent });
+            const designResponse = await fetchWithTimeout(designUrl, {
                 method: 'POST',
-                headers: {
-                    ...authHeaders,
-                    'Content-Type': 'application/json',
-                    Accept: 'text/event-stream; charset=utf-8'
-                },
-                body: JSON.stringify({ content: designContent })
+                headers: buildKpmStreamHeaders(authHeaders),
+                body: designRequestBody
             }, 25000);
             if (!designResponse.ok) {
+                const errorType = designResponse.headers.get('content-type') || '';
                 const errorPreview = (await designResponse.text()).replace(/\s+/g, ' ').slice(0, 240);
-                throw new Error(`方案设计接口返回 ${designResponse.status}${errorPreview ? `：${errorPreview}` : ''}`);
+                throw new Error(`方案设计接口返回 ${designResponse.status}，contentType=${errorType || '-'}，bodyLength=${designRequestBody.length}${errorPreview ? `：${errorPreview}` : ''}`);
             }
             const designResult = await readKpmEventStream(designResponse, MATERIAL_DESIGN_TIMEOUT_MS, async ({ event, conversationId: currentConversationId, stepCount }) => {
                 if (currentConversationId) conversationId = currentConversationId;
@@ -761,18 +768,17 @@ async function runGenerationPromptVersion(request, env, ctx) {
                 conversationId,
                 message: '方案设计完成，正在调用素材创建接口。'
             });
-            const createResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/material-create`, {
+            const createUrl = `${baseUrl}/kpm-api/skill/material-create`;
+            const createRequestBody = JSON.stringify({ conversationId });
+            const createResponse = await fetchWithTimeout(createUrl, {
                 method: 'POST',
-                headers: {
-                    ...authHeaders,
-                    'Content-Type': 'application/json',
-                    Accept: 'text/event-stream; charset=utf-8'
-                },
-                body: JSON.stringify({ conversationId })
+                headers: buildKpmStreamHeaders(authHeaders),
+                body: createRequestBody
             }, 25000);
             if (!createResponse.ok) {
+                const errorType = createResponse.headers.get('content-type') || '';
                 const errorPreview = (await createResponse.text()).replace(/\s+/g, ' ').slice(0, 240);
-                throw new Error(`素材创建接口返回 ${createResponse.status}${errorPreview ? `：${errorPreview}` : ''}`);
+                throw new Error(`素材创建接口返回 ${createResponse.status}，contentType=${errorType || '-'}，bodyLength=${createRequestBody.length}${errorPreview ? `：${errorPreview}` : ''}`);
             }
             const createResult = await readKpmEventStream(createResponse, MATERIAL_CREATE_TIMEOUT_MS, async ({ event, finalResult, stepCount, lastStepName }) => {
                 const text = event.text && typeof event.text === 'object' ? event.text : {};
