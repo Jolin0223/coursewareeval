@@ -1132,7 +1132,7 @@
             const avg = getGenerationScoreAverage(version);
             const statusClass = version.status === 'done' ? 'bg-green-50 text-green-700 border-green-200' : version.status === 'running' ? 'bg-blue-50 text-blue-700 border-blue-200' : version.status === 'failed' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-slate-600 border-slate-200';
             return `
-                <button type="button" onclick="selectGenerationVersion(${jsString(version.id)})" class="w-full text-left p-4 border-b border-slate-100 hover:bg-slate-50 transition ${active ? 'bg-blue-50/70' : 'bg-white'}">
+                <button type="button" onclick="${escapeAttr(`selectGenerationVersion(${jsString(version.id)})`)}" class="w-full text-left p-4 border-b border-slate-100 hover:bg-slate-50 transition ${active ? 'bg-blue-50/70' : 'bg-white'}">
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
                             <div class="font-black text-slate-800 truncate">${escapeHtml(version.label)}</div>
@@ -1156,16 +1156,16 @@
                     <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
                         <div>
                             <div class="flex items-center gap-3">
-                                <input value="${escapeAttr(version.label)}" oninput="updateGenerationVersionField(${jsString(version.id)}, 'label', this.value)" class="w-[220px] border border-transparent bg-transparent rounded-lg px-2 py-1 text-lg font-black text-slate-800 outline-none hover:border-slate-300 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100">
+                                <input value="${escapeAttr(version.label)}" oninput="${escapeAttr(`updateGenerationVersionField(${jsString(version.id)}, 'label', this.value)`)}" class="w-[220px] border border-transparent bg-transparent rounded-lg px-2 py-1 text-lg font-black text-slate-800 outline-none hover:border-slate-300 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100">
                                 ${getGenerationSourceLabel(version) ? `<span class="text-xs font-black text-blue-700 bg-blue-50 border border-blue-100 rounded-full px-2 py-1">${escapeHtml(getGenerationSourceLabel(version))}</span>` : ''}
                             </div>
                             <p class="text-sm text-slate-500 mt-1">当前接口链路会把“用户需求 + 本版系统提示词”组合后发给方案设计接口，再调用素材创建接口生成课件。</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="runGenerationPromptVersion(${jsString(version.id)})" class="ce-tool-btn ce-tool-btn-primary ce-has-tooltip" data-tooltip="调用 material-design 和 material-create，生成本版课件并回填预览链接" ${running ? 'disabled' : ''}>
+                            <button type="button" onclick="${escapeAttr(`runGenerationPromptVersion(${jsString(version.id)})`)}" class="ce-tool-btn ce-tool-btn-primary ce-has-tooltip" data-tooltip="调用 material-design 和 material-create，生成本版课件并回填预览链接" ${running ? 'disabled' : ''}>
                                 <i class="fa-solid fa-play"></i> ${running ? '生成中' : '生成课件'}
                             </button>
-                            <button type="button" onclick="copyTextareaValue(${jsString(`generation-system-prompt-${version.id}`)}, '系统提示词')" class="ce-tool-btn ce-tool-btn-ghost">
+                            <button type="button" onclick="${escapeAttr(`copyTextareaValue(${jsString(`generation-system-prompt-${version.id}`)}, '系统提示词')`)}" class="ce-tool-btn ce-tool-btn-ghost">
                                 <i class="fa-regular fa-copy"></i> 复制提示词
                             </button>
                         </div>
@@ -1174,7 +1174,7 @@
                         <div class="space-y-4 min-w-0">
                             <label class="block text-sm font-bold text-slate-700">
                                 系统提示词
-                                <textarea id="generation-system-prompt-${escapeAttr(version.id)}" oninput="updateGenerationVersionField(${jsString(version.id)}, 'systemPrompt', this.value)" class="mt-2 w-full min-h-[220px] border border-slate-300 rounded-xl px-4 py-3 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-blue-500 resize-y custom-scrollbar" placeholder="输入本版本系统提示词">${escapeHtml(version.systemPrompt)}</textarea>
+                                <textarea id="generation-system-prompt-${escapeAttr(version.id)}" oninput="${escapeAttr(`updateGenerationVersionField(${jsString(version.id)}, 'systemPrompt', this.value)`)}" class="mt-2 w-full min-h-[220px] border border-slate-300 rounded-xl px-4 py-3 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-blue-500 resize-y custom-scrollbar" placeholder="输入本版本系统提示词">${escapeHtml(version.systemPrompt)}</textarea>
                             </label>
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <label class="block text-sm font-bold text-slate-700">
@@ -1190,11 +1190,11 @@
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 <label class="block text-sm font-bold text-slate-700">
                                     本版发现的问题
-                                    <textarea oninput="updateGenerationVersionField(${jsString(version.id)}, 'issues', this.value)" class="mt-2 w-full min-h-[130px] border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录评测后暴露的问题：知识、教学、交互、视觉都可以写">${escapeHtml(version.issues)}</textarea>
+                                    <textarea oninput="${escapeAttr(`updateGenerationVersionField(${jsString(version.id)}, 'issues', this.value)`)}" class="mt-2 w-full min-h-[130px] border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录评测后暴露的问题：知识、教学、交互、视觉都可以写">${escapeHtml(version.issues)}</textarea>
                                 </label>
                                 <label class="block text-sm font-bold text-slate-700">
                                     解决方向 / 下一版约束
-                                    <textarea oninput="updateGenerationVersionField(${jsString(version.id)}, 'solution', this.value)" class="mt-2 w-full min-h-[130px] border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="写清楚下一版要避免什么、强化什么">${escapeHtml(version.solution)}</textarea>
+                                    <textarea oninput="${escapeAttr(`updateGenerationVersionField(${jsString(version.id)}, 'solution', this.value)`)}" class="mt-2 w-full min-h-[130px] border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="写清楚下一版要避免什么、强化什么">${escapeHtml(version.solution)}</textarea>
                                 </label>
                             </div>
                         </div>
@@ -1263,7 +1263,7 @@
                     </div>
                     <div class="grid grid-cols-6 gap-1">
                         ${[0,1,2,3,4,5].map(score => `
-                            <button type="button" onclick="updateGenerationScore(${jsString(version.id)}, ${jsString(dimension.id)}, ${score})" class="h-8 rounded-lg border text-xs font-black transition ${String(current) === String(score) ? 'bg-blue-600 border-blue-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'}">${score}</button>
+                            <button type="button" onclick="${escapeAttr(`updateGenerationScore(${jsString(version.id)}, ${jsString(dimension.id)}, ${score})`)}" class="h-8 rounded-lg border text-xs font-black transition ${String(current) === String(score) ? 'bg-blue-600 border-blue-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'}">${score}</button>
                         `).join('')}
                     </div>
                 </div>
@@ -1300,7 +1300,7 @@
                                         <td class="px-4 py-3 font-black text-blue-600">${getGenerationScoreAverage(version)}</td>
                                         ${dimensions.map(d => `<td class="px-4 py-3">${escapeHtml(version.scores?.[d.id] === '' || version.scores?.[d.id] == null ? '-' : version.scores[d.id])}</td>`).join('')}
                                         <td class="px-4 py-3">
-                                            ${version.fileUrl ? `<button type="button" onclick="window.open(${jsString(version.fileUrl)}, '_blank', 'noopener,noreferrer')" class="text-blue-600 font-black hover:text-blue-700">打开</button>` : '<span class="text-slate-400">未生成</span>'}
+                                            ${version.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(version.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="text-blue-600 font-black hover:text-blue-700">打开</button>` : '<span class="text-slate-400">未生成</span>'}
                                         </td>
                                         <td class="px-4 py-3 text-slate-600 max-w-[260px] truncate">${escapeHtml(version.issues || '-')}</td>
                                         <td class="px-4 py-3 text-slate-700 font-bold">${escapeHtml(getGenerationDecisionLabel(version.decision))}</td>
