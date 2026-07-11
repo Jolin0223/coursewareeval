@@ -1057,7 +1057,7 @@
 
         function getGenerationSourceLabel(version) {
             if (version.sourceType === 'ai-derived') return `基于问题生成 · ${version.promptSourceModel || 'AI'}`;
-            return '手动录入方案';
+            return '';
         }
 
         function renderGenerationEvalWorkbench() {
@@ -1094,7 +1094,7 @@
                                 </label>
                                 <label class="block text-sm font-bold text-slate-700">
                                     用户需求
-                                    <textarea oninput="updateGenerationCaseField('userRequirement', this.value)" class="mt-2 w-full min-h-[120px] border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="输入希望平台生成的课件需求">${escapeHtml(item.userRequirement)}</textarea>
+                                    <textarea id="generation-user-requirement" oninput="updateGenerationCaseField('userRequirement', this.value)" class="mt-2 w-full min-h-[120px] border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="输入希望平台生成的课件需求">${escapeHtml(item.userRequirement)}</textarea>
                                 </label>
                                 <div>
                                     <div class="text-sm font-bold text-slate-700 mb-2">下一版提示词生成模型</div>
@@ -1136,7 +1136,7 @@
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
                             <div class="font-black text-slate-800 truncate">${escapeHtml(version.label)}</div>
-                            <div class="text-xs text-slate-500 mt-1 truncate">${escapeHtml(getGenerationSourceLabel(version))}</div>
+                            ${getGenerationSourceLabel(version) ? `<div class="text-xs text-slate-500 mt-1 truncate">${escapeHtml(getGenerationSourceLabel(version))}</div>` : ''}
                         </div>
                         <span class="shrink-0 text-xs font-black rounded-full border px-2 py-1 ${statusClass}">${escapeHtml(version.status === 'done' ? '已生成' : version.status === 'running' ? '生成中' : version.status === 'failed' ? '失败' : '草稿')}</span>
                     </div>
@@ -1157,7 +1157,7 @@
                         <div>
                             <div class="flex items-center gap-3">
                                 <input value="${escapeAttr(version.label)}" oninput="updateGenerationVersionField(${jsString(version.id)}, 'label', this.value)" class="w-[220px] border border-transparent bg-transparent rounded-lg px-2 py-1 text-lg font-black text-slate-800 outline-none hover:border-slate-300 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100">
-                                <span class="text-xs font-black text-blue-700 bg-blue-50 border border-blue-100 rounded-full px-2 py-1">${escapeHtml(getGenerationSourceLabel(version))}</span>
+                                ${getGenerationSourceLabel(version) ? `<span class="text-xs font-black text-blue-700 bg-blue-50 border border-blue-100 rounded-full px-2 py-1">${escapeHtml(getGenerationSourceLabel(version))}</span>` : ''}
                             </div>
                             <p class="text-sm text-slate-500 mt-1">当前接口链路会把“用户需求 + 本版系统提示词”组合后发给方案设计接口，再调用素材创建接口生成课件。</p>
                         </div>
@@ -1296,7 +1296,7 @@
                                 ${item.versions.map(version => `
                                     <tr class="hover:bg-slate-50">
                                         <td class="px-4 py-3 font-black text-slate-800">${escapeHtml(version.label)}</td>
-                                        <td class="px-4 py-3 text-xs text-slate-500">${escapeHtml(getGenerationSourceLabel(version))}</td>
+                                        <td class="px-4 py-3 text-xs text-slate-500">${escapeHtml(getGenerationSourceLabel(version) || '-')}</td>
                                         <td class="px-4 py-3 font-black text-blue-600">${getGenerationScoreAverage(version)}</td>
                                         ${dimensions.map(d => `<td class="px-4 py-3">${escapeHtml(version.scores?.[d.id] === '' || version.scores?.[d.id] == null ? '-' : version.scores[d.id])}</td>`).join('')}
                                         <td class="px-4 py-3">
@@ -1381,10 +1381,22 @@
             if (!dbClient) throw new Error('当前环境无法校验登录态，不能调用自动生成接口。');
             const { data } = await dbClient.auth.getSession();
             const session = data?.session;
-            if (!session?.access_token) throw new Error('请先登录管理员账号。');
+            if (!session?.access_token) {
+                const modal = document.getElementById('login-modal');
+                if (modal) modal.classList.remove('hidden');
+                throw new Error('请先登录管理员账号，登录后再点击生成课件。');
+            }
             const email = String(currentUser?.email || session.user?.email || '').toLowerCase();
             if (email !== ADMIN_EMAIL) throw new Error(`仅管理员 ${ADMIN_EMAIL} 可以运行自动生成。`);
             return session;
+        }
+
+        function focusGenerationField(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.focus();
+            el.classList.add('ring-2', 'ring-red-400', 'border-red-400');
+            setTimeout(() => el.classList.remove('ring-2', 'ring-red-400', 'border-red-400'), 1800);
         }
 
         async function runGenerationPromptVersion(versionId) {
@@ -1395,8 +1407,14 @@
                 showToast('本地静态服务没有 Cloudflare Worker 代理。请在线上登录后运行自动生成。', 'warning');
                 return;
             }
-            if (!item.userRequirement.trim()) return showToast('请先填写用户需求。', 'warning');
-            if (!version.systemPrompt.trim()) return showToast('请先填写本版系统提示词。', 'warning');
+            if (!item.userRequirement.trim()) {
+                focusGenerationField('generation-user-requirement');
+                return showToast('请先填写用户需求；当前不会发起生成接口。', 'warning');
+            }
+            if (!version.systemPrompt.trim()) {
+                focusGenerationField(`generation-system-prompt-${version.id}`);
+                return showToast('请先填写本版系统提示词；当前不会发起生成接口。', 'warning');
+            }
 
             try {
                 const session = await getAdminSessionForGeneration();
