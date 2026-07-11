@@ -733,18 +733,9 @@ async function runGenerationPromptVersion(request, env, ctx) {
                 status: 'designing',
                 message: '正在调用方案设计接口。'
             });
-            const designUrl = `${baseUrl}/kpm-api/skill/material-design`;
             const designRequestBody = JSON.stringify({ content: designContent });
-            const designResponse = await fetchWithTimeout(designUrl, {
-                method: 'POST',
-                headers: buildKpmStreamHeaders(authHeaders),
-                body: designRequestBody
-            }, 25000);
-            if (!designResponse.ok) {
-                const errorType = designResponse.headers.get('content-type') || '';
-                const errorPreview = (await designResponse.text()).replace(/\s+/g, ' ').slice(0, 240);
-                throw new Error(`方案设计接口返回 ${designResponse.status}，contentType=${errorType || '-'}，bodyLength=${designRequestBody.length}${errorPreview ? `：${errorPreview}` : ''}`);
-            }
+            const designFetch = await fetchKpmStreamWithFallback(baseUrl, '/kpm-api/skill/material-design', authHeaders, designRequestBody, '方案设计');
+            const designResponse = designFetch.response;
             const designResult = await readKpmEventStream(designResponse, MATERIAL_DESIGN_TIMEOUT_MS, async ({ event, conversationId: currentConversationId, stepCount }) => {
                 if (currentConversationId) conversationId = currentConversationId;
                 await writeJsonLine(writer, {
@@ -752,6 +743,7 @@ async function runGenerationPromptVersion(request, env, ctx) {
                     status: 'designing',
                     conversationId,
                     stepCount,
+                    attempt: designFetch.attempt,
                     message: event.text && typeof event.text === 'string' ? '方案设计接口正在返回方案内容。' : '方案设计处理中。'
                 });
             }, { stopOnFinal: false });
@@ -769,18 +761,9 @@ async function runGenerationPromptVersion(request, env, ctx) {
                 conversationId,
                 message: '方案设计完成，正在调用素材创建接口。'
             });
-            const createUrl = `${baseUrl}/kpm-api/skill/material-create`;
             const createRequestBody = JSON.stringify({ conversationId });
-            const createResponse = await fetchWithTimeout(createUrl, {
-                method: 'POST',
-                headers: buildKpmStreamHeaders(authHeaders),
-                body: createRequestBody
-            }, 25000);
-            if (!createResponse.ok) {
-                const errorType = createResponse.headers.get('content-type') || '';
-                const errorPreview = (await createResponse.text()).replace(/\s+/g, ' ').slice(0, 240);
-                throw new Error(`素材创建接口返回 ${createResponse.status}，contentType=${errorType || '-'}，bodyLength=${createRequestBody.length}${errorPreview ? `：${errorPreview}` : ''}`);
-            }
+            const createFetch = await fetchKpmStreamWithFallback(baseUrl, '/kpm-api/skill/material-create', authHeaders, createRequestBody, '素材创建');
+            const createResponse = createFetch.response;
             const createResult = await readKpmEventStream(createResponse, MATERIAL_CREATE_TIMEOUT_MS, async ({ event, finalResult, stepCount, lastStepName }) => {
                 const text = event.text && typeof event.text === 'object' ? event.text : {};
                 await writeJsonLine(writer, {
@@ -790,6 +773,7 @@ async function runGenerationPromptVersion(request, env, ctx) {
                     stepCount,
                     stepName: text.stepName || lastStepName || '',
                     stepType: text.stepType || null,
+                    attempt: createFetch.attempt,
                     finalResult: finalResult || null,
                     fileUrl: finalResult?.fileUrl || '',
                     pushUrl: finalResult?.pushUrl || '',
@@ -990,6 +974,64 @@ async function probeKpmMaterialDesign(name, url, headers) {
             durationMs: Date.now() - startedAt
         };
     }
+}
+
+async function fetchKpmStreamWithFallback(baseUrl, path, authHeaders, body, label) {
+    const normalizedBase = baseUrl.replace(/\/+$/, '');
+    const attempts = [
+        {
+            name: 'https-stream-headers',
+            url: `${normalizedBase}${path}`,
+            headers: buildKpmStreamHeaders(authHeaders)
+        },
+        {
+            name: 'https-json-headers',
+            url: `${normalizedBase}${path}`,
+            headers: {
+                ...authHeaders,
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        },
+        {
+            name: 'http-stream-headers',
+            url: `${normalizedBase.replace(/^https:/, 'http:')}${path}`,
+            headers: buildKpmStreamHeaders(authHeaders)
+        }
+    ];
+    const failures = [];
+    for (const attempt of attempts) {
+        let response;
+        try {
+            response = await fetchWithTimeout(attempt.url, {
+                method: 'POST',
+                headers: attempt.headers,
+                body
+            }, 25000);
+        } catch (error) {
+            failures.push({
+                attempt: attempt.name,
+                error: error.message || String(error)
+            });
+            continue;
+        }
+        if (response.ok) {
+            return { response, attempt: attempt.name };
+        }
+        const preview = await readResponsePreview(response, 260);
+        failures.push({
+            attempt: attempt.name,
+            status: response.status,
+            statusText: response.statusText,
+            contentType: preview.contentType,
+            preview: preview.preview
+        });
+        if (response.status === 401 || response.status === 403) break;
+    }
+    const detail = failures.map(item => {
+        if (item.status) return `${item.attempt}: ${item.status} ${item.contentType || '-'} ${item.preview || ''}`;
+        return `${item.attempt}: ${item.error || '请求失败'}`;
+    }).join(' | ');
+    throw new Error(`${label}接口多路请求均未成功，bodyLength=${body.length}：${detail}`);
 }
 
 async function diagnoseKpmGeneration(request, env) {
