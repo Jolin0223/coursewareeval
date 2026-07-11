@@ -26,7 +26,7 @@ const MATERIAL_DESIGN_TIMEOUT_MS = 600000;
 const MATERIAL_CREATE_TIMEOUT_MS = 1800000;
 const STYLE_RUN_STATUS_TTL_SECONDS = 60 * 60 * 6;
 const PROMPT_OPTIMIZER_ALLOWED_MODELS = new Set(['xdf-glm-5.2', 'doubao-seed-2.1-turbo', 'xdf-kimi-k2.6']);
-const WORKER_BUILD_ID = 'generation-eval-20260711-kpm-ua-fallback';
+const WORKER_BUILD_ID = 'generation-eval-20260711-runner-proxy';
 
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
@@ -705,6 +705,68 @@ async function readKpmEventStream(response, maxDurationMs, onEvent, options = {}
     return { conversationId, finalResult, stepCount, lastStepName, timedOut, chunkCount, rawPreview };
 }
 
+function generationStreamFailure(message, extra = {}) {
+    return new Response(`${JSON.stringify({
+        ok: false,
+        status: 'failed',
+        buildId: WORKER_BUILD_ID,
+        message,
+        ...extra,
+        updatedAt: new Date().toISOString()
+    })}\n`, {
+        status: 200,
+        headers: {
+            'Content-Type': 'application/x-ndjson; charset=utf-8',
+            'Cache-Control': 'no-store'
+        }
+    });
+}
+
+async function proxyGenerationRunToRunner(payload, env) {
+    const runnerBaseUrl = String(env.GENERATION_RUNNER_URL || '').trim().replace(/\/+$/, '');
+    if (!runnerBaseUrl) return null;
+    const headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'application/x-ndjson'
+    };
+    const runnerToken = String(env.GENERATION_RUNNER_TOKEN || '').trim();
+    if (runnerToken) headers['X-Runner-Token'] = runnerToken;
+
+    let response;
+    try {
+        response = await fetch(`${runnerBaseUrl}/api/generation-eval/run-prompt-version`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload)
+        });
+    } catch (error) {
+        return generationStreamFailure(`课件生成 runner 连接失败（${WORKER_BUILD_ID}）：${error.message || String(error)}`, {
+            runnerConfigured: true
+        });
+    }
+
+    if (!response.ok) {
+        let errorPreview = '';
+        try {
+            errorPreview = (await response.text()).replace(/\s+/g, ' ').slice(0, 260);
+        } catch (error) {}
+        return generationStreamFailure(`课件生成 runner 返回 ${response.status}${errorPreview ? `：${errorPreview}` : ''}`, {
+            runnerConfigured: true
+        });
+    }
+
+    return new Response(response.body, {
+        status: 200,
+        headers: {
+            'Content-Type': response.headers.get('Content-Type') || 'application/x-ndjson; charset=utf-8',
+            'Cache-Control': 'no-store',
+            'X-Accel-Buffering': 'no',
+            'X-Generation-Runner': '1',
+            'X-Generation-Worker-Build': WORKER_BUILD_ID
+        }
+    });
+}
+
 async function runGenerationPromptVersion(request, env, ctx) {
     if (request.method !== 'POST') {
         return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only POST is supported.' }, 405);
@@ -723,6 +785,13 @@ async function runGenerationPromptVersion(request, env, ctx) {
     if (!systemPrompt) {
         return jsonResponse({ error: 'MISSING_SYSTEM_PROMPT', message: '请先填写系统提示词。' }, 400);
     }
+    const runnerResponse = await proxyGenerationRunToRunner({
+        caseName,
+        userRequirement,
+        versionLabel,
+        systemPrompt
+    }, env);
+    if (runnerResponse) return runnerResponse;
 
     const baseUrl = normalizeKpmBaseUrl(env);
     const authHeaders = await buildKpmAuthHeaders(env);
@@ -1100,7 +1169,9 @@ export default {
                 ok: true,
                 buildId: WORKER_BUILD_ID,
                 generationFallbackEnabled: true,
-                trimsKpmEnv: true
+                trimsKpmEnv: true,
+                generationRunnerProxySupported: true,
+                generationRunnerConfigured: Boolean(String(env.GENERATION_RUNNER_URL || '').trim())
             }, 200);
         }
 
