@@ -52,3 +52,6 @@
 - `画面风格调整` 的最新版截图维护要支持多入口上传：点击截图占位区、点击自定义上传按钮、拖拽图片到截图区、复制截图后在截图区粘贴；同一次操作可上传多张，并保留轮播查看。不要退回浏览器默认文件上传控件。
 - 2026-07-05 已从 `/Users/jolin/Downloads/7月2日调整画面风格-效果测试 (2).csv` 的 `风格提示词7` 列入库 19 个基础风格的 V7 提示词。`data/style-eval-seed.json` 中 V7 是当前最终候选，V6 及之前版本保留为历史过程版；页面缓存版本为 `20260705-style-v7`。
 - 2026-07-05 用户修改后重新提供 `/Users/jolin/Downloads/7月2日调整画面风格-效果测试 (3).csv`，已用其中 `风格提示词7` 列覆盖 19 个基础风格的 V7 提示词；仍保持 V7 为当前最终候选，页面缓存版本更新为 `20260705-style-v7-r2`。
+- `课件生成效果` 拆成内部工作台：先做 `提示词版本对比`，后续再做 `模型效果对比`。提示词版本对比要同时支持两种真实测评场景：一开始就手动录入多版提示词做并行方案对比；以及先测 V1、记录问题/解决方向/四维评分，再调用大模型自动生成 V2。提示词优化模型可在 `xdf-glm-5.2`、`doubao-seed-2.1-turbo`、`xdf-kimi-k2.6` 中切换。
+- 课件生成链路根据现有开发文档只能调用 `/kpm-api/skill/material-design` 与 `/kpm-api/skill/material-create`，没有独立 `systemPrompt` 或模型选择参数。因此当前实现会把 `用户需求 + 本次测评的系统提示词版本` 组装为 `material-design.content`，再用返回的 `conversationId` 调 `material-create`。这能测外部提示词策略/包装方案，不等同于替换平台内部真实系统提示词。
+- 大模型提示词优化必须走 Worker 代理 `/api/generation-eval/suggest-next-prompt`，密钥只放 Cloudflare 环境变量。优先读取专用变量 `PROMPT_OPTIMIZER_BASE_URL`、`PROMPT_OPTIMIZER_API_KEY`，如果未配置则复用现有 `LLM_BASE_URL`、`LLM_API_KEY`；前端和仓库不能写入用户提供的 API key。课件生成走 `/api/generation-eval/run-prompt-version`，仍需管理员登录并使用 `KPM_APP_SECRET` 代签名。

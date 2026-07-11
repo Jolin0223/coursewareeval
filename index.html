@@ -220,28 +220,24 @@
 
             <div id="view-self-generation" class="hidden max-w-7xl mx-auto space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
-                        <h3 class="text-lg font-bold text-slate-800 flex items-center">
-                            <i class="fa-solid fa-wand-magic-sparkles text-blue-600 mr-2"></i> 课件生成效果
-                        </h3>
-                        <p class="text-sm text-slate-500 mt-1">用于比较不同课件生成模型、提示词版本、素材链路下的生成质量。</p>
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                                <i class="fa-solid fa-wand-magic-sparkles text-blue-600 mr-2"></i> 课件生成效果
+                            </h3>
+                            <p class="text-sm text-slate-500 mt-1">先支持提示词版本对比：录入用户需求和不同系统提示词，自动生成课件，回填预览链接，再按四维标准打分。</p>
+                        </div>
+                        <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200 w-fit">
+                            <button type="button" onclick="switchGenerationEvalMode('prompt')" id="generation-mode-prompt" class="px-4 py-2 rounded-md text-sm font-black bg-white text-blue-600 shadow-sm">
+                                提示词版本对比
+                            </button>
+                            <button type="button" onclick="switchGenerationEvalMode('model')" id="generation-mode-model" class="px-4 py-2 rounded-md text-sm font-black text-slate-500 hover:text-slate-700">
+                                模型效果对比
+                            </button>
+                        </div>
                     </div>
-                    <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="border border-slate-200 rounded-xl p-5 bg-white">
-                            <div class="text-sm font-bold text-slate-500 mb-2">近期模型</div>
-                            <div class="text-xl font-black text-slate-800">Gemini 3.1 Pro</div>
-                            <p class="text-sm text-slate-500 mt-2">重点看复杂交互、题型保持、长 Prompt 稳定性。</p>
-                        </div>
-                        <div class="border border-slate-200 rounded-xl p-5 bg-white">
-                            <div class="text-sm font-bold text-slate-500 mb-2">对照模型</div>
-                            <div class="text-xl font-black text-slate-800">Gemini 3.5 Flash</div>
-                            <p class="text-sm text-slate-500 mt-2">重点看速度、成本、批量测试稳定性。</p>
-                        </div>
-                        <div class="border border-dashed border-slate-300 rounded-xl p-5 bg-slate-50">
-                            <div class="text-sm font-bold text-slate-500 mb-2">下一步</div>
-                            <div class="text-xl font-black text-slate-800">接入测评任务</div>
-                            <p class="text-sm text-slate-500 mt-2">后续把模型版本、截图、评分和问题记录放进这里维护。</p>
-                        </div>
+                    <div class="p-8">
+                        <div id="generation-eval-workbench"></div>
                     </div>
                 </div>
             </div>
@@ -815,6 +811,12 @@
             zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
         };
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
+        const GENERATION_EVAL_STORAGE_KEY = 'coursewareeval.generation-prompt-workbench.v1';
+        const PROMPT_OPTIMIZER_MODELS = [
+            { value: 'xdf-glm-5.2', label: 'xdf-glm-5.2' },
+            { value: 'doubao-seed-2.1-turbo', label: 'doubao-seed-2.1-turbo' },
+            { value: 'xdf-kimi-k2.6', label: 'xdf-kimi-k2.6' }
+        ];
         const STYLE_RUN_POLL_INTERVAL_MS = 10000;
         const STYLE_RUN_ACTIVE_WINDOW_MS = 20 * 60 * 1000;
         let styleEvalData = { styles: [] };
@@ -828,6 +830,7 @@
         let templatePromptQuery = '';
         let templateCategoryQuery = '';
         let hasLoadedTemplatePromptData = false;
+        let generationEvalState = loadGenerationEvalState();
 
         // 【新增】：多选筛选器状态
         let availableRaters = [];
@@ -944,6 +947,625 @@
             } catch (e) {
                 console.error("LLM Text API Error:", e);
                 return "大模型调用失败，请检查网络或 API Key 配置。";
+            }
+        }
+
+        // ================= 课件生成效果：提示词版本对比工作台 =================
+        function createGenerationVersion(index = 1, overrides = {}) {
+            return {
+                id: overrides.id || `v${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                label: overrides.label || `提示词 ${index}`,
+                sourceType: overrides.sourceType || 'manual',
+                parentVersionId: overrides.parentVersionId || '',
+                systemPrompt: overrides.systemPrompt || '',
+                status: overrides.status || 'draft',
+                runMessage: overrides.runMessage || '',
+                runError: overrides.runError || '',
+                conversationId: overrides.conversationId || '',
+                fileUrl: overrides.fileUrl || '',
+                pushUrl: overrides.pushUrl || '',
+                snapshotId: overrides.snapshotId || '',
+                filePath: overrides.filePath || '',
+                finalResult: overrides.finalResult || null,
+                scores: overrides.scores || { d1: '', d2: '', d3: '', d4: '' },
+                issues: overrides.issues || '',
+                solution: overrides.solution || '',
+                decision: overrides.decision || 'todo',
+                promptSourceModel: overrides.promptSourceModel || '',
+                generatedAt: overrides.generatedAt || '',
+                createdAt: overrides.createdAt || new Date().toISOString()
+            };
+        }
+
+        function createDefaultGenerationCase() {
+            const firstVersion = createGenerationVersion(1, { label: '提示词 1' });
+            return {
+                id: 'default',
+                name: '默认课件生成测评',
+                userRequirement: '',
+                optimizerModel: 'xdf-glm-5.2',
+                selectedVersionId: firstVersion.id,
+                versions: [firstVersion]
+            };
+        }
+
+        function loadGenerationEvalState() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(GENERATION_EVAL_STORAGE_KEY) || 'null');
+                if (stored && stored.cases?.length) return normalizeGenerationEvalState(stored);
+            } catch (error) {}
+            return normalizeGenerationEvalState({
+                activeMode: 'prompt',
+                selectedCaseId: 'default',
+                cases: [createDefaultGenerationCase()]
+            });
+        }
+
+        function normalizeGenerationEvalState(state) {
+            const fallbackCase = createDefaultGenerationCase();
+            const cases = Array.isArray(state?.cases) && state.cases.length ? state.cases : [fallbackCase];
+            cases.forEach(item => {
+                item.id = item.id || `case-${Date.now()}`;
+                item.name = item.name || '默认课件生成测评';
+                item.userRequirement = item.userRequirement || '';
+                item.optimizerModel = item.optimizerModel || 'xdf-glm-5.2';
+                item.versions = Array.isArray(item.versions) && item.versions.length ? item.versions : [createGenerationVersion(1)];
+                item.versions = item.versions.map((version, index) => createGenerationVersion(index + 1, version));
+                if (!item.versions.some(version => version.id === item.selectedVersionId)) item.selectedVersionId = item.versions[0].id;
+            });
+            const selectedCaseId = cases.some(item => item.id === state?.selectedCaseId) ? state.selectedCaseId : cases[0].id;
+            return {
+                activeMode: state?.activeMode || 'prompt',
+                selectedCaseId,
+                cases
+            };
+        }
+
+        function saveGenerationEvalState() {
+            localStorage.setItem(GENERATION_EVAL_STORAGE_KEY, JSON.stringify(generationEvalState));
+        }
+
+        function getGenerationCase() {
+            if (!generationEvalState?.cases?.length) generationEvalState = loadGenerationEvalState();
+            let item = generationEvalState.cases.find(entry => entry.id === generationEvalState.selectedCaseId);
+            if (!item) {
+                item = generationEvalState.cases[0] || createDefaultGenerationCase();
+                generationEvalState.selectedCaseId = item.id;
+            }
+            return item;
+        }
+
+        function getSelectedGenerationVersion() {
+            const item = getGenerationCase();
+            return item.versions.find(version => version.id === item.selectedVersionId) || item.versions[0];
+        }
+
+        function getGenerationScoreAverage(version) {
+            const values = dimensions.map(d => Number(version?.scores?.[d.id])).filter(value => Number.isFinite(value));
+            if (!values.length) return '-';
+            return (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1);
+        }
+
+        function getGenerationDecisionLabel(value) {
+            return {
+                todo: '待评审',
+                candidate: '可继续迭代',
+                accepted: '当前最佳',
+                discarded: '不采用'
+            }[value] || '待评审';
+        }
+
+        function getGenerationSourceLabel(version) {
+            if (version.sourceType === 'ai-derived') return `基于问题生成 · ${version.promptSourceModel || 'AI'}`;
+            return '手动录入方案';
+        }
+
+        function renderGenerationEvalWorkbench() {
+            const container = document.getElementById('generation-eval-workbench');
+            if (!container) return;
+            const item = getGenerationCase();
+            const selected = getSelectedGenerationVersion();
+            const isPromptMode = generationEvalState.activeMode !== 'model';
+            updateGenerationModeTabs();
+            container.innerHTML = isPromptMode ? renderGenerationPromptWorkbench(item, selected) : renderGenerationModelPlaceholder();
+        }
+
+        function renderGenerationModelPlaceholder() {
+            return `
+                <div class="border border-dashed border-slate-300 rounded-2xl bg-slate-50 p-8 text-center">
+                    <div class="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center mx-auto text-slate-500 mb-3">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <div class="text-base font-black text-slate-800">模型效果对比暂未展开</div>
+                    <p class="text-sm text-slate-500 mt-2">先把提示词版本对比跑顺；后续这里会按模型变量拆分，复用同一套四维评分和效果证据。</p>
+                </div>
+            `;
+        }
+
+        function renderGenerationPromptWorkbench(item, selected) {
+            return `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 xl:grid-cols-[340px_minmax(0,1fr)] gap-6 items-start">
+                        <aside class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
+                            <div class="p-4 border-b border-slate-200 bg-slate-50 space-y-4">
+                                <label class="block text-sm font-bold text-slate-700">
+                                    测评用例名称
+                                    <input value="${escapeAttr(item.name)}" oninput="updateGenerationCaseField('name', this.value)" class="mt-2 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="例如：低龄数学互动课件生成">
+                                </label>
+                                <label class="block text-sm font-bold text-slate-700">
+                                    用户需求
+                                    <textarea oninput="updateGenerationCaseField('userRequirement', this.value)" class="mt-2 w-full min-h-[120px] border border-slate-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="输入希望平台生成的课件需求">${escapeHtml(item.userRequirement)}</textarea>
+                                </label>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-700 mb-2">下一版提示词生成模型</div>
+                                    ${renderCustomSelect({
+                                        id: 'generation-optimizer-model',
+                                        value: item.optimizerModel,
+                                        options: PROMPT_OPTIMIZER_MODELS,
+                                        onSelect: value => `updateGenerationCaseField('optimizerModel', ${jsString(value)}, true)`
+                                    })}
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" onclick="addManualGenerationVersion()" class="ce-tool-btn ce-has-tooltip" data-tooltip="用于一开始就有两套或多套不同提示词方案的场景">
+                                        <i class="fa-solid fa-plus"></i> 手动新增
+                                    </button>
+                                    <button type="button" onclick="suggestNextGenerationPrompt()" class="ce-tool-btn ce-tool-btn-ghost ce-has-tooltip" data-tooltip="读取当前版本的问题、解决方向和四维分数，调用大模型生成下一版提示词">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> 生成下一版
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="max-h-[620px] overflow-y-auto custom-scrollbar" id="generation-version-list">
+                                ${item.versions.map(version => renderGenerationVersionListItem(item, version)).join('')}
+                            </div>
+                        </aside>
+                        <section class="min-w-0 space-y-6">
+                            ${renderGenerationVersionDetail(item, selected)}
+                        </section>
+                    </div>
+                    ${renderGenerationComparisonTable(item)}
+                </div>
+            `;
+        }
+
+        function renderGenerationVersionListItem(item, version) {
+            const active = version.id === item.selectedVersionId;
+            const avg = getGenerationScoreAverage(version);
+            const statusClass = version.status === 'done' ? 'bg-green-50 text-green-700 border-green-200' : version.status === 'running' ? 'bg-blue-50 text-blue-700 border-blue-200' : version.status === 'failed' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-slate-50 text-slate-600 border-slate-200';
+            return `
+                <button type="button" onclick="selectGenerationVersion(${jsString(version.id)})" class="w-full text-left p-4 border-b border-slate-100 hover:bg-slate-50 transition ${active ? 'bg-blue-50/70' : 'bg-white'}">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-black text-slate-800 truncate">${escapeHtml(version.label)}</div>
+                            <div class="text-xs text-slate-500 mt-1 truncate">${escapeHtml(getGenerationSourceLabel(version))}</div>
+                        </div>
+                        <span class="shrink-0 text-xs font-black rounded-full border px-2 py-1 ${statusClass}">${escapeHtml(version.status === 'done' ? '已生成' : version.status === 'running' ? '生成中' : version.status === 'failed' ? '失败' : '草稿')}</span>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between text-xs text-slate-500">
+                        <span>${version.fileUrl ? '已有链接' : '未生成'}</span>
+                        <span class="font-black text-slate-800">均分 ${avg}</span>
+                    </div>
+                </button>
+            `;
+        }
+
+        function renderGenerationVersionDetail(item, version) {
+            if (!version) return '<div class="border border-slate-200 rounded-2xl p-8 text-center text-slate-500">请选择一个提示词版本。</div>';
+            const running = version.status === 'running';
+            return `
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <input value="${escapeAttr(version.label)}" oninput="updateGenerationVersionField(${jsString(version.id)}, 'label', this.value)" class="w-[220px] border border-transparent bg-transparent rounded-lg px-2 py-1 text-lg font-black text-slate-800 outline-none hover:border-slate-300 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100">
+                                <span class="text-xs font-black text-blue-700 bg-blue-50 border border-blue-100 rounded-full px-2 py-1">${escapeHtml(getGenerationSourceLabel(version))}</span>
+                            </div>
+                            <p class="text-sm text-slate-500 mt-1">当前接口链路会把“用户需求 + 本版系统提示词”组合后发给方案设计接口，再调用素材创建接口生成课件。</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="runGenerationPromptVersion(${jsString(version.id)})" class="ce-tool-btn ce-tool-btn-primary ce-has-tooltip" data-tooltip="调用 material-design 和 material-create，生成本版课件并回填预览链接" ${running ? 'disabled' : ''}>
+                                <i class="fa-solid fa-play"></i> ${running ? '生成中' : '生成课件'}
+                            </button>
+                            <button type="button" onclick="copyTextareaValue(${jsString(`generation-system-prompt-${version.id}`)}, '系统提示词')" class="ce-tool-btn ce-tool-btn-ghost">
+                                <i class="fa-regular fa-copy"></i> 复制提示词
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_360px] gap-6">
+                        <div class="space-y-4 min-w-0">
+                            <label class="block text-sm font-bold text-slate-700">
+                                系统提示词
+                                <textarea id="generation-system-prompt-${escapeAttr(version.id)}" oninput="updateGenerationVersionField(${jsString(version.id)}, 'systemPrompt', this.value)" class="mt-2 w-full min-h-[220px] border border-slate-300 rounded-xl px-4 py-3 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-blue-500 resize-y custom-scrollbar" placeholder="输入本版本系统提示词">${escapeHtml(version.systemPrompt)}</textarea>
+                            </label>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <label class="block text-sm font-bold text-slate-700">
+                                    课件预览链接
+                                    ${renderUrlInputWithOpen(version.fileUrl || '', `updateGenerationVersionField(${jsString(version.id)}, 'fileUrl', this.value)`, '生成完成后自动回填，也可手动粘贴')}
+                                </label>
+                                <label class="block text-sm font-bold text-slate-700">
+                                    ZIP / 开发包链接
+                                    ${renderUrlInputWithOpen(version.pushUrl || '', `updateGenerationVersionField(${jsString(version.id)}, 'pushUrl', this.value)`, '生成完成后自动回填')}
+                                </label>
+                            </div>
+                            ${renderGenerationRunMessage(version)}
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <label class="block text-sm font-bold text-slate-700">
+                                    本版发现的问题
+                                    <textarea oninput="updateGenerationVersionField(${jsString(version.id)}, 'issues', this.value)" class="mt-2 w-full min-h-[130px] border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录评测后暴露的问题：知识、教学、交互、视觉都可以写">${escapeHtml(version.issues)}</textarea>
+                                </label>
+                                <label class="block text-sm font-bold text-slate-700">
+                                    解决方向 / 下一版约束
+                                    <textarea oninput="updateGenerationVersionField(${jsString(version.id)}, 'solution', this.value)" class="mt-2 w-full min-h-[130px] border border-slate-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="写清楚下一版要避免什么、强化什么">${escapeHtml(version.solution)}</textarea>
+                                </label>
+                            </div>
+                        </div>
+                        <aside class="space-y-4">
+                            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="text-sm font-black text-slate-800">四维评分</div>
+                                    <button type="button" onclick="document.getElementById('guide-modal').classList.remove('hidden')" class="text-xs font-black text-blue-600 hover:text-blue-700">查看标准</button>
+                                </div>
+                                <div class="space-y-3">
+                                    ${dimensions.map(d => renderGenerationScoreControl(version, d)).join('')}
+                                </div>
+                            </div>
+                            <div class="border border-slate-200 rounded-2xl p-4 bg-white">
+                                <div class="text-sm font-black text-slate-800 mb-3">评审结论</div>
+                                ${renderCustomSelect({
+                                    id: `generation-decision-${version.id}`,
+                                    value: version.decision || 'todo',
+                                    options: [
+                                        { value: 'todo', label: '待评审' },
+                                        { value: 'candidate', label: '可继续迭代' },
+                                        { value: 'accepted', label: '当前最佳' },
+                                        { value: 'discarded', label: '不采用' }
+                                    ],
+                                    onSelect: value => `updateGenerationVersionField(${jsString(version.id)}, 'decision', ${jsString(value)}, true)`
+                                })}
+                                <div class="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-500">
+                                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
+                                        <div class="font-black text-slate-400 mb-1">会话 ID</div>
+                                        <div class="font-mono truncate">${escapeHtml(version.conversationId || '-')}</div>
+                                    </div>
+                                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
+                                        <div class="font-black text-slate-400 mb-1">snapshotId</div>
+                                        <div class="font-mono truncate">${escapeHtml(version.snapshotId || '-')}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="suggestNextGenerationPrompt()" class="ce-tool-btn ce-tool-btn-ghost w-full ce-has-tooltip" data-tooltip="用当前版本的问题、解决方向和评分总结经验，生成一个新的提示词版本">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> 基于当前问题生成下一版
+                            </button>
+                        </aside>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGenerationRunMessage(version) {
+            if (!version.runMessage && !version.runError) return '';
+            const isError = version.status === 'failed';
+            const klass = isError ? 'bg-red-50 border-red-100 text-red-700' : 'bg-blue-50 border-blue-100 text-blue-700';
+            return `
+                <div class="border rounded-xl px-4 py-3 text-sm font-bold ${klass}">
+                    <i class="fa-solid ${isError ? 'fa-circle-exclamation' : 'fa-circle-info'} mr-2"></i>
+                    ${escapeHtml(version.runError || version.runMessage)}
+                </div>
+            `;
+        }
+
+        function renderGenerationScoreControl(version, dimension) {
+            const current = version.scores?.[dimension.id];
+            return `
+                <div>
+                    <div class="flex items-center justify-between text-xs mb-2">
+                        <span class="font-black text-slate-700">${escapeHtml(dimension.label)}</span>
+                        <span class="font-black ${current === '' || current == null ? 'text-slate-400' : 'text-blue-600'}">${current === '' || current == null ? '未打分' : `${current} 分`}</span>
+                    </div>
+                    <div class="grid grid-cols-6 gap-1">
+                        ${[0,1,2,3,4,5].map(score => `
+                            <button type="button" onclick="updateGenerationScore(${jsString(version.id)}, ${jsString(dimension.id)}, ${score})" class="h-8 rounded-lg border text-xs font-black transition ${String(current) === String(score) ? 'bg-blue-600 border-blue-600 text-white shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'}">${score}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGenerationComparisonTable(item) {
+            return `
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                    <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                        <div>
+                            <h4 class="font-black text-slate-800">提示词版本对比结果</h4>
+                            <p class="text-xs text-slate-500 mt-1">同一个用户需求下，横向看每版提示词的效果链接、四维分数、问题和结论。</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                                <tr>
+                                    <th class="px-4 py-3 font-black">版本</th>
+                                    <th class="px-4 py-3 font-black">来源</th>
+                                    <th class="px-4 py-3 font-black">均分</th>
+                                    ${dimensions.map(d => `<th class="px-4 py-3 font-black">${escapeHtml(d.label)}</th>`).join('')}
+                                    <th class="px-4 py-3 font-black">效果</th>
+                                    <th class="px-4 py-3 font-black">主要问题</th>
+                                    <th class="px-4 py-3 font-black">结论</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                ${item.versions.map(version => `
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-4 py-3 font-black text-slate-800">${escapeHtml(version.label)}</td>
+                                        <td class="px-4 py-3 text-xs text-slate-500">${escapeHtml(getGenerationSourceLabel(version))}</td>
+                                        <td class="px-4 py-3 font-black text-blue-600">${getGenerationScoreAverage(version)}</td>
+                                        ${dimensions.map(d => `<td class="px-4 py-3">${escapeHtml(version.scores?.[d.id] === '' || version.scores?.[d.id] == null ? '-' : version.scores[d.id])}</td>`).join('')}
+                                        <td class="px-4 py-3">
+                                            ${version.fileUrl ? `<button type="button" onclick="window.open(${jsString(version.fileUrl)}, '_blank', 'noopener,noreferrer')" class="text-blue-600 font-black hover:text-blue-700">打开</button>` : '<span class="text-slate-400">未生成</span>'}
+                                        </td>
+                                        <td class="px-4 py-3 text-slate-600 max-w-[260px] truncate">${escapeHtml(version.issues || '-')}</td>
+                                        <td class="px-4 py-3 text-slate-700 font-bold">${escapeHtml(getGenerationDecisionLabel(version.decision))}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateGenerationModeTabs() {
+            const promptBtn = document.getElementById('generation-mode-prompt');
+            const modelBtn = document.getElementById('generation-mode-model');
+            const promptActive = generationEvalState.activeMode !== 'model';
+            if (promptBtn) {
+                promptBtn.className = `px-4 py-2 rounded-md text-sm font-black ${promptActive ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`;
+            }
+            if (modelBtn) {
+                modelBtn.className = `px-4 py-2 rounded-md text-sm font-black ${!promptActive ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`;
+            }
+        }
+
+        function switchGenerationEvalMode(mode) {
+            generationEvalState.activeMode = mode === 'model' ? 'model' : 'prompt';
+            saveGenerationEvalState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function updateGenerationCaseField(field, value, rerender = false) {
+            const item = getGenerationCase();
+            item[field] = value;
+            saveGenerationEvalState();
+            if (rerender) renderGenerationEvalWorkbench();
+        }
+
+        function updateGenerationVersionField(versionId, field, value, rerender = false) {
+            const item = getGenerationCase();
+            const version = item.versions.find(entry => entry.id === versionId);
+            if (!version) return;
+            version[field] = value;
+            saveGenerationEvalState();
+            if (rerender) renderGenerationEvalWorkbench();
+        }
+
+        function updateGenerationScore(versionId, dimensionId, score) {
+            const item = getGenerationCase();
+            const version = item.versions.find(entry => entry.id === versionId);
+            if (!version) return;
+            version.scores = version.scores || {};
+            version.scores[dimensionId] = score;
+            saveGenerationEvalState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function selectGenerationVersion(versionId) {
+            const item = getGenerationCase();
+            item.selectedVersionId = versionId;
+            saveGenerationEvalState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function addManualGenerationVersion() {
+            const item = getGenerationCase();
+            const version = createGenerationVersion(item.versions.length + 1, {
+                label: `提示词 ${item.versions.length + 1}`,
+                sourceType: 'manual'
+            });
+            item.versions.push(version);
+            item.selectedVersionId = version.id;
+            saveGenerationEvalState();
+            renderGenerationEvalWorkbench();
+            showToast('已新增一个手动提示词版本。', 'success');
+        }
+
+        async function getAdminSessionForGeneration() {
+            if (!dbClient) throw new Error('当前环境无法校验登录态，不能调用自动生成接口。');
+            const { data } = await dbClient.auth.getSession();
+            const session = data?.session;
+            if (!session?.access_token) throw new Error('请先登录管理员账号。');
+            const email = String(currentUser?.email || session.user?.email || '').toLowerCase();
+            if (email !== ADMIN_EMAIL) throw new Error(`仅管理员 ${ADMIN_EMAIL} 可以运行自动生成。`);
+            return session;
+        }
+
+        async function runGenerationPromptVersion(versionId) {
+            const item = getGenerationCase();
+            const version = item.versions.find(entry => entry.id === versionId);
+            if (!version) return;
+            if (window.location.protocol === 'file:' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+                showToast('本地静态服务没有 Cloudflare Worker 代理。请在线上登录后运行自动生成。', 'warning');
+                return;
+            }
+            if (!item.userRequirement.trim()) return showToast('请先填写用户需求。', 'warning');
+            if (!version.systemPrompt.trim()) return showToast('请先填写本版系统提示词。', 'warning');
+
+            try {
+                const session = await getAdminSessionForGeneration();
+                version.status = 'running';
+                version.runMessage = '正在提交课件生成请求。';
+                version.runError = '';
+                saveGenerationEvalState();
+                renderGenerationEvalWorkbench();
+
+                const response = await fetch('/api/generation-eval/run-prompt-version', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({
+                        caseName: item.name,
+                        userRequirement: item.userRequirement,
+                        versionLabel: version.label,
+                        systemPrompt: version.systemPrompt
+                    })
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    let body = {};
+                    try { body = text ? JSON.parse(text) : {}; } catch (error) { body = { raw: text }; }
+                    throw new Error(body.message || `接口返回 ${response.status}`);
+                }
+                if (response.body) {
+                    await readGenerationRunStream(versionId, response.body);
+                } else {
+                    throw new Error('生成接口没有返回进度流。');
+                }
+            } catch (error) {
+                version.status = 'failed';
+                version.runError = error.message || String(error);
+                saveGenerationEvalState();
+                renderGenerationEvalWorkbench();
+                showToast(`课件生成失败：${version.runError}`, 'error');
+            }
+        }
+
+        async function readGenerationRunStream(versionId, body) {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let terminalStatus = '';
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split(/\r?\n/);
+                buffer = lines.pop() || '';
+                for (const line of lines) {
+                    if (!line.trim()) continue;
+                    let event = {};
+                    try { event = JSON.parse(line); } catch (error) { continue; }
+                    const status = applyGenerationRunEvent(versionId, event);
+                    if (['done', 'failed', 'timeout'].includes(status)) terminalStatus = status;
+                }
+            }
+            if (buffer.trim()) {
+                try {
+                    const event = JSON.parse(buffer);
+                    const status = applyGenerationRunEvent(versionId, event);
+                    if (['done', 'failed', 'timeout'].includes(status)) terminalStatus = status;
+                } catch (error) {}
+            }
+            if (!terminalStatus) {
+                const item = getGenerationCase();
+                const version = item.versions.find(entry => entry.id === versionId);
+                if (version) {
+                    version.status = 'failed';
+                    version.runError = '课件生成连接提前结束，未收到完成信号。';
+                    saveGenerationEvalState();
+                    renderGenerationEvalWorkbench();
+                }
+            }
+        }
+
+        function applyGenerationRunEvent(versionId, event) {
+            const item = getGenerationCase();
+            const version = item.versions.find(entry => entry.id === versionId);
+            if (!version) return '';
+            version.runMessage = event.message || version.runMessage || '';
+            version.conversationId = event.conversationId || version.conversationId || '';
+            if (event.finalResult) {
+                version.finalResult = event.finalResult;
+                version.fileUrl = event.finalResult.fileUrl || version.fileUrl || '';
+                version.pushUrl = event.finalResult.pushUrl || version.pushUrl || '';
+                version.snapshotId = event.finalResult.snapshotId || version.snapshotId || '';
+                version.filePath = event.finalResult.filePath || version.filePath || '';
+            }
+            if (event.fileUrl) version.fileUrl = event.fileUrl;
+            if (event.pushUrl) version.pushUrl = event.pushUrl;
+            if (event.snapshotId) version.snapshotId = event.snapshotId;
+            if (event.filePath) version.filePath = event.filePath;
+            if (event.status === 'done') {
+                version.status = 'done';
+                version.runError = '';
+                version.generatedAt = new Date().toISOString();
+                showToast('课件生成完成，预览链接已回填。', 'success');
+            } else if (event.status === 'failed' || event.status === 'timeout') {
+                version.status = 'failed';
+                version.runError = event.message || '课件生成没有正常完成。';
+                showToast(version.runError, 'error');
+            } else if (event.status) {
+                version.status = 'running';
+            }
+            saveGenerationEvalState();
+            renderGenerationEvalWorkbench();
+            return version.status;
+        }
+
+        async function suggestNextGenerationPrompt() {
+            const item = getGenerationCase();
+            const current = getSelectedGenerationVersion();
+            if (!current) return;
+            if (!item.userRequirement.trim()) return showToast('请先填写用户需求。', 'warning');
+            if (!current.systemPrompt.trim()) return showToast('当前版本系统提示词为空，无法总结迭代。', 'warning');
+            if (!current.issues.trim() && !current.solution.trim()) {
+                return showToast('请先记录当前版本的问题或下一版解决方向。', 'warning');
+            }
+
+            try {
+                const session = await getAdminSessionForGeneration();
+                current.runMessage = `正在用 ${item.optimizerModel} 生成下一版提示词。`;
+                saveGenerationEvalState();
+                renderGenerationEvalWorkbench();
+                const response = await fetch('/api/generation-eval/suggest-next-prompt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({
+                        model: item.optimizerModel,
+                        userRequirement: item.userRequirement,
+                        previousPrompt: current.systemPrompt,
+                        issues: current.issues,
+                        solution: current.solution,
+                        scores: current.scores
+                    })
+                });
+                const body = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(body.message || `接口返回 ${response.status}`);
+                const nextPrompt = String(body.nextPrompt || '').trim();
+                if (!nextPrompt) throw new Error('大模型没有返回可用的下一版提示词。');
+                const nextIndex = item.versions.length + 1;
+                const nextVersion = createGenerationVersion(nextIndex, {
+                    label: `提示词 ${nextIndex}`,
+                    sourceType: 'ai-derived',
+                    parentVersionId: current.id,
+                    systemPrompt: nextPrompt,
+                    promptSourceModel: item.optimizerModel,
+                    solution: body.analysis || ''
+                });
+                item.versions.push(nextVersion);
+                item.selectedVersionId = nextVersion.id;
+                current.runMessage = '';
+                saveGenerationEvalState();
+                renderGenerationEvalWorkbench();
+                showToast('已基于当前问题生成下一版提示词。', 'success');
+            } catch (error) {
+                current.runMessage = '';
+                current.runError = error.message || String(error);
+                saveGenerationEvalState();
+                renderGenerationEvalWorkbench();
+                showToast(`生成下一版失败：${current.runError}`, 'error');
             }
         }
 
@@ -2641,6 +3263,7 @@
                 const titleEl = document.getElementById('page-title'); if(titleEl) titleEl.innerText = viewTitles[viewName] || '互动课件效果测评台';
 
                 if (viewName === 'teacher') renderTeacherList();
+                if (viewName === 'self-generation') renderGenerationEvalWorkbench();
                 if (viewName === 'self-style') { renderStyleEvalWorkbench(); ensureStyleEvalData(); }
                 if (viewName === 'self-template') { renderTemplatePromptWorkbench(); ensureTemplatePromptData(); }
                 if (viewName === 'admin-task') toggleAdminTaskView('list');

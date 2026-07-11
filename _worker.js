@@ -22,7 +22,10 @@ function apiErrorResponse(error, fallbackStatus = 500) {
 }
 
 const MATERIAL_MODIFY_TIMEOUT_MS = 600000;
+const MATERIAL_DESIGN_TIMEOUT_MS = 600000;
+const MATERIAL_CREATE_TIMEOUT_MS = 1800000;
 const STYLE_RUN_STATUS_TTL_SECONDS = 60 * 60 * 6;
+const PROMPT_OPTIMIZER_ALLOWED_MODELS = new Set(['xdf-glm-5.2', 'doubao-seed-2.1-turbo', 'xdf-kimi-k2.6']);
 
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
@@ -580,6 +583,358 @@ async function runStyleLatestEffect(request, env, ctx) {
     });
 }
 
+function normalizeKpmBaseUrl(env) {
+    const configuredBaseUrl = String(env.KPM_BASE_URL || 'https://box.xdf.cn').replace(/\/+$/, '');
+    const normalizedBaseUrl = configuredBaseUrl
+        .replace(/^http:\/\/box\.xdf\.cn/i, 'https://box.xdf.cn');
+    return normalizedBaseUrl.includes('box.test.xdf.cn') ? 'https://box.xdf.cn' : normalizedBaseUrl;
+}
+
+function buildGenerationDesignContent(payload) {
+    return [
+        `【测评用例】${payload.caseName || '课件生成效果测评'}`,
+        '',
+        '【用户需求】',
+        payload.userRequirement,
+        '',
+        `【本次测评的系统提示词版本】${payload.versionLabel || ''}`,
+        payload.systemPrompt,
+        '',
+        '【生成要求】',
+        '请严格基于以上用户需求和本次测评的系统提示词版本生成一个可运行的互动课件。优先保证知识准确、教学适配、交互稳定和视觉完整。不要在成品中展示本段测评说明。'
+    ].join('\n');
+}
+
+async function readKpmEventStream(response, maxDurationMs, onEvent, options = {}) {
+    if (!response.body) return { conversationId: '', finalResult: null, stepCount: 0, lastStepName: '', timedOut: false, chunkCount: 0, rawPreview: '' };
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let conversationId = '';
+    let finalResult = null;
+    let stepCount = 0;
+    let lastStepName = '';
+    let chunkCount = 0;
+    let rawPreview = '';
+    let timedOut = false;
+    const stopOnFinal = options.stopOnFinal !== false;
+    const timeoutTimer = setTimeout(() => {
+        timedOut = true;
+        try { reader.cancel(); } catch (error) {}
+    }, maxDurationMs);
+
+    async function handleLine(line) {
+        const event = parseMaterialModifyEventLine(line);
+        if (!event) return false;
+        if (event.code && event.msg && !event.text) {
+            throw new Error(`KPM 接口业务错误 ${event.code}：${event.msg}`);
+        }
+        conversationId = event.conversationId || conversationId;
+        stepCount += 1;
+        const text = event.text;
+        if (text && typeof text === 'object') {
+            lastStepName = text.stepName || lastStepName;
+            if (text.finalResult) finalResult = text.finalResult;
+        }
+        if (onEvent) {
+            await onEvent({
+                event,
+                conversationId,
+                finalResult,
+                stepCount,
+                lastStepName,
+                chunkCount,
+                rawPreview
+            });
+        }
+        return Boolean(stopOnFinal && finalResult);
+    }
+
+    while (!timedOut) {
+        let result;
+        try {
+            result = await reader.read();
+        } catch (error) {
+            if (timedOut) break;
+            throw error;
+        }
+        if (result.done) break;
+        const chunkText = decoder.decode(result.value, { stream: true });
+        chunkCount += 1;
+        if (rawPreview.length < 500) rawPreview += chunkText;
+        buffer += chunkText;
+        const lines = buffer.split(/\r?\n/);
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+            if (await handleLine(line)) {
+                clearTimeout(timeoutTimer);
+                try { await reader.cancel(); } catch (error) {}
+                return { conversationId, finalResult, stepCount, lastStepName, timedOut: false, chunkCount, rawPreview };
+            }
+        }
+    }
+
+    clearTimeout(timeoutTimer);
+    if (buffer.trim()) {
+        if (await handleLine(buffer)) {
+            try { await reader.cancel(); } catch (error) {}
+            return { conversationId, finalResult, stepCount, lastStepName, timedOut: false, chunkCount, rawPreview };
+        }
+    }
+    try { await reader.cancel(); } catch (error) {}
+    return { conversationId, finalResult, stepCount, lastStepName, timedOut, chunkCount, rawPreview };
+}
+
+async function runGenerationPromptVersion(request, env, ctx) {
+    if (request.method !== 'POST') {
+        return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only POST is supported.' }, 405);
+    }
+    const adminCheck = await verifyAdminUser(request, env);
+    if (!adminCheck.ok) return adminCheck.response;
+
+    const payload = await request.json();
+    const caseName = String(payload.caseName || '课件生成效果测评').trim();
+    const userRequirement = String(payload.userRequirement || '').trim();
+    const versionLabel = String(payload.versionLabel || '提示词版本').trim();
+    const systemPrompt = String(payload.systemPrompt || '').trim();
+    if (!userRequirement) {
+        return jsonResponse({ error: 'MISSING_USER_REQUIREMENT', message: '请先填写用户需求。' }, 400);
+    }
+    if (!systemPrompt) {
+        return jsonResponse({ error: 'MISSING_SYSTEM_PROMPT', message: '请先填写系统提示词。' }, 400);
+    }
+
+    const baseUrl = normalizeKpmBaseUrl(env);
+    const authHeaders = await buildKpmAuthHeaders(env);
+    const designContent = buildGenerationDesignContent({ caseName, userRequirement, versionLabel, systemPrompt });
+
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    const streamJob = (async () => {
+        const heartbeat = setInterval(() => {
+            writeJsonLine(writer, {
+                status: 'heartbeat',
+                message: '课件生成仍在处理中，请保持页面打开。'
+            }).catch(() => {});
+        }, 15000);
+        let conversationId = '';
+        try {
+            await writeJsonLine(writer, {
+                ok: true,
+                status: 'designing',
+                message: '正在调用方案设计接口。'
+            });
+            const designResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/material-design`, {
+                method: 'POST',
+                headers: {
+                    ...authHeaders,
+                    'Content-Type': 'application/json',
+                    Accept: 'text/event-stream; charset=utf-8'
+                },
+                body: JSON.stringify({ content: designContent })
+            }, 25000);
+            if (!designResponse.ok) {
+                const errorPreview = (await designResponse.text()).replace(/\s+/g, ' ').slice(0, 240);
+                throw new Error(`方案设计接口返回 ${designResponse.status}${errorPreview ? `：${errorPreview}` : ''}`);
+            }
+            const designResult = await readKpmEventStream(designResponse, MATERIAL_DESIGN_TIMEOUT_MS, async ({ event, conversationId: currentConversationId, stepCount }) => {
+                if (currentConversationId) conversationId = currentConversationId;
+                await writeJsonLine(writer, {
+                    ok: true,
+                    status: 'designing',
+                    conversationId,
+                    stepCount,
+                    message: event.text && typeof event.text === 'string' ? '方案设计接口正在返回方案内容。' : '方案设计处理中。'
+                });
+            }, { stopOnFinal: false });
+            conversationId = designResult.conversationId || conversationId;
+            if (!conversationId) {
+                throw new Error('方案设计接口没有返回 conversationId，无法继续创建课件。');
+            }
+            if (designResult.timedOut) {
+                throw new Error(`方案设计超过 ${Math.round(MATERIAL_DESIGN_TIMEOUT_MS / 1000)} 秒仍未结束。`);
+            }
+
+            await writeJsonLine(writer, {
+                ok: true,
+                status: 'creating',
+                conversationId,
+                message: '方案设计完成，正在调用素材创建接口。'
+            });
+            const createResponse = await fetchWithTimeout(`${baseUrl}/kpm-api/skill/material-create`, {
+                method: 'POST',
+                headers: {
+                    ...authHeaders,
+                    'Content-Type': 'application/json',
+                    Accept: 'text/event-stream; charset=utf-8'
+                },
+                body: JSON.stringify({ conversationId })
+            }, 25000);
+            if (!createResponse.ok) {
+                const errorPreview = (await createResponse.text()).replace(/\s+/g, ' ').slice(0, 240);
+                throw new Error(`素材创建接口返回 ${createResponse.status}${errorPreview ? `：${errorPreview}` : ''}`);
+            }
+            const createResult = await readKpmEventStream(createResponse, MATERIAL_CREATE_TIMEOUT_MS, async ({ event, finalResult, stepCount, lastStepName }) => {
+                const text = event.text && typeof event.text === 'object' ? event.text : {};
+                await writeJsonLine(writer, {
+                    ok: true,
+                    status: finalResult ? 'done' : 'progress',
+                    conversationId,
+                    stepCount,
+                    stepName: text.stepName || lastStepName || '',
+                    stepType: text.stepType || null,
+                    finalResult: finalResult || null,
+                    fileUrl: finalResult?.fileUrl || '',
+                    pushUrl: finalResult?.pushUrl || '',
+                    snapshotId: finalResult?.snapshotId || '',
+                    filePath: finalResult?.filePath || '',
+                    message: finalResult ? '素材创建完成，预览链接已回填。' : `素材创建进度：${text.stepName || lastStepName || '处理中'}`
+                });
+            }, { stopOnFinal: true });
+
+            if (createResult.timedOut && !createResult.finalResult) {
+                await writeJsonLine(writer, {
+                    ok: false,
+                    status: 'timeout',
+                    conversationId,
+                    stepCount: createResult.stepCount,
+                    lastStepName: createResult.lastStepName,
+                    message: `素材创建仍在上游处理中，${Math.round(MATERIAL_CREATE_TIMEOUT_MS / 1000)} 秒内未收到最终完成信号。`
+                });
+                return;
+            }
+            if (!createResult.finalResult) {
+                throw new Error('素材创建流程结束，但没有返回最终预览链接。');
+            }
+        } catch (error) {
+            await writeJsonLine(writer, {
+                ok: false,
+                status: 'failed',
+                conversationId,
+                message: `课件生成没有完成：${error.message || String(error)}`
+            });
+        } finally {
+            clearInterval(heartbeat);
+            await writer.close();
+        }
+    })();
+
+    if (ctx?.waitUntil) {
+        ctx.waitUntil(streamJob);
+    } else {
+        streamJob.catch(error => console.warn('generation run stream failed', error));
+    }
+
+    return new Response(readable, {
+        status: 200,
+        headers: {
+            'Content-Type': 'application/x-ndjson; charset=utf-8',
+            'Cache-Control': 'no-store',
+            'X-Accel-Buffering': 'no'
+        }
+    });
+}
+
+function stripJsonFence(value) {
+    return String(value || '')
+        .replace(/^```json\s*/i, '')
+        .replace(/^```\s*/i, '')
+        .replace(/```$/i, '')
+        .trim();
+}
+
+async function suggestNextGenerationPrompt(request, env) {
+    if (request.method !== 'POST') {
+        return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only POST is supported.' }, 405);
+    }
+    const adminCheck = await verifyAdminUser(request, env);
+    if (!adminCheck.ok) return adminCheck.response;
+
+    const payload = await request.json();
+    const model = String(payload.model || '').trim();
+    if (!PROMPT_OPTIMIZER_ALLOWED_MODELS.has(model)) {
+        return jsonResponse({ error: 'UNSUPPORTED_MODEL', message: '请选择页面内允许的提示词优化模型。' }, 400);
+    }
+    const baseUrl = String(env.PROMPT_OPTIMIZER_BASE_URL || env.LLM_BASE_URL || '').replace(/\/+$/, '');
+    const apiKey = String(env.PROMPT_OPTIMIZER_API_KEY || env.LLM_API_KEY || '');
+    assertEnv('PROMPT_OPTIMIZER_BASE_URL or LLM_BASE_URL', baseUrl);
+    assertEnv('PROMPT_OPTIMIZER_API_KEY or LLM_API_KEY', apiKey);
+
+    const userRequirement = String(payload.userRequirement || '').trim();
+    const previousPrompt = String(payload.previousPrompt || '').trim();
+    const issues = String(payload.issues || '').trim();
+    const solution = String(payload.solution || '').trim();
+    const scores = payload.scores || {};
+    if (!userRequirement || !previousPrompt) {
+        return jsonResponse({ error: 'MISSING_PROMPT_INPUT', message: '缺少用户需求或上一版提示词。' }, 400);
+    }
+
+    const response = await fetchWithTimeout(`${baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            model,
+            temperature: 0.2,
+            response_format: { type: 'json_object' },
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是互动课件系统提示词优化专家。你需要根据上一版课件的测评问题，提炼可复用的改进经验，并输出下一版完整系统提示词。只返回 JSON。'
+                },
+                {
+                    role: 'user',
+                    content: [
+                        '请基于以下信息生成下一版系统提示词。',
+                        '',
+                        '输出 JSON 格式：',
+                        '{"analysis":"简要说明从问题中总结出的优化原则","nextPrompt":"完整的下一版系统提示词"}',
+                        '',
+                        '【用户需求】',
+                        userRequirement,
+                        '',
+                        '【上一版系统提示词】',
+                        previousPrompt,
+                        '',
+                        '【上一版测评问题】',
+                        issues || '未填写',
+                        '',
+                        '【期望解决方向】',
+                        solution || '未填写',
+                        '',
+                        '【四维评分】',
+                        JSON.stringify(scores || {}, null, 2)
+                    ].join('\n')
+                }
+            ]
+        })
+    }, 90000);
+    const responseText = await response.text();
+    let responseBody = {};
+    try { responseBody = responseText ? JSON.parse(responseText) : {}; } catch (error) { responseBody = { raw: responseText }; }
+    if (!response.ok) {
+        return jsonResponse({
+            error: 'PROMPT_OPTIMIZER_UPSTREAM_ERROR',
+            message: responseBody.error?.message || responseBody.message || `提示词优化接口返回 ${response.status}`
+        }, 502);
+    }
+    const content = responseBody.choices?.[0]?.message?.content || responseBody.output_text || responseBody.raw || '';
+    let parsed = {};
+    try {
+        parsed = JSON.parse(stripJsonFence(content));
+    } catch (error) {
+        parsed = { analysis: '', nextPrompt: String(content || '').trim() };
+    }
+    return jsonResponse({
+        ok: true,
+        model,
+        analysis: String(parsed.analysis || '').trim(),
+        nextPrompt: String(parsed.nextPrompt || parsed.prompt || '').trim()
+    }, 200);
+}
+
 export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
@@ -705,7 +1060,28 @@ export default {
         }
 
         // =========================================================
-        // 5. 放行所有正常的网页静态资源请求
+        // 5. 课件生成效果：提示词版本对比
+        // =========================================================
+        if (url.pathname === '/api/generation-eval/run-prompt-version') {
+            try {
+                return await runGenerationPromptVersion(request, env, ctx);
+            } catch (error) {
+                error.code = error.code || 'GENERATION_RUN_ERROR';
+                return apiErrorResponse(error, error.status || 502);
+            }
+        }
+
+        if (url.pathname === '/api/generation-eval/suggest-next-prompt') {
+            try {
+                return await suggestNextGenerationPrompt(request, env);
+            } catch (error) {
+                error.code = error.code || 'GENERATION_PROMPT_OPTIMIZER_ERROR';
+                return apiErrorResponse(error, error.status || 502);
+            }
+        }
+
+        // =========================================================
+        // 6. 放行所有正常的网页静态资源请求
         // =========================================================
         return env.ASSETS.fetch(request);
     }
