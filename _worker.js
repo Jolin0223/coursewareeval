@@ -26,7 +26,7 @@ const MATERIAL_DESIGN_TIMEOUT_MS = 600000;
 const MATERIAL_CREATE_TIMEOUT_MS = 1800000;
 const STYLE_RUN_STATUS_TTL_SECONDS = 60 * 60 * 6;
 const PROMPT_OPTIMIZER_ALLOWED_MODELS = new Set(['xdf-glm-5.2', 'doubao-seed-2.1-turbo', 'xdf-kimi-k2.6']);
-const WORKER_BUILD_ID = 'generation-eval-20260711-kpm-diagnose';
+const WORKER_BUILD_ID = 'generation-eval-20260711-fallback-kpm';
 
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
@@ -1074,6 +1074,14 @@ async function diagnoseKpmGeneration(request, env) {
 export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
+
+        if (url.pathname === '/api/version') {
+            return jsonResponse({
+                ok: true,
+                buildId: WORKER_BUILD_ID,
+                generationFallbackEnabled: true
+            }, 200);
+        }
 
         // =========================================================
         // 1. 代理内部大模型请求 (拦截前端发往 /api/llm 的请求)
