@@ -26,7 +26,7 @@ const MATERIAL_DESIGN_TIMEOUT_MS = 600000;
 const MATERIAL_CREATE_TIMEOUT_MS = 1800000;
 const STYLE_RUN_STATUS_TTL_SECONDS = 60 * 60 * 6;
 const PROMPT_OPTIMIZER_ALLOWED_MODELS = new Set(['xdf-glm-5.2', 'doubao-seed-2.1-turbo', 'xdf-kimi-k2.6']);
-const WORKER_BUILD_ID = 'generation-eval-20260711-trim-kpm-env';
+const WORKER_BUILD_ID = 'generation-eval-20260711-kpm-ua-fallback';
 
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
@@ -71,6 +71,15 @@ function buildKpmStreamHeaders(authHeaders) {
         ...authHeaders,
         'Content-Type': 'application/json; charset=utf-8',
         'Accept': 'text/event-stream; charset=utf-8'
+    };
+}
+
+function buildKpmPythonLikeHeaders(authHeaders) {
+    return {
+        ...authHeaders,
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'text/event-stream; charset=utf-8',
+        'User-Agent': 'python-requests/2.32.3'
     };
 }
 
@@ -996,6 +1005,11 @@ async function fetchKpmStreamWithFallback(baseUrl, path, authHeaders, body, labe
             }
         },
         {
+            name: 'https-python-headers',
+            url: `${normalizedBase}${path}`,
+            headers: buildKpmPythonLikeHeaders(authHeaders)
+        },
+        {
             name: 'http-stream-headers',
             url: `${normalizedBase.replace(/^https:/, 'http:')}${path}`,
             headers: buildKpmStreamHeaders(authHeaders)
@@ -1058,6 +1072,7 @@ async function diagnoseKpmGeneration(request, env) {
     const probes = [];
     probes.push(await probeKpmMaterialDesign('https-stream-headers', httpsDesignUrl, streamHeaders));
     probes.push(await probeKpmMaterialDesign('https-json-headers', httpsDesignUrl, jsonHeaders));
+    probes.push(await probeKpmMaterialDesign('https-python-headers', httpsDesignUrl, buildKpmPythonLikeHeaders(authHeaders)));
     probes.push(await probeKpmMaterialDesign('http-stream-headers', httpDesignUrl, streamHeaders));
 
     return jsonResponse({
