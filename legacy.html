@@ -812,6 +812,7 @@
         };
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
         const GENERATION_EVAL_STORAGE_KEY = 'coursewareeval.generation-prompt-workbench.v1';
+        const GENERATION_RUN_ERROR_BUILD_ID = 'generation-eval-20260711-trim-kpm-env';
         const PROMPT_OPTIMIZER_MODELS = [
             { value: 'xdf-glm-5.2', label: 'xdf-glm-5.2' },
             { value: 'doubao-seed-2.1-turbo', label: 'doubao-seed-2.1-turbo' },
@@ -951,7 +952,20 @@
         }
 
         // ================= 课件生成效果：提示词版本对比工作台 =================
+        function normalizeGenerationRunCache(overrides = {}) {
+            const runError = String(overrides.runError || '');
+            const staleDesign566 = runError.includes('方案设计接口返回 566') && !runError.includes(GENERATION_RUN_ERROR_BUILD_ID);
+            if (!staleDesign566) return overrides;
+            return {
+                ...overrides,
+                status: overrides.status === 'failed' ? 'draft' : overrides.status,
+                runMessage: '',
+                runError: ''
+            };
+        }
+
         function createGenerationVersion(index = 1, overrides = {}) {
+            overrides = normalizeGenerationRunCache(overrides);
             return {
                 id: overrides.id || `v${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
                 label: overrides.label || `提示词 ${index}`,
