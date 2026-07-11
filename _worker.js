@@ -26,6 +26,7 @@ const MATERIAL_DESIGN_TIMEOUT_MS = 600000;
 const MATERIAL_CREATE_TIMEOUT_MS = 1800000;
 const STYLE_RUN_STATUS_TTL_SECONDS = 60 * 60 * 6;
 const PROMPT_OPTIMIZER_ALLOWED_MODELS = new Set(['xdf-glm-5.2', 'doubao-seed-2.1-turbo', 'xdf-kimi-k2.6']);
+const WORKER_BUILD_ID = 'generation-eval-20260711-kpm-diagnose';
 
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
@@ -941,6 +942,93 @@ async function suggestNextGenerationPrompt(request, env) {
     }, 200);
 }
 
+async function readResponsePreview(response, maxChars = 500) {
+    const contentType = response.headers.get('content-type') || '';
+    let preview = '';
+    try {
+        if (!response.body) {
+            preview = (await response.text()).replace(/\s+/g, ' ').slice(0, maxChars);
+        } else {
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            const result = await reader.read();
+            if (result.value) preview = decoder.decode(result.value, { stream: true });
+            try { await reader.cancel(); } catch (error) {}
+            preview = preview.replace(/\s+/g, ' ').slice(0, maxChars);
+        }
+    } catch (error) {
+        preview = `READ_PREVIEW_FAILED: ${error.message || String(error)}`;
+    }
+    return { contentType, preview };
+}
+
+async function probeKpmMaterialDesign(name, url, headers) {
+    const startedAt = Date.now();
+    try {
+        const body = JSON.stringify({ content: 'probe：请仅返回一句话方案，不要生成课件。' });
+        const response = await fetchWithTimeout(url, {
+            method: 'POST',
+            headers,
+            body
+        }, 25000);
+        const preview = await readResponsePreview(response, 600);
+        return {
+            name,
+            ok: response.ok,
+            status: response.status,
+            statusText: response.statusText,
+            contentType: preview.contentType,
+            bodyLength: body.length,
+            durationMs: Date.now() - startedAt,
+            preview: preview.preview
+        };
+    } catch (error) {
+        return {
+            name,
+            ok: false,
+            error: error.message || String(error),
+            durationMs: Date.now() - startedAt
+        };
+    }
+}
+
+async function diagnoseKpmGeneration(request, env) {
+    if (request.method !== 'GET' && request.method !== 'POST') {
+        return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only GET/POST is supported.' }, 405);
+    }
+    const adminCheck = await verifyAdminUser(request, env);
+    if (!adminCheck.ok) return adminCheck.response;
+
+    const baseUrl = normalizeKpmBaseUrl(env);
+    const authHeaders = await buildKpmAuthHeaders(env);
+    const designPath = '/kpm-api/skill/material-design';
+    const httpsDesignUrl = `${baseUrl}${designPath}`;
+    const httpDesignUrl = `${baseUrl.replace(/^https:/, 'http:')}${designPath}`;
+    const jsonHeaders = {
+        ...authHeaders,
+        'Content-Type': 'application/json; charset=utf-8'
+    };
+    const streamHeaders = buildKpmStreamHeaders(authHeaders);
+
+    const probes = [];
+    probes.push(await probeKpmMaterialDesign('https-stream-headers', httpsDesignUrl, streamHeaders));
+    probes.push(await probeKpmMaterialDesign('https-json-headers', httpsDesignUrl, jsonHeaders));
+    probes.push(await probeKpmMaterialDesign('http-stream-headers', httpDesignUrl, streamHeaders));
+
+    return jsonResponse({
+        ok: true,
+        buildId: WORKER_BUILD_ID,
+        baseUrl,
+        env: {
+            hasKpmAppSecret: Boolean(env.KPM_APP_SECRET),
+            kpmAppSecretLength: String(env.KPM_APP_SECRET || '').length,
+            kpmAppId: env.KPM_APP_ID || 'kpm-api',
+            hasKpmBaseUrl: Boolean(env.KPM_BASE_URL)
+        },
+        probes
+    }, 200);
+}
+
 export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
@@ -1082,6 +1170,15 @@ export default {
                 return await suggestNextGenerationPrompt(request, env);
             } catch (error) {
                 error.code = error.code || 'GENERATION_PROMPT_OPTIMIZER_ERROR';
+                return apiErrorResponse(error, error.status || 502);
+            }
+        }
+
+        if (url.pathname === '/api/generation-eval/diagnose-kpm') {
+            try {
+                return await diagnoseKpmGeneration(request, env);
+            } catch (error) {
+                error.code = error.code || 'GENERATION_KPM_DIAGNOSE_ERROR';
                 return apiErrorResponse(error, error.status || 502);
             }
         }
