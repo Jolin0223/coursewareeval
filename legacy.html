@@ -813,6 +813,8 @@
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
         const GENERATION_EVAL_STORAGE_KEY = 'coursewareeval.generation-prompt-workbench.v1';
         const GENERATION_RUN_ERROR_BUILD_ID = 'generation-eval-20260711-runner-proxy';
+        const GENERATION_LOCAL_RUNNER_URL = 'http://127.0.0.1:8789';
+        const GENERATION_LOCAL_RUNNER_TIMEOUT_MS = 1200;
         const PROMPT_OPTIMIZER_MODELS = [
             { value: 'xdf-glm-5.2', label: 'xdf-glm-5.2' },
             { value: 'doubao-seed-2.1-turbo', label: 'doubao-seed-2.1-turbo' },
@@ -1413,6 +1415,31 @@
             setTimeout(() => el.classList.remove('ring-2', 'ring-red-400', 'border-red-400'), 1800);
         }
 
+        async function fetchGenerationLocalRunner(payload) {
+            const healthController = new AbortController();
+            const timer = setTimeout(() => healthController.abort(), GENERATION_LOCAL_RUNNER_TIMEOUT_MS);
+            try {
+                const health = await fetch(`${GENERATION_LOCAL_RUNNER_URL}/health`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-store',
+                    signal: healthController.signal
+                });
+                clearTimeout(timer);
+                if (!health.ok) return null;
+            } catch (error) {
+                clearTimeout(timer);
+                return null;
+            }
+            showToast('已连接本机生成 runner，开始生成课件。', 'info');
+            return fetch(`${GENERATION_LOCAL_RUNNER_URL}/api/generation-eval/run-prompt-version`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        }
+
         async function runGenerationPromptVersion(versionId) {
             const item = getGenerationCase();
             const version = item.versions.find(entry => entry.id === versionId);
@@ -1438,18 +1465,20 @@
                 saveGenerationEvalState();
                 renderGenerationEvalWorkbench();
 
-                const response = await fetch('/api/generation-eval/run-prompt-version', {
+                const payload = {
+                    caseName: item.name,
+                    userRequirement: item.userRequirement,
+                    versionLabel: version.label,
+                    systemPrompt: version.systemPrompt
+                };
+                const localResponse = await fetchGenerationLocalRunner(payload);
+                const response = localResponse || await fetch('/api/generation-eval/run-prompt-version', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${session.access_token}`
                     },
-                    body: JSON.stringify({
-                        caseName: item.name,
-                        userRequirement: item.userRequirement,
-                        versionLabel: version.label,
-                        systemPrompt: version.systemPrompt
-                    })
+                    body: JSON.stringify(payload)
                 });
                 if (!response.ok) {
                     const text = await response.text();

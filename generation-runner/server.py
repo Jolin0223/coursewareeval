@@ -30,6 +30,15 @@ HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", "8789"))
 DESIGN_TIMEOUT_SECONDS = int(os.environ.get("MATERIAL_DESIGN_TIMEOUT_SECONDS", "600"))
 CREATE_TIMEOUT_SECONDS = int(os.environ.get("MATERIAL_CREATE_TIMEOUT_SECONDS", "1800"))
+DEFAULT_ALLOWED_ORIGINS = {
+    "https://coursewareeval.chenjialing.cn",
+    "https://codex-generation-prompt-eval.courseware-eval.pages.dev",
+}
+ALLOWED_ORIGINS = {
+    item.strip().rstrip("/")
+    for item in os.environ.get("GENERATION_RUNNER_ALLOWED_ORIGINS", "").split(",")
+    if item.strip()
+} or DEFAULT_ALLOWED_ORIGINS
 
 
 def now_iso() -> str:
@@ -163,9 +172,13 @@ class RunnerHandler(BaseHTTPRequestHandler):
         sys.stderr.write("[%s] %s\n" % (self.log_date_time_string(), fmt % args))
 
     def send_cors_headers(self) -> None:
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = (self.headers.get("Origin") or "").rstrip("/")
+        if origin in ALLOWED_ORIGINS:
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Vary", "Origin")
         self.send_header("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type,X-Runner-Token")
+        self.send_header("Access-Control-Allow-Private-Network", "true")
 
     def do_OPTIONS(self) -> None:
         self.send_response(204)
@@ -183,6 +196,7 @@ class RunnerHandler(BaseHTTPRequestHandler):
                 "kpmBaseUrl": KPM_BASE_URL,
                 "hasKpmAppSecret": bool(APP_SECRET),
                 "hasRunnerToken": bool(RUNNER_TOKEN),
+                "allowedOrigins": sorted(ALLOWED_ORIGINS),
             },
             200,
         )

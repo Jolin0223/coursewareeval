@@ -32,6 +32,29 @@ Health check:
 curl http://127.0.0.1:8789/health
 ```
 
+## Local Website Button Mode
+
+For fast testing, open the preview website and keep this runner running on the same Mac. The page will first try:
+
+```text
+http://127.0.0.1:8789/api/generation-eval/run-prompt-version
+```
+
+If the local runner is reachable, the website button uses it directly and avoids Cloudflare Worker calling KPM.
+
+Default allowed browser origins:
+
+```text
+https://coursewareeval.chenjialing.cn
+https://codex-generation-prompt-eval.courseware-eval.pages.dev
+```
+
+To add more preview domains:
+
+```bash
+export GENERATION_RUNNER_ALLOWED_ORIGINS="https://coursewareeval.chenjialing.cn,https://codex-generation-prompt-eval.courseware-eval.pages.dev"
+```
+
 ## Connect Cloudflare Worker
 
 Configure these variables in the Cloudflare Pages test environment:
