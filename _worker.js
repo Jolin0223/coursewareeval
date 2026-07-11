@@ -26,7 +26,7 @@ const MATERIAL_DESIGN_TIMEOUT_MS = 600000;
 const MATERIAL_CREATE_TIMEOUT_MS = 1800000;
 const STYLE_RUN_STATUS_TTL_SECONDS = 60 * 60 * 6;
 const PROMPT_OPTIMIZER_ALLOWED_MODELS = new Set(['xdf-glm-5.2', 'doubao-seed-2.1-turbo', 'xdf-kimi-k2.6']);
-const WORKER_BUILD_ID = 'generation-eval-20260711-fallback-kpm';
+const WORKER_BUILD_ID = 'generation-eval-20260711-trim-kpm-env';
 
 function buildTargetUrl(baseUrl, targetPath, search) {
     const normalizedBase = baseUrl.replace(/\/+$/, '');
@@ -55,11 +55,13 @@ async function generateKpmSign(timestamp, appSecret) {
 }
 
 async function buildKpmAuthHeaders(env) {
-    assertEnv('KPM_APP_SECRET', env.KPM_APP_SECRET);
+    const appSecret = String(env.KPM_APP_SECRET || '').trim();
+    const appId = String(env.KPM_APP_ID || 'kpm-api').trim() || 'kpm-api';
+    assertEnv('KPM_APP_SECRET', appSecret);
     const timestamp = String(Math.floor(Date.now() / 1000));
     return {
-        'X-App-Id': env.KPM_APP_ID || 'kpm-api',
-        'X-Sign': await generateKpmSign(timestamp, env.KPM_APP_SECRET),
+        'X-App-Id': appId,
+        'X-Sign': await generateKpmSign(timestamp, appSecret),
         'X-Timestamp': timestamp
     };
 }
@@ -802,7 +804,8 @@ async function runGenerationPromptVersion(request, env, ctx) {
                 ok: false,
                 status: 'failed',
                 conversationId,
-                message: `课件生成没有完成：${error.message || String(error)}`
+                buildId: WORKER_BUILD_ID,
+                message: `课件生成没有完成（${WORKER_BUILD_ID}）：${error.message || String(error)}`
             });
         } finally {
             clearInterval(heartbeat);
@@ -1064,7 +1067,9 @@ async function diagnoseKpmGeneration(request, env) {
         env: {
             hasKpmAppSecret: Boolean(env.KPM_APP_SECRET),
             kpmAppSecretLength: String(env.KPM_APP_SECRET || '').length,
+            kpmAppSecretTrimmedLength: String(env.KPM_APP_SECRET || '').trim().length,
             kpmAppId: env.KPM_APP_ID || 'kpm-api',
+            kpmAppIdTrimmed: String(env.KPM_APP_ID || 'kpm-api').trim() || 'kpm-api',
             hasKpmBaseUrl: Boolean(env.KPM_BASE_URL)
         },
         probes
@@ -1079,7 +1084,8 @@ export default {
             return jsonResponse({
                 ok: true,
                 buildId: WORKER_BUILD_ID,
-                generationFallbackEnabled: true
+                generationFallbackEnabled: true,
+                trimsKpmEnv: true
             }, 200);
         }
 
