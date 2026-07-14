@@ -26,6 +26,12 @@ export GENERATION_RUNNER_TOKEN="shared-token-between-worker-and-runner"
 python3 generation-runner/server.py
 ```
 
+Or create `generation-runner/.env` from `.env.example`, fill `KPM_APP_SECRET`, then run:
+
+```bash
+bash generation-runner/start-local.sh
+```
+
 Health check:
 
 ```bash
