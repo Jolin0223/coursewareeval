@@ -149,40 +149,109 @@
             border-top-color: transparent;
             border-bottom-color: #0f172a;
         }
+        .sidebar-shell {
+            width: 16rem;
+            transition: width .18s ease;
+        }
+        .sidebar-logo-text,
+        .sidebar-section-label,
+        .sidebar-nav-label,
+        .sidebar-user-detail {
+            transition: opacity .12s ease, width .18s ease;
+        }
+        .sidebar-nav-btn {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .sidebar-collapsed .sidebar-shell {
+            width: 4.75rem;
+        }
+        .sidebar-collapsed .sidebar-logo-text,
+        .sidebar-collapsed .sidebar-section-label,
+        .sidebar-collapsed .sidebar-nav-label,
+        .sidebar-collapsed .sidebar-user-detail {
+            width: 0;
+            opacity: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .sidebar-collapsed .sidebar-logo {
+            justify-content: center;
+            padding-left: .75rem;
+            padding-right: .75rem;
+        }
+        .sidebar-collapsed .sidebar-nav-btn {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .sidebar-collapsed .sidebar-nav-btn i {
+            margin-right: 0;
+        }
+        .sidebar-collapsed .sidebar-toggle {
+            position: absolute;
+            right: .5rem;
+            bottom: .35rem;
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+        .sidebar-collapsed .sidebar-user-box {
+            justify-content: center;
+        }
+        .sidebar-collapsed #user-profile-container {
+            padding-left: .75rem;
+            padding-right: .75rem;
+        }
+        .sidebar-collapsed button.sidebar-user-box {
+            width: 2.75rem;
+            height: 2.75rem;
+            padding: 0;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .sidebar-collapsed .sidebar-user-box i {
+            margin-right: 0;
+        }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden text-slate-800 relative">
 
-    <aside class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-20 shrink-0">
-        <div class="h-16 flex items-center justify-center border-b border-slate-700 bg-slate-800">
-            <i class="fa-solid fa-cube text-blue-400 mr-2 text-xl"></i>
-            <span class="font-bold text-base leading-tight">互动课件AI Agent测评系统</span>
+    <aside id="sidebar-shell" class="sidebar-shell bg-slate-900 text-white flex flex-col shadow-2xl z-20 shrink-0">
+        <div class="sidebar-logo h-16 flex items-center justify-between gap-2 border-b border-slate-700 bg-slate-800 px-4 relative">
+            <div class="flex items-center min-w-0">
+                <i class="fa-solid fa-cube text-blue-400 mr-2 text-xl shrink-0"></i>
+                <span class="sidebar-logo-text font-bold text-base leading-tight truncate">互动课件AI Agent测评系统</span>
+            </div>
+            <button type="button" onclick="toggleSidebar()" class="sidebar-toggle ce-has-tooltip w-8 h-8 rounded-lg border border-slate-600 bg-slate-900/60 text-slate-300 hover:text-white hover:bg-slate-700 transition shrink-0" data-tooltip="收起/展开侧边栏" aria-label="收起或展开侧边栏">
+                <i id="sidebar-toggle-icon" class="fa-solid fa-angles-left text-xs"></i>
+            </button>
         </div>
         <div class="flex-1 py-6 space-y-2 overflow-y-auto">
-            <div class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">效果测评端</div>
-            <div class="px-4 pt-2 pb-1 text-xs font-semibold text-slate-500">效果自评</div>
-            <button type="button" onclick="switchView('self-generation')" id="nav-self-generation" class="w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
-                <i class="fa-solid fa-wand-magic-sparkles mr-3 w-5"></i> 课件生成效果
+            <div class="sidebar-section-label px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">效果测评端</div>
+            <div class="sidebar-section-label px-4 pt-2 pb-1 text-xs font-semibold text-slate-500">效果自评</div>
+            <button type="button" onclick="switchView('self-generation')" id="nav-self-generation" class="sidebar-nav-btn w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-wand-magic-sparkles mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">课件生成效果</span>
             </button>
-            <button type="button" onclick="switchView('self-style')" id="nav-self-style" class="w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
-                <i class="fa-solid fa-palette mr-3 w-5"></i> 画面风格调整
+            <button type="button" onclick="switchView('self-style')" id="nav-self-style" class="sidebar-nav-btn w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-palette mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">画面风格调整</span>
             </button>
-            <button type="button" onclick="switchView('self-template')" id="nav-self-template" class="w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
-                <i class="fa-solid fa-puzzle-piece mr-3 w-5"></i> 套用玩法
+            <button type="button" onclick="switchView('self-template')" id="nav-self-template" class="sidebar-nav-btn w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-puzzle-piece mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">套用玩法</span>
             </button>
-            <button type="button" onclick="switchView('self-same')" id="nav-self-same" class="w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
-                <i class="fa-solid fa-clone mr-3 w-5"></i> 一键同款
+            <button type="button" onclick="switchView('self-same')" id="nav-self-same" class="sidebar-nav-btn w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-clone mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">一键同款</span>
             </button>
-            <div class="px-4 pt-5 pb-1 text-xs font-semibold text-slate-500">外部纵向测评</div>
-            <button type="button" onclick="switchView('teacher')" id="nav-teacher" class="w-full text-left px-6 py-3 bg-blue-600 text-white border-r-4 border-blue-400 transition hover:bg-slate-800">
-                <i class="fa-solid fa-pen-to-square mr-3 w-5"></i> 竞品测评
+            <div class="sidebar-section-label px-4 pt-5 pb-1 text-xs font-semibold text-slate-500">外部纵向测评</div>
+            <button type="button" onclick="switchView('teacher')" id="nav-teacher" class="sidebar-nav-btn w-full text-left px-6 py-3 bg-blue-600 text-white border-r-4 border-blue-400 transition hover:bg-slate-800">
+                <i class="fa-solid fa-pen-to-square mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">竞品测评</span>
             </button>
-            <div class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2">产品管理端 (需权限)</div>
-            <button type="button" onclick="attemptAdminAccess('admin-task')" id="nav-admin-task" class="w-full text-left px-6 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
-                <i class="fa-solid fa-list-check mr-3 w-5"></i> 测评任务管理
+            <div class="sidebar-section-label px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-8 mb-2">产品管理端 (需权限)</div>
+            <button type="button" onclick="attemptAdminAccess('admin-task')" id="nav-admin-task" class="sidebar-nav-btn w-full text-left px-6 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-list-check mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">测评任务管理</span>
             </button>
-            <button type="button" onclick="attemptAdminAccess('admin-stats')" id="nav-admin-stats" class="w-full text-left px-6 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
-                <i class="fa-solid fa-chart-pie mr-3 w-5"></i> 数据洞察报告
+            <button type="button" onclick="attemptAdminAccess('admin-stats')" id="nav-admin-stats" class="sidebar-nav-btn w-full text-left px-6 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-chart-pie mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">数据洞察报告</span>
             </button>
         </div>
         <div class="p-4 border-t border-slate-700 bg-slate-800/50" id="user-profile-container">
@@ -813,6 +882,7 @@
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
         const GENERATION_EVAL_STORAGE_KEY = 'coursewareeval.generation-prompt-workbench.v1';
         const GENERATION_EXPERIMENT_STORAGE_KEY = 'coursewareeval.generation-experiment-comparison.v1';
+        const SIDEBAR_STORAGE_KEY = 'coursewareeval.sidebar-collapsed.v1';
         const GENERATION_RUN_ERROR_BUILD_ID = 'generation-eval-20260711-runner-proxy';
         const GENERATION_LOCAL_RUNNER_URL = 'http://127.0.0.1:8789';
         const GENERATION_LOCAL_RUNNER_TIMEOUT_MS = 1200;
@@ -1640,10 +1710,11 @@
                 const stored = JSON.parse(localStorage.getItem(GENERATION_EXPERIMENT_STORAGE_KEY) || 'null');
                 return {
                     selectedCaseId: stored?.selectedCaseId || '',
+                    selectedVersions: stored?.selectedVersions || {},
                     ratings: stored?.ratings || {}
                 };
             } catch (error) {
-                return { selectedCaseId: '', ratings: {} };
+                return { selectedCaseId: '', selectedVersions: {}, ratings: {} };
             }
         }
 
@@ -1731,6 +1802,13 @@
             }[value] || '待评审';
         }
 
+        function getGenerationExperimentSelectedVersion(item) {
+            const versions = item?.versions || [];
+            if (!versions.length) return null;
+            const selectedId = generationExperimentState.selectedVersions?.[item.id];
+            return versions.find(version => version.id === selectedId) || versions[versions.length - 1];
+        }
+
         function renderGenerationPromptWorkbench() {
             if (!generationExperimentData) {
                 ensureGenerationExperimentData();
@@ -1751,38 +1829,28 @@
                 return sum + getGenerationExperimentVariants(item).filter(variant => getExperimentAverage(getGenerationExperimentRating(item.id, variant.id)) !== '-').length;
             }, 0);
             return `
-                <div class="space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
-                        ${renderGenerationExperimentMetric('实验课件', cases.length, '每个课件固定对比线上现状和提示词版本')}
-                        ${renderGenerationExperimentMetric('效果产物', totalVariants, '线上现状 + 提示词 V1')}
-                        ${renderGenerationExperimentMetric('已评分产物', scoredVariants, '任一维度有评分即计入')}
-                        ${renderGenerationExperimentMetric('数据来源', 'OpenClaw', '2026-07-15 批量实验结果')}
-                    </div>
-                    <div class="grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)] gap-6 items-start">
-                        <aside class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                            <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
-                                <div class="font-black text-slate-800">课件用例</div>
-                                <div class="text-xs text-slate-500 mt-1">每个用例都以线上现状为基线。</div>
+                <div class="space-y-5">
+                    <section class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="px-5 py-4 bg-slate-50 border-b border-slate-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+                            <div>
+                                <div class="font-black text-slate-900">课件用例</div>
+                                <div class="text-xs text-slate-500 mt-1">先选课件，再在下方同屏比较线上现状与提示词版本。</div>
                             </div>
-                            <div class="max-h-[720px] overflow-y-auto custom-scrollbar">
+                            <div class="flex flex-wrap gap-2 text-xs font-black text-slate-500">
+                                <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200">课件 ${cases.length}</span>
+                                <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200">产物 ${totalVariants}</span>
+                                <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200">已评分 ${scoredVariants}</span>
+                                <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200">OpenClaw · 2026-07-15</span>
+                            </div>
+                        </div>
+                        <div class="max-h-[260px] overflow-y-auto custom-scrollbar">
+                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 divide-y md:divide-y-0 divide-slate-100">
                                 ${cases.map(item => renderGenerationExperimentCaseItem(item)).join('')}
                             </div>
-                        </aside>
-                        <section class="min-w-0">
-                            ${selected ? renderGenerationExperimentCaseDetail(selected) : '<div class="bg-white border border-slate-200 rounded-2xl p-8 text-slate-500">暂无实验数据。</div>'}
-                        </section>
-                    </div>
+                        </div>
+                    </section>
+                    ${selected ? renderGenerationExperimentCaseDetail(selected) : '<div class="bg-white border border-slate-200 rounded-2xl p-8 text-slate-500">暂无实验数据。</div>'}
                     ${renderGenerationExperimentOverview(cases)}
-                </div>
-            `;
-        }
-
-        function renderGenerationExperimentMetric(label, value, desc) {
-            return `
-                <div class="bg-white border border-slate-200 rounded-xl p-4">
-                    <div class="text-xs font-black text-slate-400">${escapeHtml(label)}</div>
-                    <div class="mt-1 text-2xl font-black text-slate-900">${escapeHtml(value)}</div>
-                    <div class="mt-1 text-xs text-slate-500">${escapeHtml(desc)}</div>
                 </div>
             `;
         }
@@ -1790,13 +1858,14 @@
         function renderGenerationExperimentCaseItem(item) {
             const active = item.id === generationExperimentState.selectedCaseId;
             const diffText = getExperimentCompareText(item);
+            const selectedVersion = getGenerationExperimentSelectedVersion(item);
             const diffClass = diffText.startsWith('+') ? 'text-green-700 bg-green-50 border-green-100' : diffText.startsWith('-') ? 'text-red-700 bg-red-50 border-red-100' : 'text-slate-600 bg-slate-50 border-slate-200';
             return `
-                <button type="button" onclick="${escapeAttr(`selectGenerationExperimentCase(${jsString(item.id)})`)}" class="w-full text-left p-4 border-b border-slate-100 transition ${active ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'}">
+                <button type="button" onclick="${escapeAttr(`selectGenerationExperimentCase(${jsString(item.id)})`)}" class="w-full text-left p-4 transition border-r border-b border-slate-100 ${active ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'}">
                     <div class="flex items-start justify-between gap-3">
                         <div class="min-w-0">
                             <div class="font-black text-slate-800 truncate">${String(item.index).padStart(2, '0')} · ${escapeHtml(item.requirement)}</div>
-                            <div class="text-xs text-slate-500 mt-1">${escapeHtml(item.subject || '其他')} · 线上现状 vs 提示词 V1</div>
+                            <div class="text-xs text-slate-500 mt-1 truncate">${escapeHtml(item.subject || '其他')} · 线上现状 vs ${escapeHtml(selectedVersion?.label || '提示词版本')}</div>
                         </div>
                         <span class="shrink-0 text-xs font-black border rounded-full px-2 py-1 ${diffClass}">${escapeHtml(diffText)}</span>
                     </div>
@@ -1805,24 +1874,46 @@
         }
 
         function renderGenerationExperimentCaseDetail(item) {
-            const variants = getGenerationExperimentVariants(item);
+            const selectedVersion = getGenerationExperimentSelectedVersion(item);
+            const baseline = { ...(item.baseline || {}), id: 'baseline', label: '线上现状', tone: 'baseline' };
             return `
-                <div class="space-y-5">
-                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-                            <div>
-                                <h4 class="text-lg font-black text-slate-900">${escapeHtml(item.requirement)}</h4>
-                                <p class="text-sm text-slate-500 mt-1">先看线上现状，再看提示词版本；评分和问题记录用于判断提示词是否值得继续迭代。</p>
-                            </div>
+                <section class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                    <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                        <div>
+                            <h4 class="text-lg font-black text-slate-900">${escapeHtml(item.requirement)}</h4>
+                            <p class="text-sm text-slate-500 mt-1">左侧固定线上现状，右侧默认展示最新提示词版本；历史版本可在右侧切换。</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="${escapeAttr(`showGenerationExperimentPrompt(${jsString(item.id)}, 'baseline')`)}" class="ce-tool-btn ce-tool-btn-ghost">
+                                <i class="fa-solid fa-code"></i> 线上 Prompt
+                            </button>
                             <button type="button" onclick="document.getElementById('guide-modal').classList.remove('hidden')" class="ce-tool-btn ce-tool-btn-ghost">
                                 <i class="fa-solid fa-book-open-reader"></i> 评分标准
                             </button>
                         </div>
-                        <div class="p-6 grid grid-cols-1 2xl:grid-cols-2 gap-6">
-                            ${variants.map(variant => renderGenerationExperimentVariantCard(item, variant)).join('')}
+                    </div>
+                    <div class="p-6 grid grid-cols-1 2xl:grid-cols-2 gap-6 items-start">
+                        ${renderGenerationExperimentVariantCard(item, baseline)}
+                        <div class="space-y-3 min-w-0">
+                            <div class="bg-blue-50/70 border border-blue-100 rounded-2xl px-4 py-3 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+                                <div>
+                                    <div class="text-sm font-black text-blue-800">提示词版本效果</div>
+                                    <div class="text-xs text-blue-600 mt-1">默认看最新版本，必要时切回历史版本复盘。</div>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    ${(item.versions || []).map(version => {
+                                        const active = selectedVersion?.id === version.id;
+                                        return `<button type="button" onclick="${escapeAttr(`selectGenerationExperimentVersion(${jsString(item.id)}, ${jsString(version.id)})`)}" class="h-8 px-3 rounded-lg border text-xs font-black transition ${active ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-700 border-blue-200 hover:border-blue-400'}">${escapeHtml(version.label || version.id)}</button>`;
+                                    }).join('')}
+                                    <button type="button" onclick="${escapeAttr(`showGenerationExperimentPrompt(${jsString(item.id)}, ${jsString(selectedVersion?.id || '')})`)}" class="ce-tool-btn h-8 px-3 text-xs">
+                                        <i class="fa-solid fa-code"></i> 查看提示词
+                                    </button>
+                                </div>
+                            </div>
+                            ${selectedVersion ? renderGenerationExperimentVariantCard(item, selectedVersion) : '<div class="border border-dashed border-slate-300 rounded-2xl p-8 text-slate-500">暂无提示词版本效果。</div>'}
                         </div>
                     </div>
-                </div>
+                </section>
             `;
         }
 
@@ -1831,7 +1922,7 @@
             const isBaseline = variant.id === 'baseline';
             const badgeClass = isBaseline ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-blue-50 text-blue-700 border-blue-100';
             return `
-                <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-2xl overflow-hidden bg-white">
+                <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-2xl overflow-hidden bg-white min-w-0">
                     <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex items-center justify-between gap-3">
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">
@@ -1848,15 +1939,15 @@
                     <div class="aspect-video bg-slate-100 border-b border-slate-200">
                         ${variant.fileUrl ? `<iframe src="${escapeAttr(variant.fileUrl)}" class="w-full h-full bg-white" loading="lazy"></iframe>` : `<div class="w-full h-full flex items-center justify-center text-slate-400 text-sm">暂无预览链接</div>`}
                     </div>
-                    <div class="p-4 space-y-4">
+                    <div class="p-5 space-y-5">
                         <div class="flex items-center justify-between">
                             <div class="text-sm font-black text-slate-800">四维评分</div>
                             <div class="text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
                         </div>
-                        <div class="space-y-3">
+                        <div class="space-y-5">
                             ${dimensions.map(d => renderGenerationExperimentScoreControl(item.id, variant.id, rating, d)).join('')}
                         </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
                             <label class="block text-sm font-bold text-slate-700">
                                 主要问题
                                 <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'issues', this.value)`)}" class="mt-1 w-full h-24 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录知识、教学、交互、视觉问题">${escapeHtml(rating.issues || '')}</textarea>
@@ -1884,17 +1975,16 @@
 
         function renderGenerationExperimentScoreControl(caseId, variantId, rating, dimension) {
             const current = rating.scores?.[dimension.id];
+            const scoreValue = current === '' || current == null ? 0 : Number(current);
+            const colorClass = current === '' || current == null ? 'text-slate-400' : getScoreColorClass(scoreValue);
             return `
-                <div>
-                    <div class="flex items-center justify-between text-xs mb-1.5">
-                        <span class="font-black text-slate-700">${escapeHtml(dimension.label)}</span>
-                        <span class="font-black ${current === '' || current == null ? 'text-slate-400' : 'text-blue-600'}">${current === '' || current == null ? '未打分' : `${current} 分`}</span>
+                <div class="flex items-center justify-between gap-3">
+                    <span class="text-sm text-slate-700 font-medium w-24 shrink-0">${escapeHtml(dimension.label)}</span>
+                    <div class="relative flex-1 flex items-center px-4 min-w-[140px]">
+                        <div class="absolute bottom-6 w-[240px] p-2.5 bg-slate-800 text-white text-xs rounded shadow-xl z-30 pointer-events-none hidden tooltip-box leading-relaxed transform -translate-x-1/2"></div>
+                        <input type="range" min="0" max="5" value="${escapeAttr(scoreValue)}" step="1" oninput="${escapeAttr(`handleGenerationExperimentSlider(this, ${jsString(caseId)}, ${jsString(variantId)}, ${jsString(dimension.id)})`)}" onmouseenter="${escapeAttr(`showGenerationExperimentSliderTooltip(this, ${jsString(dimension.id)})`)}" onmouseleave="hideTooltip(this)" class="w-full">
                     </div>
-                    <div class="grid grid-cols-6 gap-1">
-                        ${[0,1,2,3,4,5].map(score => `
-                            <button type="button" onclick="${escapeAttr(`updateGenerationExperimentScore(${jsString(caseId)}, ${jsString(variantId)}, ${jsString(dimension.id)}, ${score})`)}" class="h-8 rounded-lg border text-xs font-black transition ${String(current) === String(score) ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-700'}">${score}</button>
-                        `).join('')}
-                    </div>
+                    <span class="score-val font-bold ${colorClass} w-12 text-right font-mono">${current === '' || current == null ? '-' : scoreValue}</span>
                 </div>
             `;
         }
@@ -1959,11 +2049,41 @@
             renderGenerationEvalWorkbench();
         }
 
+        function selectGenerationExperimentVersion(caseId, versionId) {
+            generationExperimentState.selectedVersions = generationExperimentState.selectedVersions || {};
+            generationExperimentState.selectedVersions[caseId] = versionId;
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
+        }
+
         function updateGenerationExperimentScore(caseId, variantId, dimensionId, score) {
             const rating = getGenerationExperimentRating(caseId, variantId);
             rating.scores[dimensionId] = score;
             saveGenerationExperimentState();
             renderGenerationEvalWorkbench();
+        }
+
+        function showGenerationExperimentSliderTooltip(el, dimensionId) {
+            const val = parseInt(el.value);
+            const tooltip = el.parentElement.querySelector('.tooltip-box');
+            if (tooltip) {
+                tooltip.innerText = fullCriteriaDict[dimensionId]?.[val] || '';
+                tooltip.style.left = `calc(${(val / 5) * 100}%)`;
+                tooltip.classList.remove('hidden');
+            }
+        }
+
+        function handleGenerationExperimentSlider(el, caseId, variantId, dimensionId) {
+            const val = parseInt(el.value);
+            const rating = getGenerationExperimentRating(caseId, variantId);
+            rating.scores[dimensionId] = val;
+            saveGenerationExperimentState();
+            showGenerationExperimentSliderTooltip(el, dimensionId);
+            const valSpan = el.parentElement.parentElement.querySelector('.score-val');
+            if (valSpan) {
+                valSpan.innerText = val;
+                valSpan.className = `score-val font-bold ${getScoreColorClass(val)} w-12 text-right font-mono`;
+            }
         }
 
         function updateGenerationExperimentText(caseId, variantId, field, value) {
@@ -1977,6 +2097,18 @@
             rating.decision = value;
             saveGenerationExperimentState();
             renderGenerationEvalWorkbench();
+        }
+
+        function showGenerationExperimentPrompt(caseId, variantId) {
+            const item = getGenerationExperimentCases().find(entry => entry.id === caseId);
+            if (!item) return showToast('未找到这个课件用例。', 'warning');
+            const variant = variantId === 'baseline'
+                ? { ...(item.baseline || {}), id: 'baseline', label: '线上现状' }
+                : (item.versions || []).find(version => version.id === variantId);
+            if (!variant) return showToast('未找到这个提示词版本。', 'warning');
+            const promptText = variant.prompt || variant.systemPrompt || variant.userPrompt || '';
+            const content = promptText || '当前实验数据未包含这一版本的提示词正文。';
+            showSysPromptModal(encodeURIComponent(`${item.requirement}\n\n【${variant.label || variant.id}】\n\n${content}`));
         }
 
         // ================= 基于大模型与业务标准的动态卡片解读 =================
@@ -2065,10 +2197,26 @@
             if (currentUser) {
                 const name = currentUser.email.split('@')[0];
                 const role = (currentUser.email === ADMIN_EMAIL) ? '产品经理 / 管理员' : '教研评测员';
-                container.innerHTML = `<div class="flex items-center justify-between w-full"><div class="flex items-center"><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563eb&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-600" alt="Avatar"><div class="ml-3"><p class="ce-has-tooltip text-sm font-bold truncate max-w-[110px]" data-tooltip="${escapeAttr(currentUser.email)}">${name}</p><p class="text-xs text-blue-400">${role}</p></div></div><button onclick="performLogout()" class="ce-has-tooltip text-slate-400 hover:text-red-400 ml-2" data-tooltip="退出" aria-label="退出"><i class="fa-solid fa-arrow-right-from-bracket"></i></button></div>`;
+                container.innerHTML = `<div class="sidebar-user-box flex items-center justify-between w-full"><div class="flex items-center min-w-0"><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563eb&color=fff" class="w-9 h-9 rounded-full border-2 border-slate-600 shrink-0" alt="Avatar"><div class="sidebar-user-detail ml-3 min-w-0"><p class="ce-has-tooltip text-sm font-bold truncate max-w-[110px]" data-tooltip="${escapeAttr(currentUser.email)}">${name}</p><p class="text-xs text-blue-400 truncate">${role}</p></div></div><button onclick="performLogout()" class="ce-has-tooltip sidebar-user-detail text-slate-400 hover:text-red-400 ml-2" data-tooltip="退出" aria-label="退出"><i class="fa-solid fa-arrow-right-from-bracket"></i></button></div>`;
             } else {
-                container.innerHTML = `<button onclick="promptLogin()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition shadow-md flex items-center justify-center"><i class="fa-solid fa-right-to-bracket mr-2"></i> 登录后打分</button>`;
+                container.innerHTML = `<button onclick="promptLogin()" class="sidebar-user-box w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition shadow-md flex items-center justify-center"><i class="fa-solid fa-right-to-bracket mr-2 shrink-0"></i><span class="sidebar-user-detail">登录后打分</span></button>`;
             }
+        }
+
+        function applySidebarState() {
+            const collapsed = localStorage.getItem(SIDEBAR_STORAGE_KEY) === '1';
+            document.body.classList.toggle('sidebar-collapsed', collapsed);
+            const icon = document.getElementById('sidebar-toggle-icon');
+            if (icon) {
+                icon.classList.toggle('fa-angles-left', !collapsed);
+                icon.classList.toggle('fa-angles-right', collapsed);
+            }
+        }
+
+        function toggleSidebar() {
+            const nextCollapsed = !document.body.classList.contains('sidebar-collapsed');
+            localStorage.setItem(SIDEBAR_STORAGE_KEY, nextCollapsed ? '1' : '0');
+            applySidebarState();
         }
 
         function promptLogin() {
@@ -4684,7 +4832,7 @@ ${feedbackArray.join('\n')}
         }
 
         // ================= 启动逻辑 =================
-        try { renderGuide(); updateUserProfileUI(); switchView('teacher'); } catch (e) {}
+        try { applySidebarState(); renderGuide(); updateUserProfileUI(); switchView('teacher'); } catch (e) {}
         checkSession();
 
     </script>
