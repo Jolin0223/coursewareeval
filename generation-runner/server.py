@@ -12,14 +12,13 @@ import base64
 import hmac
 import json
 import os
-import ssl
 import sys
 import time
-import urllib.error
-import urllib.request
 from hashlib import sha1
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Callable
+
+import requests
 
 
 APP_ID = os.environ.get("KPM_APP_ID", "kpm-api").strip() or "kpm-api"
@@ -110,14 +109,6 @@ def post_kpm_stream(
     on_event: Callable[[dict[str, Any], int], None],
     stop_on_final: bool,
 ) -> dict[str, Any]:
-    body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-    request = urllib.request.Request(
-        f"{KPM_BASE_URL}{path}",
-        data=body,
-        headers=build_kpm_headers(),
-        method="POST",
-    )
-    context = ssl.create_default_context()
     conversation_id = ""
     final_result = None
     step_count = 0
@@ -125,8 +116,18 @@ def post_kpm_stream(
     started = time.time()
 
     try:
-        with urllib.request.urlopen(request, timeout=timeout_seconds, context=context) as response:
-            for raw_line in response:
+        with requests.post(
+            f"{KPM_BASE_URL}{path}",
+            headers=build_kpm_headers(),
+            json=payload,
+            stream=True,
+            timeout=timeout_seconds,
+        ) as response:
+            if not response.ok:
+                preview = response.text[:300].replace("\n", " ")
+                raise RuntimeError(f"KPM 接口返回 {response.status_code}：{preview}")
+            response.encoding = "utf-8"
+            for line in response.iter_lines(decode_unicode=True):
                 if time.time() - started > timeout_seconds:
                     return {
                         "conversationId": conversation_id,
@@ -135,8 +136,7 @@ def post_kpm_stream(
                         "lastStepName": last_step_name,
                         "timedOut": True,
                     }
-                line = raw_line.decode("utf-8", errors="replace").strip()
-                event = parse_sse_payload(line)
+                event = parse_sse_payload(str(line or "").strip())
                 if not event:
                     continue
                 if event.get("code") and event.get("msg") and "text" not in event:
@@ -150,11 +150,8 @@ def post_kpm_stream(
                 on_event(event, step_count)
                 if stop_on_final and final_result:
                     break
-    except urllib.error.HTTPError as error:
-        preview = error.read(300).decode("utf-8", errors="replace").replace("\n", " ")
-        raise RuntimeError(f"KPM 接口返回 {error.code}：{preview}") from error
-    except urllib.error.URLError as error:
-        raise RuntimeError(f"KPM 接口连接失败：{error.reason}") from error
+    except requests.exceptions.RequestException as error:
+        raise RuntimeError(f"KPM 接口连接失败：{error}") from error
 
     return {
         "conversationId": conversation_id,

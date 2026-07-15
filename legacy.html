@@ -812,6 +812,7 @@
         };
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
         const GENERATION_EVAL_STORAGE_KEY = 'coursewareeval.generation-prompt-workbench.v1';
+        const GENERATION_EXPERIMENT_STORAGE_KEY = 'coursewareeval.generation-experiment-comparison.v1';
         const GENERATION_RUN_ERROR_BUILD_ID = 'generation-eval-20260711-runner-proxy';
         const GENERATION_LOCAL_RUNNER_URL = 'http://127.0.0.1:8789';
         const GENERATION_LOCAL_RUNNER_TIMEOUT_MS = 1200;
@@ -834,6 +835,9 @@
         let templateCategoryQuery = '';
         let hasLoadedTemplatePromptData = false;
         let generationEvalState = loadGenerationEvalState();
+        let generationExperimentData = null;
+        let generationExperimentLoading = false;
+        let generationExperimentState = loadGenerationExperimentState();
 
         // 【新增】：多选筛选器状态
         let availableRaters = [];
@@ -1628,6 +1632,351 @@
                 renderGenerationEvalWorkbench();
                 showToast(`生成下一版失败：${current.runError}`, 'error');
             }
+        }
+
+        // ================= 课件生成效果：线上现状 vs 提示词版本 =================
+        function loadGenerationExperimentState() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(GENERATION_EXPERIMENT_STORAGE_KEY) || 'null');
+                return {
+                    selectedCaseId: stored?.selectedCaseId || '',
+                    ratings: stored?.ratings || {}
+                };
+            } catch (error) {
+                return { selectedCaseId: '', ratings: {} };
+            }
+        }
+
+        function saveGenerationExperimentState() {
+            localStorage.setItem(GENERATION_EXPERIMENT_STORAGE_KEY, JSON.stringify(generationExperimentState));
+        }
+
+        async function ensureGenerationExperimentData() {
+            if (generationExperimentData || generationExperimentLoading) return;
+            generationExperimentLoading = true;
+            try {
+                const response = await fetch('data/generation-experiment-seed.json', { cache: 'no-store' });
+                generationExperimentData = await response.json();
+                if (!generationExperimentState.selectedCaseId && generationExperimentData?.cases?.length) {
+                    generationExperimentState.selectedCaseId = generationExperimentData.cases[0].id;
+                    saveGenerationExperimentState();
+                }
+            } catch (error) {
+                generationExperimentData = { cases: [], loadError: error.message || String(error) };
+            } finally {
+                generationExperimentLoading = false;
+                renderGenerationEvalWorkbench();
+            }
+        }
+
+        function getGenerationExperimentCases() {
+            return Array.isArray(generationExperimentData?.cases) ? generationExperimentData.cases : [];
+        }
+
+        function getGenerationExperimentCase() {
+            const cases = getGenerationExperimentCases();
+            return cases.find(item => item.id === generationExperimentState.selectedCaseId) || cases[0] || null;
+        }
+
+        function getGenerationExperimentVariants(item) {
+            if (!item) return [];
+            return [
+                { ...(item.baseline || {}), id: 'baseline', label: '线上现状', tone: 'baseline' },
+                ...((item.versions || []).map(version => ({ ...version, tone: 'experiment' })))
+            ];
+        }
+
+        function getGenerationExperimentRating(caseId, variantId) {
+            generationExperimentState.ratings[caseId] = generationExperimentState.ratings[caseId] || {};
+            generationExperimentState.ratings[caseId][variantId] = generationExperimentState.ratings[caseId][variantId] || {
+                scores: { d1: '', d2: '', d3: '', d4: '' },
+                issues: '',
+                strengths: '',
+                decision: 'todo'
+            };
+            return generationExperimentState.ratings[caseId][variantId];
+        }
+
+        function getExperimentAverage(rating) {
+            const values = dimensions
+                .map(d => rating?.scores?.[d.id])
+                .filter(value => value !== '' && value != null)
+                .map(value => Number(value))
+                .filter(value => Number.isFinite(value));
+            if (!values.length) return '-';
+            return (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1);
+        }
+
+        function getExperimentCompareText(item) {
+            const baseline = getGenerationExperimentRating(item.id, 'baseline');
+            const versions = item.versions || [];
+            const latestVersion = versions[versions.length - 1] || { id: 'prompt-v1' };
+            const version = getGenerationExperimentRating(item.id, latestVersion.id);
+            const b = Number(getExperimentAverage(baseline));
+            const v = Number(getExperimentAverage(version));
+            if (!Number.isFinite(b) || !Number.isFinite(v)) return '待评分';
+            const diff = v - b;
+            if (diff > 0) return `+${diff.toFixed(1)}`;
+            if (diff < 0) return diff.toFixed(1);
+            return '持平';
+        }
+
+        function getExperimentDecisionLabel(value) {
+            return {
+                todo: '待评审',
+                better: '明显优于线上',
+                tie: '基本持平',
+                worse: '不如线上',
+                invalid: '不可用'
+            }[value] || '待评审';
+        }
+
+        function renderGenerationPromptWorkbench() {
+            if (!generationExperimentData) {
+                ensureGenerationExperimentData();
+                return `
+                    <div class="border border-slate-200 rounded-2xl bg-white p-10 text-center">
+                        <i class="fa-solid fa-circle-notch fa-spin text-blue-600 text-2xl"></i>
+                        <div class="mt-3 text-sm font-bold text-slate-600">正在加载线上现状对照实验...</div>
+                    </div>
+                `;
+            }
+            if (generationExperimentData.loadError) {
+                return `<div class="border border-red-100 bg-red-50 text-red-700 rounded-2xl p-6 font-bold">实验数据加载失败：${escapeHtml(generationExperimentData.loadError)}</div>`;
+            }
+            const cases = getGenerationExperimentCases();
+            const selected = getGenerationExperimentCase();
+            const totalVariants = cases.reduce((sum, item) => sum + getGenerationExperimentVariants(item).length, 0);
+            const scoredVariants = cases.reduce((sum, item) => {
+                return sum + getGenerationExperimentVariants(item).filter(variant => getExperimentAverage(getGenerationExperimentRating(item.id, variant.id)) !== '-').length;
+            }, 0);
+            return `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
+                        ${renderGenerationExperimentMetric('实验课件', cases.length, '每个课件固定对比线上现状和提示词版本')}
+                        ${renderGenerationExperimentMetric('效果产物', totalVariants, '线上现状 + 提示词 V1')}
+                        ${renderGenerationExperimentMetric('已评分产物', scoredVariants, '任一维度有评分即计入')}
+                        ${renderGenerationExperimentMetric('数据来源', 'OpenClaw', '2026-07-15 批量实验结果')}
+                    </div>
+                    <div class="grid grid-cols-1 xl:grid-cols-[360px_minmax(0,1fr)] gap-6 items-start">
+                        <aside class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                            <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
+                                <div class="font-black text-slate-800">课件用例</div>
+                                <div class="text-xs text-slate-500 mt-1">每个用例都以线上现状为基线。</div>
+                            </div>
+                            <div class="max-h-[720px] overflow-y-auto custom-scrollbar">
+                                ${cases.map(item => renderGenerationExperimentCaseItem(item)).join('')}
+                            </div>
+                        </aside>
+                        <section class="min-w-0">
+                            ${selected ? renderGenerationExperimentCaseDetail(selected) : '<div class="bg-white border border-slate-200 rounded-2xl p-8 text-slate-500">暂无实验数据。</div>'}
+                        </section>
+                    </div>
+                    ${renderGenerationExperimentOverview(cases)}
+                </div>
+            `;
+        }
+
+        function renderGenerationExperimentMetric(label, value, desc) {
+            return `
+                <div class="bg-white border border-slate-200 rounded-xl p-4">
+                    <div class="text-xs font-black text-slate-400">${escapeHtml(label)}</div>
+                    <div class="mt-1 text-2xl font-black text-slate-900">${escapeHtml(value)}</div>
+                    <div class="mt-1 text-xs text-slate-500">${escapeHtml(desc)}</div>
+                </div>
+            `;
+        }
+
+        function renderGenerationExperimentCaseItem(item) {
+            const active = item.id === generationExperimentState.selectedCaseId;
+            const diffText = getExperimentCompareText(item);
+            const diffClass = diffText.startsWith('+') ? 'text-green-700 bg-green-50 border-green-100' : diffText.startsWith('-') ? 'text-red-700 bg-red-50 border-red-100' : 'text-slate-600 bg-slate-50 border-slate-200';
+            return `
+                <button type="button" onclick="${escapeAttr(`selectGenerationExperimentCase(${jsString(item.id)})`)}" class="w-full text-left p-4 border-b border-slate-100 transition ${active ? 'bg-blue-50' : 'bg-white hover:bg-slate-50'}">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-black text-slate-800 truncate">${String(item.index).padStart(2, '0')} · ${escapeHtml(item.requirement)}</div>
+                            <div class="text-xs text-slate-500 mt-1">${escapeHtml(item.subject || '其他')} · 线上现状 vs 提示词 V1</div>
+                        </div>
+                        <span class="shrink-0 text-xs font-black border rounded-full px-2 py-1 ${diffClass}">${escapeHtml(diffText)}</span>
+                    </div>
+                </button>
+            `;
+        }
+
+        function renderGenerationExperimentCaseDetail(item) {
+            const variants = getGenerationExperimentVariants(item);
+            return `
+                <div class="space-y-5">
+                    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                            <div>
+                                <h4 class="text-lg font-black text-slate-900">${escapeHtml(item.requirement)}</h4>
+                                <p class="text-sm text-slate-500 mt-1">先看线上现状，再看提示词版本；评分和问题记录用于判断提示词是否值得继续迭代。</p>
+                            </div>
+                            <button type="button" onclick="document.getElementById('guide-modal').classList.remove('hidden')" class="ce-tool-btn ce-tool-btn-ghost">
+                                <i class="fa-solid fa-book-open-reader"></i> 评分标准
+                            </button>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 2xl:grid-cols-2 gap-6">
+                            ${variants.map(variant => renderGenerationExperimentVariantCard(item, variant)).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGenerationExperimentVariantCard(item, variant) {
+            const rating = getGenerationExperimentRating(item.id, variant.id);
+            const isBaseline = variant.id === 'baseline';
+            const badgeClass = isBaseline ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-blue-50 text-blue-700 border-blue-100';
+            return `
+                <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-2xl overflow-hidden bg-white">
+                    <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex items-center justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-black border rounded-full px-2 py-1 ${badgeClass}">${escapeHtml(variant.label)}</span>
+                                <span class="text-sm font-black text-slate-800 truncate">${escapeHtml(variant.fileName || item.requirement)}</span>
+                            </div>
+                            <div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(variant.conversationId || '-')}</div>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            ${variant.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn h-8 px-3 text-xs"><i class="fa-solid fa-play"></i> 打开</button>` : ''}
+                            ${variant.pushUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.pushUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs"><i class="fa-solid fa-file-zipper"></i> ZIP</button>` : ''}
+                        </div>
+                    </div>
+                    <div class="aspect-video bg-slate-100 border-b border-slate-200">
+                        ${variant.fileUrl ? `<iframe src="${escapeAttr(variant.fileUrl)}" class="w-full h-full bg-white" loading="lazy"></iframe>` : `<div class="w-full h-full flex items-center justify-center text-slate-400 text-sm">暂无预览链接</div>`}
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm font-black text-slate-800">四维评分</div>
+                            <div class="text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
+                        </div>
+                        <div class="space-y-3">
+                            ${dimensions.map(d => renderGenerationExperimentScoreControl(item.id, variant.id, rating, d)).join('')}
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                            <label class="block text-sm font-bold text-slate-700">
+                                主要问题
+                                <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'issues', this.value)`)}" class="mt-1 w-full h-24 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录知识、教学、交互、视觉问题">${escapeHtml(rating.issues || '')}</textarea>
+                            </label>
+                            <label class="block text-sm font-bold text-slate-700">
+                                亮点 / 判断依据
+                                <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'strengths', this.value)`)}" class="mt-1 w-full h-24 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录比另一版好/差的原因">${escapeHtml(rating.strengths || '')}</textarea>
+                            </label>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            ${[
+                                ['todo', '待评审'],
+                                ['better', '优于线上'],
+                                ['tie', '持平'],
+                                ['worse', '不如线上'],
+                                ['invalid', '不可用']
+                            ].map(([value, label]) => `
+                                <button type="button" onclick="${escapeAttr(`updateGenerationExperimentDecision(${jsString(item.id)}, ${jsString(variant.id)}, ${jsString(value)})`)}" class="h-8 px-3 rounded-lg border text-xs font-black transition ${rating.decision === value ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-700'}">${escapeHtml(label)}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGenerationExperimentScoreControl(caseId, variantId, rating, dimension) {
+            const current = rating.scores?.[dimension.id];
+            return `
+                <div>
+                    <div class="flex items-center justify-between text-xs mb-1.5">
+                        <span class="font-black text-slate-700">${escapeHtml(dimension.label)}</span>
+                        <span class="font-black ${current === '' || current == null ? 'text-slate-400' : 'text-blue-600'}">${current === '' || current == null ? '未打分' : `${current} 分`}</span>
+                    </div>
+                    <div class="grid grid-cols-6 gap-1">
+                        ${[0,1,2,3,4,5].map(score => `
+                            <button type="button" onclick="${escapeAttr(`updateGenerationExperimentScore(${jsString(caseId)}, ${jsString(variantId)}, ${jsString(dimension.id)}, ${score})`)}" class="h-8 rounded-lg border text-xs font-black transition ${String(current) === String(score) ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-700'}">${score}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGenerationExperimentOverview(cases) {
+            const rows = cases.flatMap(item => (item.versions || []).map(version => ({ item, version })));
+            return `
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+                    <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
+                        <h4 class="font-black text-slate-800">提示词版本与线上现状总览</h4>
+                        <p class="text-xs text-slate-500 mt-1">每个提示词版本都固定和同一课件的线上现状对比，避免只看实验组自己好不好看。</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                                <tr>
+                                    <th class="px-4 py-3 font-black">课件</th>
+                                    <th class="px-4 py-3 font-black">学科</th>
+                                    <th class="px-4 py-3 font-black">提示词版本</th>
+                                    <th class="px-4 py-3 font-black">线上均分</th>
+                                    <th class="px-4 py-3 font-black">版本均分</th>
+                                    <th class="px-4 py-3 font-black">差值</th>
+                                    <th class="px-4 py-3 font-black">线上</th>
+                                    <th class="px-4 py-3 font-black">版本效果</th>
+                                    <th class="px-4 py-3 font-black">结论</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                ${rows.map(({ item, version }) => {
+                                    const baseline = getGenerationExperimentRating(item.id, 'baseline');
+                                    const versionRating = getGenerationExperimentRating(item.id, version.id);
+                                    const baselineAvg = Number(getExperimentAverage(baseline));
+                                    const versionAvg = Number(getExperimentAverage(versionRating));
+                                    const diff = Number.isFinite(baselineAvg) && Number.isFinite(versionAvg)
+                                        ? (versionAvg - baselineAvg)
+                                        : null;
+                                    const diffText = diff == null ? '待评分' : diff > 0 ? `+${diff.toFixed(1)}` : diff < 0 ? diff.toFixed(1) : '持平';
+                                    return `
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="px-4 py-3 font-black text-slate-800 max-w-[280px] truncate">${String(item.index).padStart(2, '0')} · ${escapeHtml(item.requirement)}</td>
+                                            <td class="px-4 py-3 text-slate-600">${escapeHtml(item.subject || '-')}</td>
+                                            <td class="px-4 py-3 font-black text-blue-600">${escapeHtml(version.label || version.id)}</td>
+                                            <td class="px-4 py-3 font-black">${escapeHtml(getExperimentAverage(baseline))}</td>
+                                            <td class="px-4 py-3 font-black text-blue-600">${escapeHtml(getExperimentAverage(versionRating))}</td>
+                                            <td class="px-4 py-3 font-black">${escapeHtml(diffText)}</td>
+                                            <td class="px-4 py-3">${item.baseline?.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(item.baseline.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="text-slate-700 font-black hover:text-blue-600">打开</button>` : '-'}</td>
+                                            <td class="px-4 py-3">${version.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(version.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="text-blue-600 font-black hover:text-blue-700">打开</button>` : '-'}</td>
+                                            <td class="px-4 py-3 text-slate-700 font-bold">${escapeHtml(getExperimentDecisionLabel(versionRating.decision))}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectGenerationExperimentCase(caseId) {
+            generationExperimentState.selectedCaseId = caseId;
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function updateGenerationExperimentScore(caseId, variantId, dimensionId, score) {
+            const rating = getGenerationExperimentRating(caseId, variantId);
+            rating.scores[dimensionId] = score;
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function updateGenerationExperimentText(caseId, variantId, field, value) {
+            const rating = getGenerationExperimentRating(caseId, variantId);
+            rating[field] = value;
+            saveGenerationExperimentState();
+        }
+
+        function updateGenerationExperimentDecision(caseId, variantId, value) {
+            const rating = getGenerationExperimentRating(caseId, variantId);
+            rating.decision = value;
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
         }
 
         // ================= 基于大模型与业务标准的动态卡片解读 =================

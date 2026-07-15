@@ -1,0 +1,415 @@
+{
+  "generatedAt": "2026-07-15T21:57:54+08:00",
+  "source": "OpenClaw experiment_results.json",
+  "baselineLabel": "线上现状",
+  "cases": [
+    {
+      "id": "generation-case-01",
+      "index": 1,
+      "requirement": "颜色单词卡片点击游戏（英语）",
+      "subject": "英语",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_01",
+        "conversationId": "b97cd27b58814e398a65147cfd06e304",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-kv4wDu0wShu56pEAnjQKJQ/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-kv4wDu0wShu56pEAnjQKJQ/package.zip",
+        "fileName": "Color Words Game",
+        "snapshotId": "b9c8358ddad6449bb58bafec03742859",
+        "finishedAt": "2026-07-15T21:35:02.696969",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_01",
+          "conversationId": "6e0571f3d2ad431881603a9d7500043d",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-m61XpwxVQHOKB46hLMDt4g/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-m61XpwxVQHOKB46hLMDt4g/package.zip",
+          "fileName": "Color Words Game",
+          "snapshotId": "701febc1accb4180b8ab87700873c28f",
+          "finishedAt": "2026-07-15T21:49:21.928937",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-02",
+      "index": 2,
+      "requirement": "看图选词语游戏（语文）",
+      "subject": "语文",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_02",
+        "conversationId": "440922744f784d7b9d38c86bf43af23c",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-Tk6f06HvTH2szs7hojfHPQ/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-Tk6f06HvTH2szs7hojfHPQ/package.zip",
+        "fileName": "看图选词语游戏",
+        "snapshotId": "b07ffaae7bd147a6b4ce4ff8283e92ee",
+        "finishedAt": "2026-07-15T21:36:07.649721",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_02",
+          "conversationId": "73009f81b0c841e6b251a688f94ce5cf",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-fsuDjb8lSLe09ZO1xfFPHA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-fsuDjb8lSLe09ZO1xfFPHA/package.zip",
+          "fileName": "看图选词语",
+          "snapshotId": "32a22c74abb54819ad6776d9c5de98fb",
+          "finishedAt": "2026-07-15T21:48:32.120480",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-03",
+      "index": 3,
+      "requirement": "10以内加法选答案（数学）",
+      "subject": "数学",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_03",
+        "conversationId": "c55fc220bf2b441bb49ba04e5644447b",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-jj9VG7L4QsG_qmvWF2oy6Q/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-jj9VG7L4QsG_qmvWF2oy6Q/package.zip",
+        "fileName": "10以内加法选答案",
+        "snapshotId": "67bd014072f44d83ac555b864d5869bb",
+        "finishedAt": "2026-07-15T21:35:44.614806",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_03",
+          "conversationId": "181234045d314642ba1214f52c0ef6fc",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-0Bhju1FgTvaZ_xLxFY0kig/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-0Bhju1FgTvaZ_xLxFY0kig/package.zip",
+          "fileName": "糖果乐园加法游戏",
+          "snapshotId": "3a4a45fd541e4485bfe24fceb8ad1e81",
+          "finishedAt": "2026-07-15T21:49:09.087383",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-04",
+      "index": 4,
+      "requirement": "字母大小写泡泡消除配对（英语）",
+      "subject": "英语",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_04",
+        "conversationId": "319968012a2c426a9951919afee0ea9f",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-GtKpfjqzR9q2-3YX-NjZmg/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-GtKpfjqzR9q2-3YX-NjZmg/package.zip",
+        "fileName": "Alphabet Bubble Pop",
+        "snapshotId": "bc4a133f646442d097d19f5b925fe247",
+        "finishedAt": "2026-07-15T21:34:52.358372",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_04",
+          "conversationId": "99b64945dcab49109f688cd774b2edb8",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-OpU6bs09Qou6plWAWHq0OQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-OpU6bs09Qou6plWAWHq0OQ/package.zip",
+          "fileName": "Bubble Match",
+          "snapshotId": "e39221214fb44df594b5175d0723d55e",
+          "finishedAt": "2026-07-15T21:50:03.886609",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-05",
+      "index": 5,
+      "requirement": "汉字与偏旁部首连线（语文）",
+      "subject": "语文",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_05",
+        "conversationId": "5c5f38137b4c47ccb7a1b657ac956b3a",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-f4qf3TgeRricS2pR2b5Fnw/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-f4qf3TgeRricS2pR2b5Fnw/package.zip",
+        "fileName": "汉字与偏旁部首连线",
+        "snapshotId": "d692988b08274c228338ccc46969a1c1",
+        "finishedAt": "2026-07-15T21:34:55.874740",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_05",
+          "conversationId": "16a726bbf2cc44be839695248aa86a6f",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-MP4NG92MTKmt-g8ZQBzdcQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-MP4NG92MTKmt-g8ZQBzdcQ/package.zip",
+          "fileName": "汉字与偏旁部首连线",
+          "snapshotId": "a01f3d8aa669422296e52ad29b13ee05",
+          "finishedAt": "2026-07-15T21:50:05.980191",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-06",
+      "index": 6,
+      "requirement": "数字1到10认读游戏（数学）",
+      "subject": "数学",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_06",
+        "conversationId": "31786d266fd4469c89315145e79c211d",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-RX1EuaZ7TMawFqJ-RLBzsg/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-RX1EuaZ7TMawFqJ-RLBzsg/package.zip",
+        "fileName": "数字1到10认读游戏",
+        "snapshotId": "25347cf1470c4023bc37801aec79cf49",
+        "finishedAt": "2026-07-15T21:44:49.799965",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_06",
+          "conversationId": "028468f2d151449ca41c0371815f954f",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-tKpJLsCsRyy6JFXBgvOFyw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-tKpJLsCsRyy6JFXBgvOFyw/package.zip",
+          "fileName": "数字1到10认读游戏",
+          "snapshotId": "2c11c7977a3a473b8fd00e7d0e68d11d",
+          "finishedAt": "2026-07-15T21:48:40.620179",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-07",
+      "index": 7,
+      "requirement": "形状认识的互动讲解（数学）",
+      "subject": "数学",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_07",
+        "conversationId": "00115694ecee4d6bb9fe65796dcf4a9a",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-vkExRSr3RDaGMhGk_7LE6Q/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-vkExRSr3RDaGMhGk_7LE6Q/package.zip",
+        "fileName": "形状认识的互动讲解",
+        "snapshotId": "50f03b7c05954d28acf762a51f765a17",
+        "finishedAt": "2026-07-15T21:36:35.782221",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_07",
+          "conversationId": "411b6f83d94b41d29ce1945abac9ea91",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-MDoStxTuRNiPDTUiHXCLZA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-MDoStxTuRNiPDTUiHXCLZA/package.zip",
+          "fileName": "形状认识",
+          "snapshotId": "93c0bff5849747bc9380eb44d2922c1d",
+          "finishedAt": "2026-07-15T21:51:29.960342",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-08",
+      "index": 8,
+      "requirement": "汉字图片匹配游戏（语文）",
+      "subject": "语文",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_08",
+        "conversationId": "301d0b94610647a19ea1d4ccdf58843d",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-l0KV74keTmWXc9OCAAz9UA/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-l0KV74keTmWXc9OCAAz9UA/package.zip",
+        "fileName": "汉字图片匹配游戏",
+        "snapshotId": "6b27a388b4234a15ac4606de9761d174",
+        "finishedAt": "2026-07-15T21:36:00.582990",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_08",
+          "conversationId": "b41ad112b4be41288a98455a51fd7e42",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-3Abw8clAS02jjzJq9jRb7g/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-3Abw8clAS02jjzJq9jRb7g/package.zip",
+          "fileName": "汉字图片匹配游戏",
+          "snapshotId": "3ab720865cb9430a98370e6adc8a21df",
+          "finishedAt": "2026-07-15T21:51:26.065975",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-09",
+      "index": 9,
+      "requirement": "分数认识的互动讲解（数学）",
+      "subject": "数学",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_09",
+        "conversationId": "b9a7b6e3d09c44ef9665a802fa201990",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15--F0ApS6QT7qDMoJ94k1OUA/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15--F0ApS6QT7qDMoJ94k1OUA/package.zip",
+        "fileName": "分数认识的互动讲解",
+        "snapshotId": "c3a8490176024f46bfaf47b68459c2f8",
+        "finishedAt": "2026-07-15T21:39:14.484335",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_09",
+          "conversationId": "11e48486ca1b4212b72bd280fdffc64a",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-QijVoDynTQGBIneKqfG3TQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-QijVoDynTQGBIneKqfG3TQ/package.zip",
+          "fileName": "分数认识互动讲解",
+          "snapshotId": "d2cebb5ae12a4973a7cb24552adeb411",
+          "finishedAt": "2026-07-15T21:57:54.920370",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-10",
+      "index": 10,
+      "requirement": "数学常见形状认识（数学）",
+      "subject": "数学",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_10",
+        "conversationId": "8766a9baf3e244d9b48b878545aff081",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-loZughesRey0NutSI1E6pg/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-loZughesRey0NutSI1E6pg/package.zip",
+        "fileName": "数学常见形状认识",
+        "snapshotId": "4e4b1af2e12642ef8b03cd17d9f893dc",
+        "finishedAt": "2026-07-15T21:38:53.319817",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_10",
+          "conversationId": "b9dc9aa4ca9744358a0c8db44e65ee70",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-z09Z9Tu9SEW7DiMOQjmkUw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-z09Z9Tu9SEW7DiMOQjmkUw/package.zip",
+          "fileName": "形状匹配游戏",
+          "snapshotId": "301bee5d1c8c4772a437a528c66ea875",
+          "finishedAt": "2026-07-15T21:52:48.096650",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-11",
+      "index": 11,
+      "requirement": "拼音学习：听音选择声母（语文）",
+      "subject": "语文",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_11",
+        "conversationId": "3fc334b3f80a48e1a66fdfc89a6bdb55",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-93OzedIfSImVy8Csjggi_A/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-93OzedIfSImVy8Csjggi_A/package.zip",
+        "fileName": "拼音学习：听音选择声母",
+        "snapshotId": "3857589efbf846709c56c28796ea0dab",
+        "finishedAt": "2026-07-15T21:39:31.014850",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_11",
+          "conversationId": "312c9438bc7548c6b8dddcd2b6b7b6c3",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-BEuDJJqdR7KWV6fxD4w34A/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-BEuDJJqdR7KWV6fxD4w34A/package.zip",
+          "fileName": "拼音学习：听音选择声母",
+          "snapshotId": "9f8a1b3a5b004a12b7d35463c44a857a",
+          "finishedAt": "2026-07-15T21:54:10.821637",
+          "status": "success"
+        }
+      ]
+    },
+    {
+      "id": "generation-case-12",
+      "index": 12,
+      "requirement": "动物单词学习翻翻卡（英语）",
+      "subject": "英语",
+      "baseline": {
+        "id": "baseline",
+        "label": "线上现状",
+        "group": "对照组",
+        "taskId": "control_12",
+        "conversationId": "ba9fc7b5ff9d4e87af1ff4dead3cf2d5",
+        "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-06fgY8qCT8CCEXYH3wZ4sg/index.html",
+        "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-06fgY8qCT8CCEXYH3wZ4sg/package.zip",
+        "fileName": "动物单词学习翻翻卡",
+        "snapshotId": "690af11182c64b30b8db2f1ef536d459",
+        "finishedAt": "2026-07-15T21:40:49.967371",
+        "status": "success"
+      },
+      "versions": [
+        {
+          "id": "prompt-v1",
+          "label": "提示词 V1",
+          "group": "实验组",
+          "taskId": "experiment_12",
+          "conversationId": "5e3f16721a6841099079b199434edcca",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-93BDGolVSFucZf-E_fGaig/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-07/15-93BDGolVSFucZf-E_fGaig/package.zip",
+          "fileName": "Animal Words Memory Game",
+          "snapshotId": "f9de9f991dc4471caf5ca581b9c8db5c",
+          "finishedAt": "2026-07-15T21:53:09.946424",
+          "status": "success"
+        }
+      ]
+    }
+  ]
+}
