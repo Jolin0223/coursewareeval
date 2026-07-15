@@ -922,6 +922,7 @@
         let generationExperimentData = null;
         let generationExperimentLoading = false;
         let generationExperimentState = loadGenerationExperimentState();
+        let generationExperimentSummaryTimer = null;
 
         // 【新增】：多选筛选器状态
         let availableRaters = [];
@@ -1904,11 +1905,15 @@
             const conclusionStats = getGenerationExperimentConclusionStats(cases);
             return `
                 <div class="space-y-5">
-                    ${renderGenerationExperimentConclusionCards(conclusionStats)}
+                    <div id="generation-experiment-conclusion">
+                        ${renderGenerationExperimentConclusionCards(conclusionStats)}
+                    </div>
                     <div class="space-y-6">
                         ${cases.map(item => renderGenerationExperimentCaseDetail(item)).join('')}
                     </div>
-                    ${renderGenerationExperimentOverview(cases)}
+                    <div id="generation-experiment-overview">
+                        ${renderGenerationExperimentOverview(cases)}
+                    </div>
                 </div>
             `;
         }
@@ -2056,43 +2061,50 @@
                     <div class="w-full aspect-video max-h-[260px] bg-slate-100 border-b border-slate-200 overflow-hidden flex items-center justify-center">
                         ${variant.fileUrl ? `<iframe src="${escapeAttr(variant.fileUrl)}" class="h-full aspect-video w-auto max-w-full bg-white border-0 shrink-0" loading="lazy"></iframe>` : `<div class="w-full h-full flex items-center justify-center text-slate-400 text-sm">暂无预览链接</div>`}
                     </div>
-                    <div class="p-4 space-y-4">
-                        <div class="flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-3">
-                            <div>
-                                <div class="text-sm font-black text-slate-800">四维评分</div>
-                                <div class="text-xs text-slate-400 mt-0.5">正在录入：${escapeHtml(getGenerationScoreEditorLabel())}</div>
-                            </div>
-                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                                ${renderGenerationScoreSegment('查看', GENERATION_SCORE_VIEWS, generationExperimentState.scoreView || 'combined', 'setGenerationExperimentScoreView')}
-                                ${renderGenerationScoreSegment('录入', GENERATION_SCORE_EDITORS, generationExperimentState.scoreEditor || 'human', 'setGenerationExperimentScoreEditor')}
-                                <div class="text-left sm:text-right sm:ml-1">
-                                    <div class="text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
-                                    <div class="text-xs text-slate-400 mt-0.5">${escapeHtml(getGenerationScoreViewLabel())}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-5">
-                            ${dimensions.map(d => renderGenerationExperimentScoreControl(item.id, variant.id, rating, d)).join('')}
-                        </div>
-                        <div class="grid grid-cols-1 2xl:grid-cols-2 gap-3">
-                            <label class="block text-sm font-bold text-slate-700">
-                                主要问题
-                                <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'issues', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录知识、教学、交互、视觉问题">${escapeHtml(rating.issues || '')}</textarea>
-                            </label>
-                            <label class="block text-sm font-bold text-slate-700">
-                                亮点 / 判断依据
-                                <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'strengths', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录比另一版好/差的原因">${escapeHtml(rating.strengths || '')}</textarea>
-                            </label>
-                        </div>
-                        ${renderGenerationExperimentDecisionControls(item, variant, rating)}
-                        ${isLatestPromptVersion ? renderGenerationExperimentNextPromptControls(item, variant, rating) : ''}
+                    <div class="p-4 space-y-4 generation-experiment-score-card" data-case-id="${escapeAttr(item.id)}" data-variant-id="${escapeAttr(variant.id)}">
+                        ${renderGenerationExperimentScoreCardBody(item, variant, rating, isLatestPromptVersion)}
                     </div>
                 </div>
             `;
         }
 
+        function renderGenerationExperimentScoreCardBody(item, variant, rating, isLatestPromptVersion) {
+            return `
+                <div class="flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-3">
+                    <div>
+                        <div class="text-sm font-black text-slate-800">四维评分</div>
+                        <div class="text-xs text-slate-400 mt-0.5">滑杆当前写入：${escapeHtml(getGenerationScoreEditorLabel())}</div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                        ${renderGenerationScoreSegment('显示分数', GENERATION_SCORE_VIEWS, generationExperimentState.scoreView || 'combined', 'setGenerationExperimentScoreView')}
+                        ${renderGenerationScoreSegment('滑杆写入', GENERATION_SCORE_EDITORS, generationExperimentState.scoreEditor || 'human', 'setGenerationExperimentScoreEditor')}
+                        <div class="text-left sm:text-right sm:ml-1">
+                            <div class="generation-experiment-average text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
+                            <div class="text-xs text-slate-400 mt-0.5">${escapeHtml(getGenerationScoreViewLabel())}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-5">
+                    ${dimensions.map(d => renderGenerationExperimentScoreControl(item.id, variant.id, rating, d)).join('')}
+                </div>
+                <div class="grid grid-cols-1 2xl:grid-cols-2 gap-3">
+                    <label class="block text-sm font-bold text-slate-700">
+                        主要问题
+                        <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'issues', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录知识、教学、交互、视觉问题">${escapeHtml(rating.issues || '')}</textarea>
+                    </label>
+                    <label class="block text-sm font-bold text-slate-700">
+                        亮点 / 判断依据
+                        <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'strengths', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录比另一版好/差的原因">${escapeHtml(rating.strengths || '')}</textarea>
+                    </label>
+                </div>
+                ${renderGenerationExperimentDecisionControls(item, variant, rating)}
+                ${isLatestPromptVersion ? renderGenerationExperimentNextPromptControls(item, variant, rating) : ''}
+            `;
+        }
+
         function renderGenerationExperimentDecisionControls(item, variant, rating) {
             const isBaseline = variant.id === 'baseline';
+            if (isBaseline) return '';
             const options = isBaseline
                 ? [['todo', '待评审'], ['baseline-ok', '可作基线'], ['invalid', '不可用']]
                 : [['todo', '待评审'], ['better', '优于线上'], ['tie', '持平'], ['worse', '不如线上'], ['invalid', '不可用']];
@@ -2215,13 +2227,53 @@
         function setGenerationExperimentScoreView(view) {
             generationExperimentState.scoreView = GENERATION_SCORE_VIEWS.some(item => item.id === view) ? view : 'combined';
             saveGenerationExperimentState();
-            renderGenerationEvalWorkbench();
+            refreshGenerationExperimentScoreOnly();
         }
 
         function setGenerationExperimentScoreEditor(editor) {
             generationExperimentState.scoreEditor = GENERATION_SCORE_EDITORS.some(item => item.id === editor) ? editor : 'human';
             saveGenerationExperimentState();
-            renderGenerationEvalWorkbench();
+            refreshGenerationExperimentScoreOnly();
+        }
+
+        function refreshGenerationExperimentScoreOnly() {
+            if (!generationExperimentData) return renderGenerationEvalWorkbench();
+            const cases = getGenerationExperimentCases();
+            document.querySelectorAll('.generation-experiment-score-card').forEach(container => {
+                const caseId = container.dataset.caseId;
+                const variantId = container.dataset.variantId;
+                const item = cases.find(entry => entry.id === caseId);
+                if (!item) return;
+                const variant = variantId === 'baseline'
+                    ? { ...(item.baseline || {}), id: 'baseline', label: '线上现状', tone: 'baseline' }
+                    : (item.versions || []).find(entry => entry.id === variantId);
+                if (!variant) return;
+                const rating = getGenerationExperimentRating(caseId, variantId);
+                const latestVersionId = item.versions?.[item.versions.length - 1]?.id || '';
+                const isLatestPromptVersion = variantId !== 'baseline' && variantId === latestVersionId;
+                container.innerHTML = renderGenerationExperimentScoreCardBody(item, variant, rating, isLatestPromptVersion);
+            });
+            const conclusion = document.getElementById('generation-experiment-conclusion');
+            if (conclusion) conclusion.innerHTML = renderGenerationExperimentConclusionCards(getGenerationExperimentConclusionStats(cases));
+            const overview = document.getElementById('generation-experiment-overview');
+            if (overview) overview.innerHTML = renderGenerationExperimentOverview(cases);
+        }
+
+        function refreshGenerationExperimentSummaryOnly() {
+            if (!generationExperimentData) return;
+            const cases = getGenerationExperimentCases();
+            const conclusion = document.getElementById('generation-experiment-conclusion');
+            if (conclusion) conclusion.innerHTML = renderGenerationExperimentConclusionCards(getGenerationExperimentConclusionStats(cases));
+            const overview = document.getElementById('generation-experiment-overview');
+            if (overview) overview.innerHTML = renderGenerationExperimentOverview(cases);
+        }
+
+        function scheduleGenerationExperimentSummaryRefresh() {
+            if (generationExperimentSummaryTimer) clearTimeout(generationExperimentSummaryTimer);
+            generationExperimentSummaryTimer = setTimeout(() => {
+                generationExperimentSummaryTimer = null;
+                refreshGenerationExperimentSummaryOnly();
+            }, 180);
         }
 
         function updateGenerationExperimentScore(caseId, variantId, dimensionId, score) {
@@ -2229,7 +2281,7 @@
             const editor = generationExperimentState.scoreEditor || 'human';
             rating.scoreSources[editor].scores[dimensionId] = score;
             saveGenerationExperimentState();
-            renderGenerationEvalWorkbench();
+            refreshGenerationExperimentScoreOnly();
         }
 
         function showGenerationExperimentSliderTooltip(el, dimensionId) {
@@ -2256,6 +2308,10 @@
                 valSpan.innerText = displayText;
                 valSpan.className = `score-val font-bold ${displayValue === '' || displayValue == null ? 'text-slate-400' : getScoreColorClass(Number(displayValue))} w-12 text-right font-mono`;
             }
+            const card = el.closest('.generation-experiment-score-card');
+            const avgEl = card?.querySelector('.generation-experiment-average');
+            if (avgEl) avgEl.innerText = `均分 ${getExperimentAverage(rating)}`;
+            scheduleGenerationExperimentSummaryRefresh();
         }
 
         function updateGenerationExperimentText(caseId, variantId, field, value) {
