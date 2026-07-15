@@ -638,7 +638,12 @@
     <div id="sysprompt-modal" class="fixed inset-0 bg-slate-900/60 hidden z-[110] flex items-center justify-center modal-enter backdrop-blur-sm">
         <div class="bg-white rounded-2xl shadow-2xl p-6 w-[600px] max-w-full mx-4 relative flex flex-col max-h-[80vh]">
             <button type="button" onclick="closeSysPromptModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-3 flex items-center"><i class="fa-solid fa-code text-orange-500 mr-2"></i>完整系统提示词 (System Prompt)</h3>
+            <div class="mb-4 border-b border-slate-100 pb-3 flex items-center justify-between gap-3">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center"><i class="fa-solid fa-code text-orange-500 mr-2"></i>完整系统提示词 (System Prompt)</h3>
+                <button type="button" onclick="copySysPromptModalContent()" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs">
+                    <i class="fa-regular fa-copy"></i> 复制
+                </button>
+            </div>
             <div class="overflow-y-auto text-sm text-slate-700 leading-relaxed p-4 bg-orange-50/50 border border-orange-100 rounded-lg whitespace-pre-wrap" id="sysprompt-modal-content"></div>
             <div class="mt-4 flex justify-end"><button onclick="closeSysPromptModal()" class="px-6 py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg font-bold transition">关闭</button></div>
         </div>
@@ -897,8 +902,8 @@
             { id: 'human', label: '仅真人分数', shortLabel: '真人' }
         ];
         const GENERATION_SCORE_EDITORS = [
-            { id: 'human', label: '我的评分' },
-            { id: 'ai', label: 'AI评分' }
+            { id: 'human', label: '我的评分', shortLabel: '我的' },
+            { id: 'ai', label: 'AI评分', shortLabel: 'AI' }
         ];
         const STYLE_RUN_POLL_INTERVAL_MS = 10000;
         const STYLE_RUN_ACTIVE_WINDOW_MS = 20 * 60 * 1000;
@@ -1802,6 +1807,11 @@
             if (!rating.issues) rating.issues = '';
             if (!rating.strengths) rating.strengths = '';
             if (!rating.decision) rating.decision = 'todo';
+            if (rating.nextPromptDraft == null) rating.nextPromptDraft = '';
+            if (rating.nextPromptAnalysis == null) rating.nextPromptAnalysis = '';
+            if (rating.nextPromptStatus == null) rating.nextPromptStatus = '';
+            if (rating.nextPromptError == null) rating.nextPromptError = '';
+            if (rating.nextPromptModel == null) rating.nextPromptModel = '';
             return rating;
         }
 
@@ -1862,6 +1872,7 @@
         function getExperimentDecisionLabel(value) {
             return {
                 todo: '待评审',
+                'baseline-ok': '可作基线',
                 better: '明显优于线上',
                 tie: '基本持平',
                 worse: '不如线上',
@@ -1890,34 +1901,10 @@
                 return `<div class="border border-red-100 bg-red-50 text-red-700 rounded-2xl p-6 font-bold">实验数据加载失败：${escapeHtml(generationExperimentData.loadError)}</div>`;
             }
             const cases = getGenerationExperimentCases();
-            const totalVariants = cases.reduce((sum, item) => sum + getGenerationExperimentVariants(item).length, 0);
-            const scoredVariants = cases.reduce((sum, item) => {
-                return sum + getGenerationExperimentVariants(item).filter(variant => getExperimentAverage(getGenerationExperimentRating(item.id, variant.id)) !== '-').length;
-            }, 0);
+            const conclusionStats = getGenerationExperimentConclusionStats(cases);
             return `
                 <div class="space-y-5">
-                    <section class="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-4">
-                        <div>
-                            <div class="font-black text-slate-900">评分视角</div>
-                            <div class="text-xs text-slate-500 mt-1">分数按来源拆开保存；切换视角只影响展示和总览，不会覆盖原始评分。</div>
-                        </div>
-                        <div class="flex flex-col xl:flex-row xl:items-center gap-3">
-                            ${renderGenerationScoreSegment('查看口径', GENERATION_SCORE_VIEWS, generationExperimentState.scoreView || 'combined', 'setGenerationExperimentScoreView')}
-                            ${renderGenerationScoreSegment('当前录入', GENERATION_SCORE_EDITORS, generationExperimentState.scoreEditor || 'human', 'setGenerationExperimentScoreEditor')}
-                        </div>
-                    </section>
-                    <section class="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
-                        <div>
-                            <div class="font-black text-slate-900">课件生成效果平铺评审</div>
-                            <div class="text-xs text-slate-500 mt-1">每个课件一行，左侧线上现状，右侧提示词版本效果；直接向下滚动逐个评审。</div>
-                        </div>
-                        <div class="flex flex-wrap gap-2 text-xs font-black text-slate-500">
-                            <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200">课件 ${cases.length}</span>
-                            <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200">产物 ${totalVariants}</span>
-                            <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200">已评分 ${scoredVariants}</span>
-                            <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200">OpenClaw · 2026-07-15</span>
-                        </div>
-                    </section>
+                    ${renderGenerationExperimentConclusionCards(conclusionStats)}
                     <div class="space-y-6">
                         ${cases.map(item => renderGenerationExperimentCaseDetail(item)).join('')}
                     </div>
@@ -1930,12 +1917,71 @@
             return `
                 <div class="flex items-center gap-2">
                     <span class="text-xs font-black text-slate-400 shrink-0">${escapeHtml(label)}</span>
-                    <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+                    <div class="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
                         ${options.map(option => `
-                            <button type="button" onclick="${escapeAttr(`${handlerName}(${jsString(option.id)})`)}" class="h-8 px-3 rounded-md text-xs font-black transition ${currentValue === option.id ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">${escapeHtml(option.label)}</button>
+                            <button type="button" onclick="${escapeAttr(`${handlerName}(${jsString(option.id)})`)}" class="h-7 px-2.5 rounded-md text-xs font-black transition ${currentValue === option.id ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">${escapeHtml(option.shortLabel || option.label)}</button>
                         `).join('')}
                     </div>
                 </div>
+            `;
+        }
+
+        function getGenerationExperimentConclusionStats(cases) {
+            const rows = cases.map(item => {
+                const version = getGenerationExperimentSelectedVersion(item);
+                const baselineRating = getGenerationExperimentRating(item.id, 'baseline');
+                const versionRating = version ? getGenerationExperimentRating(item.id, version.id) : null;
+                const baselineAvg = Number(getExperimentAverage(baselineRating));
+                const versionAvg = versionRating ? Number(getExperimentAverage(versionRating)) : NaN;
+                const diff = Number.isFinite(baselineAvg) && Number.isFinite(versionAvg) ? versionAvg - baselineAvg : null;
+                return { item, version, baselineAvg, versionAvg, diff, decision: versionRating?.decision || 'todo' };
+            });
+            const scoredRows = rows.filter(row => row.diff != null);
+            const better = scoredRows.filter(row => row.diff > 0).length;
+            const tie = scoredRows.filter(row => row.diff === 0).length;
+            const worse = scoredRows.filter(row => row.diff < 0).length;
+            const invalid = rows.filter(row => row.decision === 'invalid').length;
+            const avgDiff = scoredRows.length ? scoredRows.reduce((sum, row) => sum + row.diff, 0) / scoredRows.length : null;
+            let conclusion = '待评分';
+            if (scoredRows.length) {
+                if (better > worse) conclusion = '提示词版整体更优';
+                else if (worse > better) conclusion = '线上现状暂时更稳';
+                else conclusion = '两组暂时持平';
+            }
+            return {
+                total: cases.length,
+                scored: scoredRows.length,
+                unscored: Math.max(0, cases.length - scoredRows.length),
+                better,
+                tie,
+                worse,
+                invalid,
+                avgDiff,
+                conclusion
+            };
+        }
+
+        function renderGenerationExperimentConclusionCards(stats) {
+            const diffText = stats.avgDiff == null ? '-' : stats.avgDiff > 0 ? `+${stats.avgDiff.toFixed(1)}` : stats.avgDiff.toFixed(1);
+            return `
+                <section class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="bg-white border border-slate-200 rounded-xl px-4 py-3">
+                        <div class="text-xs font-black text-slate-400">当前结论</div>
+                        <div class="mt-1 text-base font-black text-slate-900">${escapeHtml(stats.conclusion)}</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-xl px-4 py-3">
+                        <div class="text-xs font-black text-slate-400">平均差值</div>
+                        <div class="mt-1 text-base font-black ${stats.avgDiff == null ? 'text-slate-500' : stats.avgDiff >= 0 ? 'text-green-700' : 'text-red-700'}">${escapeHtml(diffText)}</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-xl px-4 py-3">
+                        <div class="text-xs font-black text-slate-400">优于 / 持平 / 不如</div>
+                        <div class="mt-1 text-base font-black text-slate-900">${stats.better} / ${stats.tie} / ${stats.worse}</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-xl px-4 py-3">
+                        <div class="text-xs font-black text-slate-400">未完成评分</div>
+                        <div class="mt-1 text-base font-black text-slate-900">${stats.unscored}<span class="text-xs text-slate-400 ml-1">/ ${stats.total}</span></div>
+                    </div>
+                </section>
             `;
         }
 
@@ -1947,17 +1993,14 @@
             return `
                 <section class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                     <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
-                        <div>
+                        <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
                                 <h4 class="text-lg font-black text-slate-900">${String(item.index).padStart(2, '0')} · ${escapeHtml(item.requirement)}</h4>
                                 <span class="text-xs font-black border rounded-full px-2 py-1 ${diffClass}">${escapeHtml(diffText)}</span>
                             </div>
-                            <p class="text-sm text-slate-500 mt-1">${escapeHtml(item.subject || '其他')} · 左侧线上现状，右侧提示词版本效果。</p>
+                            <p class="text-sm text-slate-500 mt-1">${escapeHtml(item.subject || '其他')}</p>
                         </div>
-                        <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="${escapeAttr(`showGenerationExperimentPrompt(${jsString(item.id)}, 'baseline')`)}" class="ce-tool-btn ce-tool-btn-ghost">
-                                <i class="fa-solid fa-code"></i> 线上 Prompt
-                            </button>
+                        <div class="flex flex-wrap gap-2 shrink-0">
                             <button type="button" onclick="document.getElementById('guide-modal').classList.remove('hidden')" class="ce-tool-btn ce-tool-btn-ghost">
                                 <i class="fa-solid fa-book-open-reader"></i> 评分标准
                             </button>
@@ -1973,15 +2016,13 @@
 
         function renderGenerationExperimentVersionControls(item, variant) {
             const versions = item.versions || [];
+            if (versions.length <= 1) return '';
             return `
-                <div class="flex gap-1.5">
+                <div class="flex flex-wrap gap-1.5">
                     ${versions.map(version => {
                         const active = variant?.id === version.id;
                         return `<button type="button" onclick="${escapeAttr(`selectGenerationExperimentVersion(${jsString(item.id)}, ${jsString(version.id)})`)}" class="h-8 px-2.5 rounded-lg border text-xs font-black transition ${active ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-700 border-blue-200 hover:border-blue-400'}">${escapeHtml(version.label || version.id)}</button>`;
                     }).join('')}
-                    <button type="button" onclick="${escapeAttr(`showGenerationExperimentPrompt(${jsString(item.id)}, ${jsString(variant?.id || '')})`)}" class="ce-tool-btn h-8 px-2.5 text-xs">
-                        <i class="fa-solid fa-code"></i> Prompt
-                    </button>
                 </div>
             `;
         }
@@ -1989,35 +2030,45 @@
         function renderGenerationExperimentVariantCard(item, variant) {
             const rating = getGenerationExperimentRating(item.id, variant.id);
             const isBaseline = variant.id === 'baseline';
+            const latestVersionId = item.versions?.[item.versions.length - 1]?.id || '';
+            const isLatestPromptVersion = !isBaseline && variant.id === latestVersionId;
             const badgeClass = isBaseline ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-blue-50 text-blue-700 border-blue-100';
+            const promptButtonLabel = isBaseline ? '线上 Prompt' : 'Prompt';
             return `
                 <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-2xl overflow-hidden bg-white min-w-0">
-                    <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-3">
-                        <div class="min-w-0">
+                    <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-col xl:flex-row xl:items-start xl:justify-between gap-3">
+                        <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-black border rounded-full px-2 py-1 ${badgeClass}">${escapeHtml(variant.label)}</span>
                                 <span class="text-sm font-black text-slate-800 truncate">${escapeHtml(variant.fileName || item.requirement)}</span>
                             </div>
                             <div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(variant.conversationId || '-')}</div>
                         </div>
-                        <div class="flex flex-wrap gap-2 shrink-0">
+                        <div class="flex flex-wrap items-center justify-start xl:justify-end gap-2 shrink-0 max-w-full">
                             ${!isBaseline ? renderGenerationExperimentVersionControls(item, variant) : ''}
-                            ${variant.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn h-8 px-3 text-xs"><i class="fa-solid fa-play"></i> 打开</button>` : ''}
-                            ${variant.pushUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.pushUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs"><i class="fa-solid fa-file-zipper"></i> ZIP</button>` : ''}
+                            <button type="button" onclick="${escapeAttr(`showGenerationExperimentPrompt(${jsString(item.id)}, ${jsString(variant.id)})`)}" class="ce-tool-btn h-8 px-2.5 text-xs">
+                                <i class="fa-solid fa-code"></i> ${escapeHtml(promptButtonLabel)}
+                            </button>
+                            ${variant.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn ce-tool-btn-primary h-8 px-3 text-xs"><i class="fa-solid fa-play"></i> 打开</button>` : ''}
+                            ${variant.pushUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.pushUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn h-8 px-3 text-xs"><i class="fa-solid fa-file-zipper"></i> ZIP</button>` : ''}
                         </div>
                     </div>
-                    <div class="aspect-video max-h-[260px] bg-slate-100 border-b border-slate-200 overflow-hidden">
-                        ${variant.fileUrl ? `<iframe src="${escapeAttr(variant.fileUrl)}" class="w-full h-full bg-white" loading="lazy"></iframe>` : `<div class="w-full h-full flex items-center justify-center text-slate-400 text-sm">暂无预览链接</div>`}
+                    <div class="w-full aspect-video max-h-[260px] bg-slate-100 border-b border-slate-200 overflow-hidden flex items-center justify-center">
+                        ${variant.fileUrl ? `<iframe src="${escapeAttr(variant.fileUrl)}" class="h-full aspect-video w-auto max-w-full bg-white border-0 shrink-0" loading="lazy"></iframe>` : `<div class="w-full h-full flex items-center justify-center text-slate-400 text-sm">暂无预览链接</div>`}
                     </div>
                     <div class="p-4 space-y-4">
-                        <div class="flex items-center justify-between">
+                        <div class="flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-3">
                             <div>
                                 <div class="text-sm font-black text-slate-800">四维评分</div>
                                 <div class="text-xs text-slate-400 mt-0.5">正在录入：${escapeHtml(getGenerationScoreEditorLabel())}</div>
                             </div>
-                            <div class="text-right">
-                                <div class="text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
-                                <div class="text-xs text-slate-400 mt-0.5">${escapeHtml(getGenerationScoreViewLabel())}</div>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                ${renderGenerationScoreSegment('查看', GENERATION_SCORE_VIEWS, generationExperimentState.scoreView || 'combined', 'setGenerationExperimentScoreView')}
+                                ${renderGenerationScoreSegment('录入', GENERATION_SCORE_EDITORS, generationExperimentState.scoreEditor || 'human', 'setGenerationExperimentScoreEditor')}
+                                <div class="text-left sm:text-right sm:ml-1">
+                                    <div class="text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
+                                    <div class="text-xs text-slate-400 mt-0.5">${escapeHtml(getGenerationScoreViewLabel())}</div>
+                                </div>
                             </div>
                         </div>
                         <div class="space-y-5">
@@ -2033,18 +2084,45 @@
                                 <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'strengths', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录比另一版好/差的原因">${escapeHtml(rating.strengths || '')}</textarea>
                             </label>
                         </div>
-                        <div class="flex flex-wrap gap-2">
-                            ${[
-                                ['todo', '待评审'],
-                                ['better', '优于线上'],
-                                ['tie', '持平'],
-                                ['worse', '不如线上'],
-                                ['invalid', '不可用']
-                            ].map(([value, label]) => `
-                                <button type="button" onclick="${escapeAttr(`updateGenerationExperimentDecision(${jsString(item.id)}, ${jsString(variant.id)}, ${jsString(value)})`)}" class="h-8 px-3 rounded-lg border text-xs font-black transition ${rating.decision === value ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-700'}">${escapeHtml(label)}</button>
-                            `).join('')}
+                        ${renderGenerationExperimentDecisionControls(item, variant, rating)}
+                        ${isLatestPromptVersion ? renderGenerationExperimentNextPromptControls(item, variant, rating) : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGenerationExperimentDecisionControls(item, variant, rating) {
+            const isBaseline = variant.id === 'baseline';
+            const options = isBaseline
+                ? [['todo', '待评审'], ['baseline-ok', '可作基线'], ['invalid', '不可用']]
+                : [['todo', '待评审'], ['better', '优于线上'], ['tie', '持平'], ['worse', '不如线上'], ['invalid', '不可用']];
+            return `
+                <div class="flex flex-wrap gap-2">
+                    ${options.map(([value, label]) => `
+                        <button type="button" onclick="${escapeAttr(`updateGenerationExperimentDecision(${jsString(item.id)}, ${jsString(variant.id)}, ${jsString(value)})`)}" class="h-8 px-3 rounded-lg border text-xs font-black transition ${rating.decision === value ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-700'}">${escapeHtml(label)}</button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderGenerationExperimentNextPromptControls(item, variant, rating) {
+            const hasDraft = !!String(rating.nextPromptDraft || '').trim();
+            const loading = rating.nextPromptStatus === 'running';
+            return `
+                <div class="border border-blue-100 bg-blue-50/50 rounded-xl p-3 space-y-2">
+                    <div class="flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-2">
+                        <div>
+                            <div class="text-sm font-black text-slate-800">下一版提示词草稿</div>
+                            <div class="text-xs text-slate-500 mt-0.5">${hasDraft ? escapeHtml(rating.nextPromptAnalysis || `由 xdf-glm-5.2 基于当前问题和亮点生成。`) : '基于当前问题、亮点和评分生成，可先审核再复制使用。'}</div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 shrink-0">
+                            <button type="button" onclick="${escapeAttr(`generateNextExperimentPrompt(${jsString(item.id)}, ${jsString(variant.id)})`)}" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs" ${loading ? 'disabled' : ''}>
+                                <i class="fa-solid ${loading ? 'fa-circle-notch fa-spin' : 'fa-wand-magic-sparkles'}"></i> ${loading ? '生成中' : '生成下一版'}
+                            </button>
+                            ${hasDraft ? `<button type="button" onclick="${escapeAttr(`showGenerationExperimentNextPrompt(${jsString(item.id)}, ${jsString(variant.id)})`)}" class="ce-tool-btn h-8 px-3 text-xs"><i class="fa-regular fa-eye"></i> 查看/复制</button>` : ''}
                         </div>
                     </div>
+                    ${rating.nextPromptError ? `<div class="text-xs text-red-600 font-bold">${escapeHtml(rating.nextPromptError)}</div>` : ''}
                 </div>
             `;
         }
@@ -2191,6 +2269,79 @@
             rating.decision = value;
             saveGenerationExperimentState();
             renderGenerationEvalWorkbench();
+        }
+
+        async function generateNextExperimentPrompt(caseId, variantId) {
+            const item = getGenerationExperimentCases().find(entry => entry.id === caseId);
+            if (!item) return showToast('未找到这个课件用例。', 'warning');
+            const variant = (item.versions || []).find(version => version.id === variantId);
+            if (!variant) return showToast('只有提示词版本可以生成下一版。', 'warning');
+            const promptText = String(variant.prompt || variant.systemPrompt || '').trim();
+            if (!promptText) return showToast('当前提示词为空，不能生成下一版。', 'warning');
+            const rating = getGenerationExperimentRating(caseId, variantId);
+            if (!String(rating.issues || '').trim() && !String(rating.strengths || '').trim()) {
+                return showToast('请先记录主要问题或亮点，再生成下一版提示词。', 'warning');
+            }
+            try {
+                const session = await getAdminSessionForGeneration();
+                rating.nextPromptStatus = 'running';
+                rating.nextPromptError = '';
+                rating.nextPromptModel = 'xdf-glm-5.2';
+                saveGenerationExperimentState();
+                renderGenerationEvalWorkbench();
+                const response = await fetch('/api/generation-eval/suggest-next-prompt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({
+                        model: 'xdf-glm-5.2',
+                        userRequirement: item.requirement,
+                        previousPrompt: promptText,
+                        issues: rating.issues,
+                        solution: rating.strengths,
+                        scores: rating.scoreSources || {}
+                    })
+                });
+                const body = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(body.message || `接口返回 ${response.status}`);
+                const nextPrompt = String(body.nextPrompt || '').trim();
+                if (!nextPrompt) throw new Error('大模型没有返回可用的下一版提示词。');
+                rating.nextPromptDraft = nextPrompt;
+                rating.nextPromptAnalysis = String(body.analysis || '').trim();
+                rating.nextPromptStatus = 'done';
+                rating.nextPromptError = '';
+                rating.nextPromptGeneratedAt = new Date().toISOString();
+                saveGenerationExperimentState();
+                renderGenerationEvalWorkbench();
+                showGenerationExperimentNextPrompt(caseId, variantId);
+                showToast('已生成下一版提示词草稿。', 'success');
+            } catch (error) {
+                rating.nextPromptStatus = 'failed';
+                rating.nextPromptError = error.message || String(error);
+                saveGenerationExperimentState();
+                renderGenerationEvalWorkbench();
+                showToast(`生成下一版失败：${rating.nextPromptError}`, 'error');
+            }
+        }
+
+        function showGenerationExperimentNextPrompt(caseId, variantId) {
+            const item = getGenerationExperimentCases().find(entry => entry.id === caseId);
+            if (!item) return showToast('未找到这个课件用例。', 'warning');
+            const variant = (item.versions || []).find(version => version.id === variantId);
+            if (!variant) return showToast('未找到这个提示词版本。', 'warning');
+            const rating = getGenerationExperimentRating(caseId, variantId);
+            const draft = String(rating.nextPromptDraft || '').trim();
+            if (!draft) return showToast('还没有生成下一版提示词草稿。', 'warning');
+            const header = [
+                item.requirement,
+                '',
+                `【由 ${variant.label || variant.id} 生成的下一版提示词草稿】`,
+                rating.nextPromptAnalysis ? `优化说明：${rating.nextPromptAnalysis}` : '',
+                ''
+            ].filter(line => line !== '').join('\n');
+            showSysPromptModal(encodeURIComponent(`${header}\n${draft}`));
         }
 
         function showGenerationExperimentPrompt(caseId, variantId) {
@@ -3801,6 +3952,37 @@
                     if (previousActive && previousActive !== area && previousActive.focus) previousActive.focus();
                 } catch (error) {}
             }
+        }
+
+        function copyPlainText(value, label = '内容') {
+            const text = String(value || '');
+            if (!text.trim()) return showToast(`${label}为空，暂时不能复制。`, 'warning');
+            navigator.clipboard?.writeText(text)
+                .then(() => showToast(`已复制${label}。`, 'success'))
+                .catch(() => {
+                    const area = document.createElement('textarea');
+                    area.value = text;
+                    area.setAttribute('readonly', 'readonly');
+                    area.style.position = 'fixed';
+                    area.style.left = '-9999px';
+                    area.style.top = '0';
+                    document.body.appendChild(area);
+                    area.focus();
+                    area.select();
+                    try {
+                        const copied = document.execCommand('copy');
+                        showToast(copied ? `已复制${label}。` : '复制失败，请手动选中内容复制。', copied ? 'success' : 'error');
+                    } catch (error) {
+                        showToast('复制失败，请手动选中内容复制。', 'error');
+                    } finally {
+                        document.body.removeChild(area);
+                    }
+                });
+        }
+
+        function copySysPromptModalContent() {
+            const el = document.getElementById('sysprompt-modal-content');
+            copyPlainText(el?.innerText || '', '提示词');
         }
 
         function renderCustomSelect(config) {
