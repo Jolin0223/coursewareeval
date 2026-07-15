@@ -891,6 +891,15 @@
             { value: 'doubao-seed-2.1-turbo', label: 'doubao-seed-2.1-turbo' },
             { value: 'xdf-kimi-k2.6', label: 'xdf-kimi-k2.6' }
         ];
+        const GENERATION_SCORE_VIEWS = [
+            { id: 'combined', label: 'AI+真人平均分', shortLabel: '综合' },
+            { id: 'ai', label: '仅AI分数', shortLabel: 'AI' },
+            { id: 'human', label: '仅真人分数', shortLabel: '真人' }
+        ];
+        const GENERATION_SCORE_EDITORS = [
+            { id: 'human', label: '我的评分' },
+            { id: 'ai', label: 'AI评分' }
+        ];
         const STYLE_RUN_POLL_INTERVAL_MS = 10000;
         const STYLE_RUN_ACTIVE_WINDOW_MS = 20 * 60 * 1000;
         let styleEvalData = { styles: [] };
@@ -1711,10 +1720,12 @@
                 return {
                     selectedCaseId: stored?.selectedCaseId || '',
                     selectedVersions: stored?.selectedVersions || {},
+                    scoreView: stored?.scoreView || 'combined',
+                    scoreEditor: stored?.scoreEditor || 'human',
                     ratings: stored?.ratings || {}
                 };
             } catch (error) {
-                return { selectedCaseId: '', selectedVersions: {}, ratings: {} };
+                return { selectedCaseId: '', selectedVersions: {}, scoreView: 'combined', scoreEditor: 'human', ratings: {} };
             }
         }
 
@@ -1760,17 +1771,73 @@
         function getGenerationExperimentRating(caseId, variantId) {
             generationExperimentState.ratings[caseId] = generationExperimentState.ratings[caseId] || {};
             generationExperimentState.ratings[caseId][variantId] = generationExperimentState.ratings[caseId][variantId] || {
-                scores: { d1: '', d2: '', d3: '', d4: '' },
                 issues: '',
                 strengths: '',
                 decision: 'todo'
             };
+            migrateGenerationExperimentRating(generationExperimentState.ratings[caseId][variantId]);
             return generationExperimentState.ratings[caseId][variantId];
         }
 
-        function getExperimentAverage(rating) {
+        function createEmptyExperimentScores() {
+            return { d1: '', d2: '', d3: '', d4: '' };
+        }
+
+        function normalizeExperimentScores(scores) {
+            return { ...createEmptyExperimentScores(), ...(scores || {}) };
+        }
+
+        function migrateGenerationExperimentRating(rating) {
+            rating.scoreSources = rating.scoreSources || {};
+            if (!rating.scoreSources.human) {
+                rating.scoreSources.human = { scores: normalizeExperimentScores(rating.scores || {}) };
+            } else {
+                rating.scoreSources.human.scores = normalizeExperimentScores(rating.scoreSources.human.scores);
+            }
+            if (!rating.scoreSources.ai) {
+                rating.scoreSources.ai = { scores: createEmptyExperimentScores() };
+            } else {
+                rating.scoreSources.ai.scores = normalizeExperimentScores(rating.scoreSources.ai.scores);
+            }
+            if (!rating.issues) rating.issues = '';
+            if (!rating.strengths) rating.strengths = '';
+            if (!rating.decision) rating.decision = 'todo';
+            return rating;
+        }
+
+        function getGenerationScoreViewLabel(view = generationExperimentState.scoreView) {
+            return GENERATION_SCORE_VIEWS.find(item => item.id === view)?.label || 'AI+真人平均分';
+        }
+
+        function getGenerationScoreEditorLabel(editor = generationExperimentState.scoreEditor) {
+            return GENERATION_SCORE_EDITORS.find(item => item.id === editor)?.label || '我的评分';
+        }
+
+        function getExperimentDimensionValue(rating, dimensionId, view = generationExperimentState.scoreView) {
+            migrateGenerationExperimentRating(rating);
+            if (view === 'human' || view === 'ai') {
+                const value = rating.scoreSources?.[view]?.scores?.[dimensionId];
+                return value === '' || value == null ? '' : Number(value);
+            }
+            const values = ['human', 'ai']
+                .map(source => rating.scoreSources?.[source]?.scores?.[dimensionId])
+                .filter(value => value !== '' && value != null)
+                .map(value => Number(value))
+                .filter(value => Number.isFinite(value));
+            if (!values.length) return '';
+            return values.reduce((sum, value) => sum + value, 0) / values.length;
+        }
+
+        function getExperimentEditorScore(rating, dimensionId) {
+            migrateGenerationExperimentRating(rating);
+            const editor = generationExperimentState.scoreEditor || 'human';
+            const value = rating.scoreSources?.[editor]?.scores?.[dimensionId];
+            return value === '' || value == null ? '' : Number(value);
+        }
+
+        function getExperimentAverage(rating, view = generationExperimentState.scoreView) {
             const values = dimensions
-                .map(d => rating?.scores?.[d.id])
+                .map(d => getExperimentDimensionValue(rating, d.id, view))
                 .filter(value => value !== '' && value != null)
                 .map(value => Number(value))
                 .filter(value => Number.isFinite(value));
@@ -1830,6 +1897,16 @@
             }, 0);
             return `
                 <div class="space-y-5">
+                    <section class="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex flex-col 2xl:flex-row 2xl:items-center 2xl:justify-between gap-4">
+                        <div>
+                            <div class="font-black text-slate-900">评分视角</div>
+                            <div class="text-xs text-slate-500 mt-1">分数按来源拆开保存；切换视角只影响展示和总览，不会覆盖原始评分。</div>
+                        </div>
+                        <div class="flex flex-col xl:flex-row xl:items-center gap-3">
+                            ${renderGenerationScoreSegment('查看口径', GENERATION_SCORE_VIEWS, generationExperimentState.scoreView || 'combined', 'setGenerationExperimentScoreView')}
+                            ${renderGenerationScoreSegment('当前录入', GENERATION_SCORE_EDITORS, generationExperimentState.scoreEditor || 'human', 'setGenerationExperimentScoreEditor')}
+                        </div>
+                    </section>
                     <section class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                         <div class="px-5 py-4 bg-slate-50 border-b border-slate-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
                             <div>
@@ -1851,6 +1928,19 @@
                     </section>
                     ${selected ? renderGenerationExperimentCaseDetail(selected) : '<div class="bg-white border border-slate-200 rounded-2xl p-8 text-slate-500">暂无实验数据。</div>'}
                     ${renderGenerationExperimentOverview(cases)}
+                </div>
+            `;
+        }
+
+        function renderGenerationScoreSegment(label, options, currentValue, handlerName) {
+            return `
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-black text-slate-400 shrink-0">${escapeHtml(label)}</span>
+                    <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+                        ${options.map(option => `
+                            <button type="button" onclick="${escapeAttr(`${handlerName}(${jsString(option.id)})`)}" class="h-8 px-3 rounded-md text-xs font-black transition ${currentValue === option.id ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">${escapeHtml(option.label)}</button>
+                        `).join('')}
+                    </div>
                 </div>
             `;
         }
@@ -1941,8 +2031,14 @@
                     </div>
                     <div class="p-5 space-y-5">
                         <div class="flex items-center justify-between">
-                            <div class="text-sm font-black text-slate-800">四维评分</div>
-                            <div class="text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
+                            <div>
+                                <div class="text-sm font-black text-slate-800">四维评分</div>
+                                <div class="text-xs text-slate-400 mt-0.5">正在录入：${escapeHtml(getGenerationScoreEditorLabel())}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
+                                <div class="text-xs text-slate-400 mt-0.5">${escapeHtml(getGenerationScoreViewLabel())}</div>
+                            </div>
                         </div>
                         <div class="space-y-5">
                             ${dimensions.map(d => renderGenerationExperimentScoreControl(item.id, variant.id, rating, d)).join('')}
@@ -1974,17 +2070,19 @@
         }
 
         function renderGenerationExperimentScoreControl(caseId, variantId, rating, dimension) {
-            const current = rating.scores?.[dimension.id];
-            const scoreValue = current === '' || current == null ? 0 : Number(current);
-            const colorClass = current === '' || current == null ? 'text-slate-400' : getScoreColorClass(scoreValue);
+            const editorValue = getExperimentEditorScore(rating, dimension.id);
+            const displayValue = getExperimentDimensionValue(rating, dimension.id);
+            const sliderValue = editorValue === '' || editorValue == null ? 0 : Number(editorValue);
+            const displayText = displayValue === '' || displayValue == null ? '-' : Number(displayValue).toFixed(Number.isInteger(displayValue) ? 0 : 1);
+            const colorClass = displayValue === '' || displayValue == null ? 'text-slate-400' : getScoreColorClass(Number(displayValue));
             return `
                 <div class="flex items-center justify-between gap-3">
                     <span class="text-sm text-slate-700 font-medium w-24 shrink-0">${escapeHtml(dimension.label)}</span>
                     <div class="relative flex-1 flex items-center px-4 min-w-[140px]">
                         <div class="absolute bottom-6 w-[240px] p-2.5 bg-slate-800 text-white text-xs rounded shadow-xl z-30 pointer-events-none hidden tooltip-box leading-relaxed transform -translate-x-1/2"></div>
-                        <input type="range" min="0" max="5" value="${escapeAttr(scoreValue)}" step="1" oninput="${escapeAttr(`handleGenerationExperimentSlider(this, ${jsString(caseId)}, ${jsString(variantId)}, ${jsString(dimension.id)})`)}" onmouseenter="${escapeAttr(`showGenerationExperimentSliderTooltip(this, ${jsString(dimension.id)})`)}" onmouseleave="hideTooltip(this)" class="w-full">
+                        <input type="range" min="0" max="5" value="${escapeAttr(sliderValue)}" step="1" oninput="${escapeAttr(`handleGenerationExperimentSlider(this, ${jsString(caseId)}, ${jsString(variantId)}, ${jsString(dimension.id)})`)}" onmouseenter="${escapeAttr(`showGenerationExperimentSliderTooltip(this, ${jsString(dimension.id)})`)}" onmouseleave="hideTooltip(this)" class="w-full">
                     </div>
-                    <span class="score-val font-bold ${colorClass} w-12 text-right font-mono">${current === '' || current == null ? '-' : scoreValue}</span>
+                    <span class="score-val font-bold ${colorClass} w-12 text-right font-mono">${escapeHtml(displayText)}</span>
                 </div>
             `;
         }
@@ -1995,7 +2093,7 @@
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                     <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
                         <h4 class="font-black text-slate-800">提示词版本与线上现状总览</h4>
-                        <p class="text-xs text-slate-500 mt-1">每个提示词版本都固定和同一课件的线上现状对比，避免只看实验组自己好不好看。</p>
+                        <p class="text-xs text-slate-500 mt-1">每个提示词版本都固定和同一课件的线上现状对比；当前评分口径：${escapeHtml(getGenerationScoreViewLabel())}。</p>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm">
@@ -2056,9 +2154,22 @@
             renderGenerationEvalWorkbench();
         }
 
+        function setGenerationExperimentScoreView(view) {
+            generationExperimentState.scoreView = GENERATION_SCORE_VIEWS.some(item => item.id === view) ? view : 'combined';
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function setGenerationExperimentScoreEditor(editor) {
+            generationExperimentState.scoreEditor = GENERATION_SCORE_EDITORS.some(item => item.id === editor) ? editor : 'human';
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
+        }
+
         function updateGenerationExperimentScore(caseId, variantId, dimensionId, score) {
             const rating = getGenerationExperimentRating(caseId, variantId);
-            rating.scores[dimensionId] = score;
+            const editor = generationExperimentState.scoreEditor || 'human';
+            rating.scoreSources[editor].scores[dimensionId] = score;
             saveGenerationExperimentState();
             renderGenerationEvalWorkbench();
         }
@@ -2076,13 +2187,16 @@
         function handleGenerationExperimentSlider(el, caseId, variantId, dimensionId) {
             const val = parseInt(el.value);
             const rating = getGenerationExperimentRating(caseId, variantId);
-            rating.scores[dimensionId] = val;
+            const editor = generationExperimentState.scoreEditor || 'human';
+            rating.scoreSources[editor].scores[dimensionId] = val;
             saveGenerationExperimentState();
             showGenerationExperimentSliderTooltip(el, dimensionId);
             const valSpan = el.parentElement.parentElement.querySelector('.score-val');
             if (valSpan) {
-                valSpan.innerText = val;
-                valSpan.className = `score-val font-bold ${getScoreColorClass(val)} w-12 text-right font-mono`;
+                const displayValue = getExperimentDimensionValue(rating, dimensionId);
+                const displayText = displayValue === '' || displayValue == null ? '-' : Number(displayValue).toFixed(Number.isInteger(displayValue) ? 0 : 1);
+                valSpan.innerText = displayText;
+                valSpan.className = `score-val font-bold ${displayValue === '' || displayValue == null ? 'text-slate-400' : getScoreColorClass(Number(displayValue))} w-12 text-right font-mono`;
             }
         }
 

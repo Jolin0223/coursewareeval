@@ -61,3 +61,4 @@
 - 2026-07-11 为了降低测试门槛，`课件生成效果` 前端现在会先尝试本机 runner：`http://127.0.0.1:8789`。用户只要在自己的 Mac 上启动 `generation-runner/server.py`，线上测试页按钮就会直接调用本机 runner，不需要公网隧道。runner 默认只允许 `coursewareeval.chenjialing.cn` 和 `codex-generation-prompt-eval.courseware-eval.pages.dev` 跨域访问，并返回 `Access-Control-Allow-Private-Network: true` 以支持公网 HTTPS 页面访问本机服务。该方案适合用户个人测试，不适合团队长期共享。
 - 2026-07-15 OpenClaw 已跑完课件生成提示词 AB 实验：`experiment_results.json` 中 `control_01`-`control_12` 是线上现状对照组，`experiment_01`-`experiment_12` 是第一版系统提示词实验组。已导入 `data/generation-experiment-seed.json`，`课件生成效果` 的提示词版本对比默认改成“线上现状 vs 提示词版本”的双栏评审排版；评分、问题、亮点和结论存入 `coursewareeval.generation-experiment-comparison.v1`。未评分状态必须显示 `待评分`，不能把空分数当成 0 分。
 - `课件生成效果` 的主评审布局应优先节约横向空间：侧边栏支持折叠；页面上方是课件用例列表，下方左侧固定展示线上现状，右侧默认展示最新提示词版本，历史提示词版本在右侧切换。每个版本都要有“查看提示词”入口。评分控件采用竞品测评同款滑杆样式和评分说明浮层，而不是 0-5 分按钮网格。
+- `课件生成效果` 的每个课件产物评分必须区分来源：`human` 代表真人/我的评分，`ai` 代表 AI 评分。页面需要支持 `仅AI分数`、`仅真人分数`、`AI+真人平均分` 三种查看口径；滑杆录入对象独立切换，默认录入 `human`，不能把 AI 分和真人分混成单一原始分数。
