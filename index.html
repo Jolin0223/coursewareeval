@@ -294,11 +294,11 @@
                             <h3 class="text-lg font-bold text-slate-800 flex items-center">
                                 <i class="fa-solid fa-wand-magic-sparkles text-blue-600 mr-2"></i> 课件生成效果
                             </h3>
-                            <p class="text-sm text-slate-500 mt-1">先支持提示词版本对比：录入用户需求和不同系统提示词，自动生成课件，回填预览链接，再按四维标准打分。</p>
+                            <p class="text-sm text-slate-500 mt-1">固定 12 个课件用例，左侧保留线上现状，右侧展示按当前指令生成的最新测试结果与评测。</p>
                         </div>
                         <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200 w-fit">
                             <button type="button" onclick="switchGenerationEvalMode('prompt')" id="generation-mode-prompt" class="px-4 py-2 rounded-md text-sm font-black bg-white text-blue-600 shadow-sm">
-                                提示词版本对比
+                                线上现状对比
                             </button>
                             <button type="button" onclick="switchGenerationEvalMode('model')" id="generation-mode-model" class="px-4 py-2 rounded-md text-sm font-black text-slate-500 hover:text-slate-700">
                                 模型效果对比
@@ -639,7 +639,7 @@
         <div class="bg-white rounded-2xl shadow-2xl p-6 w-[600px] max-w-full mx-4 relative flex flex-col max-h-[80vh]">
             <button type="button" onclick="closeSysPromptModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
             <div class="mb-4 border-b border-slate-100 pb-3 flex items-center justify-between gap-3">
-                <h3 class="text-lg font-bold text-slate-800 flex items-center"><i class="fa-solid fa-code text-orange-500 mr-2"></i>完整系统提示词 (System Prompt)</h3>
+                <h3 class="text-lg font-bold text-slate-800 flex items-center"><i class="fa-solid fa-code text-orange-500 mr-2"></i><span id="sysprompt-modal-title">完整系统提示词 (System Prompt)</span></h3>
                 <button type="button" onclick="copySysPromptModalContent()" class="ce-tool-btn ce-tool-btn-ghost h-8 px-3 text-xs">
                     <i class="fa-regular fa-copy"></i> 复制
                 </button>
@@ -1726,12 +1726,13 @@
                 return {
                     selectedCaseId: stored?.selectedCaseId || '',
                     selectedVersions: stored?.selectedVersions || {},
+                    dataRevision: stored?.dataRevision || '',
                     scoreView: stored?.scoreView || 'combined',
                     scoreEditor: stored?.scoreEditor || 'human',
                     ratings: stored?.ratings || {}
                 };
             } catch (error) {
-                return { selectedCaseId: '', selectedVersions: {}, scoreView: 'combined', scoreEditor: 'human', ratings: {} };
+                return { selectedCaseId: '', selectedVersions: {}, dataRevision: '', scoreView: 'combined', scoreEditor: 'human', ratings: {} };
             }
         }
 
@@ -1745,6 +1746,16 @@
             try {
                 const response = await fetch('data/generation-experiment-seed.json', { cache: 'no-store' });
                 generationExperimentData = await response.json();
+                const dataRevision = String(generationExperimentData?.generatedAt || '');
+                if (dataRevision && generationExperimentState.dataRevision !== dataRevision) {
+                    generationExperimentState.selectedVersions = generationExperimentState.selectedVersions || {};
+                    (generationExperimentData?.cases || []).forEach(item => {
+                        const latestVersion = item.versions?.[item.versions.length - 1];
+                        if (latestVersion?.id) generationExperimentState.selectedVersions[item.id] = latestVersion.id;
+                    });
+                    generationExperimentState.dataRevision = dataRevision;
+                    saveGenerationExperimentState();
+                }
                 if (!generationExperimentState.selectedCaseId && generationExperimentData?.cases?.length) {
                     generationExperimentState.selectedCaseId = generationExperimentData.cases[0].id;
                     saveGenerationExperimentState();
@@ -1776,10 +1787,19 @@
 
         function getGenerationExperimentRating(caseId, variantId) {
             generationExperimentState.ratings[caseId] = generationExperimentState.ratings[caseId] || {};
+            const item = getGenerationExperimentCases().find(entry => entry.id === caseId);
+            const variant = variantId === 'baseline'
+                ? item?.baseline
+                : item?.versions?.find(entry => entry.id === variantId);
+            const seededEvaluation = variant?.evaluation || {};
             generationExperimentState.ratings[caseId][variantId] = generationExperimentState.ratings[caseId][variantId] || {
-                issues: '',
-                strengths: '',
-                decision: 'todo'
+                issues: seededEvaluation.issues || '',
+                strengths: seededEvaluation.summary || '',
+                decision: seededEvaluation.decision || 'todo',
+                scoreSources: {
+                    human: { scores: createEmptyExperimentScores() },
+                    ai: { scores: normalizeExperimentScores(seededEvaluation.scores) }
+                }
             };
             migrateGenerationExperimentRating(generationExperimentState.ratings[caseId][variantId]);
             return generationExperimentState.ratings[caseId][variantId];
@@ -2038,18 +2058,18 @@
             const latestVersionId = item.versions?.[item.versions.length - 1]?.id || '';
             const isLatestPromptVersion = !isBaseline && variant.id === latestVersionId;
             const badgeClass = isBaseline ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-blue-50 text-blue-700 border-blue-100';
-            const promptButtonLabel = isBaseline ? '线上 Prompt' : 'Prompt';
+            const promptButtonLabel = isBaseline ? '线上 Prompt' : variant.promptType === 'raw-user-requirement' ? '原始需求' : 'Prompt';
             return `
                 <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-2xl overflow-hidden bg-white min-w-0">
-                    <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-col xl:flex-row xl:items-start xl:justify-between gap-3">
+                    <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-col 2xl:flex-row 2xl:items-start 2xl:justify-between gap-3">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                <span class="text-xs font-black border rounded-full px-2 py-1 ${badgeClass}">${escapeHtml(variant.label)}</span>
+                                <span class="text-xs font-black border rounded-full px-2 py-1 whitespace-nowrap shrink-0 ${badgeClass}">${escapeHtml(variant.label)}</span>
                                 <span class="text-sm font-black text-slate-800 truncate">${escapeHtml(variant.fileName || item.requirement)}</span>
                             </div>
                             <div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(variant.conversationId || '-')}</div>
                         </div>
-                        <div class="flex flex-wrap items-center justify-start xl:justify-end gap-2 shrink-0 max-w-full">
+                        <div class="flex flex-wrap items-center justify-start 2xl:justify-end gap-2 shrink-0 max-w-full">
                             ${!isBaseline ? renderGenerationExperimentVersionControls(item, variant) : ''}
                             <button type="button" onclick="${escapeAttr(`showGenerationExperimentPrompt(${jsString(item.id)}, ${jsString(variant.id)})`)}" class="ce-tool-btn h-8 px-2.5 text-xs">
                                 <i class="fa-solid fa-code"></i> ${escapeHtml(promptButtonLabel)}
@@ -2098,7 +2118,7 @@
                     </label>
                 </div>
                 ${renderGenerationExperimentDecisionControls(item, variant, rating)}
-                ${isLatestPromptVersion ? renderGenerationExperimentNextPromptControls(item, variant, rating) : ''}
+                ${isLatestPromptVersion && variant.promptType !== 'raw-user-requirement' ? renderGenerationExperimentNextPromptControls(item, variant, rating) : ''}
             `;
         }
 
@@ -2162,8 +2182,8 @@
             return `
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
                     <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
-                        <h4 class="font-black text-slate-800">提示词版本与线上现状总览</h4>
-                        <p class="text-xs text-slate-500 mt-1">每个提示词版本都固定和同一课件的线上现状对比；当前评分口径：${escapeHtml(getGenerationScoreViewLabel())}。</p>
+                        <h4 class="font-black text-slate-800">实验版本与线上现状总览</h4>
+                        <p class="text-xs text-slate-500 mt-1">每个实验版本都固定和同一课件的线上现状对比；当前评分口径：${escapeHtml(getGenerationScoreViewLabel())}。</p>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm">
@@ -2171,7 +2191,7 @@
                                 <tr>
                                     <th class="px-4 py-3 font-black">课件</th>
                                     <th class="px-4 py-3 font-black">学科</th>
-                                    <th class="px-4 py-3 font-black">提示词版本</th>
+                                    <th class="px-4 py-3 font-black">实验版本</th>
                                     <th class="px-4 py-3 font-black">线上均分</th>
                                     <th class="px-4 py-3 font-black">版本均分</th>
                                     <th class="px-4 py-3 font-black">差值</th>
@@ -2409,7 +2429,8 @@
             if (!variant) return showToast('未找到这个提示词版本。', 'warning');
             const promptText = variant.prompt || variant.systemPrompt || variant.userPrompt || '';
             const content = promptText || '当前实验数据未包含这一版本的提示词正文。';
-            showSysPromptModal(encodeURIComponent(`${item.requirement}\n\n【${variant.label || variant.id}】\n\n${content}`));
+            const modalTitle = variant.promptType === 'raw-user-requirement' ? '原始需求' : '完整系统提示词 (System Prompt)';
+            showSysPromptModal(encodeURIComponent(`${item.requirement}\n\n【${variant.label || variant.id}】\n\n${content}`), modalTitle);
         }
 
         // ================= 基于大模型与业务标准的动态卡片解读 =================
@@ -4506,9 +4527,11 @@
             } else window.open(url, '_blank');
         }
 
-        function showSysPromptModal(encodedText) {
+        function showSysPromptModal(encodedText, title = '完整系统提示词 (System Prompt)') {
             const el = document.getElementById('sysprompt-modal-content');
             if(el) el.innerText = decodeURIComponent(encodedText);
+            const titleEl = document.getElementById('sysprompt-modal-title');
+            if(titleEl) titleEl.innerText = title;
             const md = document.getElementById('sysprompt-modal');
             if(md) md.classList.remove('hidden');
         }
