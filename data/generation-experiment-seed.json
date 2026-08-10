@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T03:20:50.196596+00:00",
+  "generatedAt": "2026-08-10T11:22:29.624554+00:00",
   "source": "Codex box-pipeline test run",
   "baselineLabel": "线上现状",
   "cases": [
@@ -67,6 +67,39 @@
             "browserVerified": true,
             "issues": "[HIGH] 关键多媒体资源加载失败（403 Forbidden），导致核心教学环节受阻。\n[MEDIUM] 错误反馈缺乏教学引导意义，仅停留在‘提示错误’层面。\n[MEDIUM] 缺乏阶梯式的难度设计，干扰项数量采用随机分配而非由易到难。\n[MEDIUM] 交互锁定逻辑缺乏容错保护。代码中通过isInputLocked控制点击，但解锁完全依赖于音频播放完毕的回调。若音频加载失败或播放器挂起，用户将无法进行任何后续操作。",
             "summary": "AI四维评测：知识准确性 4，教学适配性 3，系统健壮性 2，视觉美观度 3；加权综合分 3.05/5。",
+            "decision": "todo"
+          }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_01_box-test-v3-20260810",
+          "conversationId": "3392103b4df6404e8b02fda9d6704e8f",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-nl2s0bm1R_GmQ-JpgD2Zyw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-nl2s0bm1R_GmQ-JpgD2Zyw/package.zip",
+          "fileName": "Color Word Card Game",
+          "snapshotId": "70c207d57ea34a2588217dc5270716e6",
+          "finishedAt": "2026-08-10T11:11:47.755516+00:00",
+          "status": "success",
+          "prompt": "做一个颜色单词卡片点击游戏",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 4,
+              "d2": 3,
+              "d3": 2,
+              "d4": 4
+            },
+            "composite": 3.25,
+            "passed": false,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 核心教学资源加载失败（403 Forbidden），导致语音和图片无法显示/播放。\n[MEDIUM] 缺乏阶梯式的引导和难度爬升设计。所有题目均为相同的交互逻辑，无法体现学习的深入过程。\n[MEDIUM] 答错反馈缺乏教育引导意义。学生点击错误后，系统仅播放错误音效并锁定卡片，没有提供任何帮助学生纠正错误的脚手架。\n[MEDIUM] 首题语音自动播放易被浏览器拦截。代码在页面加载500ms后自动播放音频，未考虑现代浏览器对非交互产生音频的限制。",
+            "summary": "AI四维评测：知识准确性 4，教学适配性 3，系统健壮性 2，视觉美观度 4；加权综合分 3.25/5。",
             "decision": "todo"
           }
         }
@@ -138,6 +171,39 @@
             "summary": "AI四维评测：知识准确性 5，教学适配性 3，系统健壮性 2，视觉美观度 4；加权综合分 3.5/5。",
             "decision": "todo"
           }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_02_box-test-v3-20260810",
+          "conversationId": "4361cac0fe354f839bb5e2a5174d803c",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-LXKYeRXyQA-0I1raX00XgA/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-LXKYeRXyQA-0I1raX00XgA/package.zip",
+          "fileName": "看图选一选",
+          "snapshotId": "1fb8df25b82a4c0db2f80d3b5692e89e",
+          "finishedAt": "2026-08-10T11:11:17.771242+00:00",
+          "status": "success",
+          "prompt": "做一个看图选词语游戏",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 3,
+              "d2": 3,
+              "d3": 4,
+              "d4": 5
+            },
+            "composite": 3.6,
+            "passed": true,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[MEDIUM] 词语“风筝”的拼音标注错误。在现代汉语标准读音及小学语文教学规范中，“风筝”的“筝”字应读轻声，不标声调。\n[MEDIUM] 答错反馈缺乏教育引导意义，仅停留在‘提示错误’层面。\n[MEDIUM] 缺乏阶梯式难度设计，所有题目均为固定的二选一模式，教学坡度过缓。\n[MEDIUM] 运行时存在资源加载失败风险，控制台抛出多个403 Forbidden错误。",
+            "summary": "AI四维评测：知识准确性 3，教学适配性 3，系统健壮性 4，视觉美观度 5；加权综合分 3.6/5。",
+            "decision": "todo"
+          }
         }
       ]
     },
@@ -205,6 +271,39 @@
             "browserVerified": true,
             "issues": "[HIGH] 核心教学资源加载失败（403 Forbidden）\n[MEDIUM] 错误反馈缺乏启发性语音引导。当学生连续答错时，虽然有实物闪烁提示，但没有配套的语音指令（如‘数一数红苹果和绿苹果一共有多少个？’）来引导学生进行纠错操作。\n[MEDIUM] 语音播放失败缺乏交互补偿机制\n[MEDIUM] 背景图存在明显的占位文字残留且与UI元素重叠",
             "summary": "AI四维评测：知识准确性 4，教学适配性 4，系统健壮性 2，视觉美观度 3；加权综合分 3.4/5。",
+            "decision": "todo"
+          }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_03_box-test-v3-20260810",
+          "conversationId": "2929ceb606bd4131bd5068c6c96884c9",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-VZRniX7KTb2SPo23DCqLYw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-VZRniX7KTb2SPo23DCqLYw/package.zip",
+          "fileName": "10以内加法选答案",
+          "snapshotId": "c510c9505ce0488c856c661a9d41a205",
+          "finishedAt": "2026-08-10T11:12:02.290297+00:00",
+          "status": "success",
+          "prompt": "生成一个10以内加法选答案的互动课件",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 4,
+              "d2": 3,
+              "d3": 2,
+              "d4": 2
+            },
+            "composite": 2.85,
+            "passed": false,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 核心视觉资源加载失败（403 Forbidden），导致教学关键信息缺失。\n[HIGH] 界面中央存在明显的黑色调试占位文字“main task区”，且该文字与核心教学素材（苹果）发生严重重叠遮挡。\n[MEDIUM] 答错反馈缺乏教学引导意义，仅起到‘排除法’作用。当学生选错时，系统只是简单地将选项禁用并抖动，没有利用实物图引导学生进行纠错练习。\n[MEDIUM] 题目设计缺乏阶梯式的脚手架设计。5道题目全部提供了实物辅助，且和数均在10以内随机分布，没有体现从‘有实物辅助’到‘半抽象’再到‘纯数字抽象’的难度递进。",
+            "summary": "AI四维评测：知识准确性 4，教学适配性 3，系统健壮性 2，视觉美观度 2；加权综合分 2.85/5。",
             "decision": "todo"
           }
         }
@@ -276,6 +375,39 @@
             "summary": "AI四维评测：知识准确性 4，教学适配性 3，系统健壮性 4，视觉美观度 3；加权综合分 3.45/5。",
             "decision": "todo"
           }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_04_box-test-v3-20260810",
+          "conversationId": "7ee3a956758446198697bb36a111e353",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-1SzLwym0SqacxtTEQvjiOg/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-1SzLwym0SqacxtTEQvjiOg/package.zip",
+          "fileName": "Match the Letters",
+          "snapshotId": "27ff2b84a4b841c7b90ca2d3e3b2fd71",
+          "finishedAt": "2026-08-10T11:15:11.566505+00:00",
+          "status": "success",
+          "prompt": "生成字母大小写泡泡消除配对互动游戏",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 4,
+              "d2": 2,
+              "d3": 2,
+              "d4": 4
+            },
+            "composite": 2.9,
+            "passed": false,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 关键教学资源加载失败（403 Forbidden），导致音频反馈失效。\n[MEDIUM] 缺乏阶梯式的难度爬升设计。每一关的字母对数是随机生成的（3-4对），导致第一关可能比最后一关更难，不符合儿童认知规律。\n[MEDIUM] 错误反馈缺乏教育引导意义。当学生配对错误时，系统仅执行了弹开动画和播放错误音效，没有提供任何关于大小写匹配的视觉或语音提示。\n[MEDIUM] 缺乏防挫败机制和动态脚手架。代码虽然统计了 retry_count，但并未在学生多次失败时提供帮助或降低难度。",
+            "summary": "AI四维评测：知识准确性 4，教学适配性 2，系统健壮性 2，视觉美观度 4；加权综合分 2.9/5。",
+            "decision": "todo"
+          }
         }
       ]
     },
@@ -343,6 +475,39 @@
             "browserVerified": true,
             "issues": "[HIGH] 关键资源加载失败 (403 Forbidden)\n[MEDIUM] 错误反馈机制过于生硬，缺乏教学引导意义。学生在连线错误时，系统仅执行回弹动画和播放提示音，未告知错误原因或提供鼓励性引导。\n[MEDIUM] 缺乏阶梯式引导和新手脚手架设计。课件直接进入多对多连线，对于低龄儿童（4-6岁）可能存在操作认知障碍。\n[MEDIUM] 知识巩固环节薄弱，合成字展示转瞬即逝，缺乏深度学习。汉字合成后仅展示2秒即消失，未进行组词或释义扩展。",
             "summary": "AI四维评测：知识准确性 4，教学适配性 2，系统健壮性 2，视觉美观度 4；加权综合分 2.9/5。",
+            "decision": "todo"
+          }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_05_box-test-v3-20260810",
+          "conversationId": "9a2ff18d8e244a43a877cda5f145d027",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-8Oz4ORZvQk-I0ZJXZKewaQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-8Oz4ORZvQk-I0ZJXZKewaQ/package.zip",
+          "fileName": "汉字与偏旁部首连线游戏",
+          "snapshotId": "6aaec7e787c043d3b10999a328301ec1",
+          "finishedAt": "2026-08-10T11:15:36.617204+00:00",
+          "status": "success",
+          "prompt": "做一个汉字与偏旁部首连线游戏",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 5,
+              "d2": 3,
+              "d3": 2,
+              "d4": 4
+            },
+            "composite": 3.5,
+            "passed": true,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 关键多媒体资源加载失败，导致核心教学反馈缺失。\n[MEDIUM] 答错后的反馈机制过于生硬，缺乏教育引导意义。系统仅通过音效和视觉重置告知‘错了’，而没有利用错误契机进行偏旁含义的启发。\n[MEDIUM] 缺乏防挫败机制和动态脚手架设计。代码中未记录错误次数，也未在学生连续出错时提供视觉辅助（如高亮正确目标）。\n[MEDIUM] 错误交互的视觉反馈时间过短且形式单一，不利于低龄儿童识别。",
+            "summary": "AI四维评测：知识准确性 5，教学适配性 3，系统健壮性 2，视觉美观度 4；加权综合分 3.5/5。",
             "decision": "todo"
           }
         }
@@ -414,6 +579,39 @@
             "summary": "AI四维评测：知识准确性 2，教学适配性 2，系统健壮性 3，视觉美观度 4；加权综合分 2.6/5。",
             "decision": "todo"
           }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_06_box-test-v3-20260810",
+          "conversationId": "9fd77de9f1634c798ecb0d97271e5297",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-qdg69-TATj26ya-9TwxJRQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-qdg69-TATj26ya-9TwxJRQ/package.zip",
+          "fileName": "数字1到10认读游戏",
+          "snapshotId": "57fe9c08c5ec402b98ffad0eb55a99ae",
+          "finishedAt": "2026-08-10T11:15:17.361592+00:00",
+          "status": "success",
+          "prompt": "做一个数字1到10认读游戏",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 5,
+              "d2": 3,
+              "d3": 4,
+              "d4": 4
+            },
+            "composite": 3.9,
+            "passed": true,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[MEDIUM] 答错反馈缺乏教育引导意义，仅做物理位移重置和通用提示音，未提供纠错线索。\n[MEDIUM] 缺乏过程性点数支架。在拖拽香蕉喂食的过程中，没有实时的数量反馈，不利于幼儿建立数与量的对应关系。\n[MEDIUM] 左上角返回按钮功能逻辑不完整，仅有点击缩放反馈，未实现实际的页面跳转或状态重置逻辑。\n[MEDIUM] 界面右下角显示了 vConsole 调试按钮",
+            "summary": "AI四维评测：知识准确性 5，教学适配性 3，系统健壮性 4，视觉美观度 4；加权综合分 3.9/5。",
+            "decision": "todo"
+          }
         }
       ]
     },
@@ -481,6 +679,39 @@
             "browserVerified": true,
             "issues": "[HIGH] 关键音频资源加载失败导致主流程阻断。任务1及任务2的“下一步”按钮显示逻辑完全依赖于语音播放完成的回调，若资源403，回调永不触发。\n[MEDIUM] 错误反馈缺乏教育引导意义，未能实现‘错中教’。\n[MEDIUM] 任务3描边交互缺乏断点续画的容错机制。当前逻辑要求角度必须严格递增且在特定范围内，若儿童操作时手指离开屏幕再返回，判定可能失效。\n[LOW] 任务1的交互深度不足，缺乏对核心知识点特征的强调。",
             "summary": "AI四维评测：知识准确性 4，教学适配性 4，系统健壮性 2，视觉美观度 4；加权综合分 3.6/5。",
+            "decision": "todo"
+          }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_07_box-test-v3-20260810",
+          "conversationId": "e1f0a20dfd5e43eaae4d0eabb2ad017e",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-zXfY8OGfSyyZJ2qVdm7CRg/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-zXfY8OGfSyyZJ2qVdm7CRg/package.zip",
+          "fileName": "形状认识互动讲解",
+          "snapshotId": "be0a77ccb2eb4e9da6ab3a5b2f1c495d",
+          "finishedAt": "2026-08-10T11:18:59.572543+00:00",
+          "status": "success",
+          "prompt": "生成一个形状认识的互动讲解",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 4,
+              "d2": 3,
+              "d3": 2,
+              "d4": 3
+            },
+            "composite": 3.05,
+            "passed": false,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 关键音频资源加载失败（403 Forbidden），导致教学指令和交互反馈失效。\n[MEDIUM] 答错反馈缺乏教育意义，仅有生硬的错误提示，没有启发式引导。\n[MEDIUM] 教学目标聚焦度在后期发生偏移，削弱了对核心知识点（圆形）的巩固。\n[MEDIUM] 场景4三角形拼搭槽位视觉引导不足，未激活状态下无边框，低龄儿童难以识别目标区域。",
+            "summary": "AI四维评测：知识准确性 4，教学适配性 3，系统健壮性 2，视觉美观度 3；加权综合分 3.05/5。",
             "decision": "todo"
           }
         }
@@ -552,6 +783,39 @@
             "summary": "AI四维评测：知识准确性 5，教学适配性 3，系统健壮性 2，视觉美观度 4；加权综合分 3.5/5。",
             "decision": "todo"
           }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_08_box-test-v3-20260810",
+          "conversationId": "693d0ff29f274fe2a4701cd61c208f23",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-V-obG5AzTFK8DaKFLxKR_g/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-V-obG5AzTFK8DaKFLxKR_g/package.zip",
+          "fileName": "汉字图片匹配游戏",
+          "snapshotId": "6a51fad2b5054c6f9da4237047513c07",
+          "finishedAt": "2026-08-10T11:18:17.131469+00:00",
+          "status": "success",
+          "prompt": "做一个汉字图片匹配游戏",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 4,
+              "d2": 3,
+              "d3": 2,
+              "d4": 2
+            },
+            "composite": 2.85,
+            "passed": false,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 关键资源加载失败（403 Forbidden），导致课件多媒体功能受损。\n[HIGH] 核心交互元素（汉字卡片）在界面上完全不可见。\n[MEDIUM] 答错后的反馈缺乏教育意义，属于典型的‘生硬反馈’。学生在匹配错误时，系统仅播放错误音效并弹回卡片，没有利用错误契机进行二次引导（如重新播放正确读音或对比字形）。\n[MEDIUM] 缺乏阶梯式的引导和难度爬升设计。虽然界面显示‘第 1/5 关’，但代码中并未体现后续关卡的难度变化逻辑，且拼音与汉字始终同时出现，缺乏从‘拼音辅助’到‘独立识字’的教学过渡。",
+            "summary": "AI四维评测：知识准确性 4，教学适配性 3，系统健壮性 2，视觉美观度 2；加权综合分 2.85/5。",
+            "decision": "todo"
+          }
         }
       ]
     },
@@ -619,6 +883,39 @@
             "browserVerified": true,
             "issues": "[HIGH] 核心语音资源加载失败（403 Forbidden），导致教学流程逻辑阻塞。\n[MEDIUM] 纠错反馈缺乏实质性的教学引导，仅提供情感化鼓励。\n[MEDIUM] 关键 UI 状态切换与音频播放回调强耦合，缺乏健壮性。\n[LOW] 切分判定逻辑对低龄儿童（4-6岁）的精细动作要求可能偏高，缺乏容错缓冲。",
             "summary": "AI四维评测：知识准确性 4，教学适配性 4，系统健壮性 2，视觉美观度 4；加权综合分 3.6/5。",
+            "decision": "todo"
+          }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_09_box-test-v3-20260810",
+          "conversationId": "23335a947c6449eda20e5ad72800590e",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-p7_YM5eiQBqeAccOczSZWw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-p7_YM5eiQBqeAccOczSZWw/package.zip",
+          "fileName": "认识分数",
+          "snapshotId": "9bb336ed3a2d412c81184978ef486445",
+          "finishedAt": "2026-08-10T11:19:37.856735+00:00",
+          "status": "success",
+          "prompt": "做一个分数认识的互动讲解",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 4,
+              "d2": 4,
+              "d3": 2,
+              "d4": 2
+            },
+            "composite": 3.2,
+            "passed": false,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 核心静态资源加载失败（403 Forbidden），导致课件功能受阻。\n[HIGH] 核心教学素材（披萨、餐盘）缺失，导致教学主体内容不可见。\n[MEDIUM] 数学严谨性缺失：‘平均分’的概念在交互中未得到实质性校验。学生只需随意划动两下即可触发‘平均分成了4份’的结论，可能导致学生忽视‘平均’这一分数的先决条件。\n[MEDIUM] 阶段一“切分披萨”交互逻辑缺乏几何校验，任意位置滑动均可过关，不符合数学教学严谨性。",
+            "summary": "AI四维评测：知识准确性 4，教学适配性 4，系统健壮性 2，视觉美观度 2；加权综合分 3.2/5。",
             "decision": "todo"
           }
         }
@@ -690,6 +987,39 @@
             "summary": "AI四维评测：知识准确性 4，教学适配性 2，系统健壮性 2，视觉美观度 3；加权综合分 2.7/5。",
             "decision": "todo"
           }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_10_box-test-v3-20260810",
+          "conversationId": "4bf58a3be2824464ba79de40d3c214ba",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-QqWl7305Q_iBHMWy6DhKwA/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-QqWl7305Q_iBHMWy6DhKwA/package.zip",
+          "fileName": "数学常见形状认识",
+          "snapshotId": "9f21b461cdc4421ab142a47df504ef11",
+          "finishedAt": "2026-08-10T11:22:15.434148+00:00",
+          "status": "success",
+          "prompt": "做一个数学常见形状认识的互动讲解",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 2,
+              "d2": 3,
+              "d3": 2,
+              "d4": 2
+            },
+            "composite": 2.35,
+            "passed": false,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 数学概念定义不严谨。长方形的定义应强调‘四个角都是直角’。描述为‘两条长边，两条短边’排除了正方形（特殊的长方形），且在数学逻辑上不严密。\n[HIGH] 关键教学资源加载失败（403 Forbidden）\n[HIGH] 全局指令文本区域（instruction-box）内容缺失，未显示教学引导文字。\n[MEDIUM] 拼音标注错误。'o' 是单韵母，在表示语气词‘哦’时应标注声调（如 ó 或 ò），此处为空白；且‘再试试’的‘再’拼音应为 zài，文本中拼写正确但整体语境下的声调标注需检查。",
+            "summary": "AI四维评测：知识准确性 2，教学适配性 3，系统健壮性 2，视觉美观度 2；加权综合分 2.35/5。",
+            "decision": "todo"
+          }
         }
       ]
     },
@@ -757,6 +1087,39 @@
             "browserVerified": true,
             "issues": "[HIGH] 核心教学资源加载失败（403 Forbidden），导致听音识字功能瘫痪。\n[MEDIUM] 声母‘p’的辅助提示图标使用‘water.png’（水/水滴）不准确。在小学拼音教学中，‘p’的代表性动作是‘泼水’（pō），若图标仅为‘水’，儿童易联想到声母‘sh’（水），导致认知混淆。\n[MEDIUM] 声母‘d’的辅助提示图标使用‘drum.png’（鼓）存在歧义。在拼音教学中，‘d’对应的教学词是‘打鼓’（dǎ），强调动作；若图标仅为‘鼓’，儿童第一反应通常是声母‘g’（鼓gǔ），而非‘d’。\n[MEDIUM] 教学内容缺乏阶梯式难度设计，10道题均为同等难度的重复练习，容易导致学生产生疲劳感。",
             "summary": "AI四维评测：知识准确性 3，教学适配性 3，系统健壮性 2，视觉美观度 4；加权综合分 3.0/5。",
+            "decision": "todo"
+          }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_11_box-test-v3-20260810",
+          "conversationId": "cd8ad9485d9d4ad3a2825e6df6fc7460",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-0xtY1AAvTGecXhmdsdGvDw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-0xtY1AAvTGecXhmdsdGvDw/package.zip",
+          "fileName": "拼音学习：听音选择正确的声母",
+          "snapshotId": "3c98ff12c63c4f8ca738f5bae3272dc6",
+          "finishedAt": "2026-08-10T11:22:06.187254+00:00",
+          "status": "success",
+          "prompt": "拼音学习：听音选择正确的声母",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 5,
+              "d2": 4,
+              "d3": 2,
+              "d4": 4
+            },
+            "composite": 3.85,
+            "passed": true,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 核心教学资源加载失败（403 Forbidden），导致听音功能失效。\n[MEDIUM] 语音反馈缺乏针对性的教育引导，仅停留在对错判断层面。\n[MEDIUM] 缺乏阶梯式的难度递进设计，四道题目交互形式完全一致，挑战性单一。\n[MEDIUM] 交互锁逻辑存在死锁风险。若音频资源加载失败或播放异常，isProcessing 状态可能无法重置，导致用户无法点击任何选项。",
+            "summary": "AI四维评测：知识准确性 5，教学适配性 4，系统健壮性 2，视觉美观度 4；加权综合分 3.85/5。",
             "decision": "todo"
           }
         }
@@ -828,6 +1191,39 @@
             "summary": "AI四维评测：知识准确性 5，教学适配性 4，系统健壮性 2，视觉美观度 3；加权综合分 3.65/5。",
             "decision": "todo"
           }
+        },
+        {
+          "id": "box-test-v3-20260810",
+          "label": "V3 · 08-10",
+          "group": "实验组",
+          "taskId": "box_test_12_box-test-v3-20260810",
+          "conversationId": "671fb6d55aca41b4b7d048b55a46d8d0",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-VmM211WzTse-Ycj5ppt_Rw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-08/10-VmM211WzTse-Ycj5ppt_Rw/package.zip",
+          "fileName": "动物单词学习翻翻卡",
+          "snapshotId": "6b91a119693a49458b25107507f609c9",
+          "finishedAt": "2026-08-10T11:22:29.604686+00:00",
+          "status": "success",
+          "prompt": "生成一个幼儿园动物单词学习翻翻卡",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "raw-user-requirement-only",
+          "published": false,
+          "evaluation": {
+            "scores": {
+              "d1": 4,
+              "d2": 3,
+              "d3": 2,
+              "d4": 3
+            },
+            "composite": 3.05,
+            "passed": false,
+            "priority": false,
+            "browserVerified": true,
+            "issues": "[HIGH] 关键素材资源加载失败 (403 Forbidden)\n[MEDIUM] 缺乏教学引导与脚手架设计（Scaffolding）。课件初始化后直接进入随机洗牌的配对环节，没有先导的单词呈现或教学演示，对于初学者来说，从‘零输入’直接跳到‘记忆提取’难度跨度较大。\n[MEDIUM] 错误反馈机制缺乏教育引导意义。当学生配对失败时，系统仅执行视觉上的‘摇晃’（shake）并翻回，没有针对性的语音提示（如：Try again! 或朗读出当前翻开的两个不同单词），未能利用错误契机进行二次强化。\n[MEDIUM] 缺乏全局资源预加载及加载失败的 UI 容错处理",
+            "summary": "AI四维评测：知识准确性 4，教学适配性 3，系统健壮性 2，视觉美观度 3；加权综合分 3.05/5。",
+            "decision": "todo"
+          }
         }
       ]
     }
@@ -835,8 +1231,8 @@
   "promptSource": "/Users/jolin/.openclaw/workspace-courseware/skills/interactive-courseware-generator/scripts/experiment_table.md",
   "latestRun": {
     "environment": "https://box.test.xdf.cn",
-    "versionId": "box-test-20260810",
-    "label": "最新版 · 08-10",
+    "versionId": "box-test-v3-20260810",
+    "label": "V3 · 08-10",
     "generatedCount": 12,
     "evaluatedCount": 12,
     "publishedCount": 0
