@@ -2147,17 +2147,17 @@
             clearGenerationExperimentPreviewTimer(shell);
             shell.dataset.previewStatus = 'failed';
             shell.querySelector('[data-preview-loading]')?.classList.add('hidden');
-            shell.querySelector('[data-preview-frame]')?.classList.add('hidden');
+            shell.querySelector('[data-preview-frame]')?.classList.add('opacity-0');
             shell.querySelector('[data-preview-fallback]')?.classList.remove('hidden');
         }
 
         function markGenerationExperimentPreviewLoaded(shell) {
-            if (!shell || shell.dataset.previewStatus === 'failed') return;
+            if (!shell) return;
             clearGenerationExperimentPreviewTimer(shell);
             shell.dataset.previewStatus = 'loaded';
             shell.querySelector('[data-preview-loading]')?.classList.add('hidden');
             shell.querySelector('[data-preview-fallback]')?.classList.add('hidden');
-            shell.querySelector('[data-preview-frame]')?.classList.remove('hidden');
+            shell.querySelector('[data-preview-frame]')?.classList.remove('opacity-0');
         }
 
         function startGenerationExperimentPreview(shell) {
@@ -2195,7 +2195,6 @@
             const latestVersionId = item.versions?.[item.versions.length - 1]?.id || '';
             const isLatestPromptVersion = !isBaseline && variant.id === latestVersionId;
             const badgeClass = isBaseline ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-blue-50 text-blue-700 border-blue-100';
-            const promptButtonLabel = variant.promptType === 'raw-user-requirement' ? '用户原文' : 'Prompt';
             const isTestEnvironment = !isBaseline && (String(variant.environment || '').includes('box.test.xdf.cn') || String(variant.fileUrl || '').includes('.test.xdf.cn'));
             const isManualCase = item.generationMode === 'manual';
             const hasPreview = Boolean(variant.fileUrl);
@@ -2214,9 +2213,6 @@
                         </div>
                         <div class="flex flex-wrap items-center justify-start 2xl:justify-end gap-2 shrink-0 max-w-full">
                             ${!isBaseline ? renderGenerationExperimentVersionControls(item, variant) : ''}
-                            <button type="button" onclick="${escapeAttr(`showGenerationExperimentPrompt(${jsString(item.id)}, ${jsString(variant.id)})`)}" class="ce-tool-btn h-8 px-2.5 text-xs">
-                                <i class="fa-solid fa-code"></i> ${escapeHtml(promptButtonLabel)}
-                            </button>
                             ${variant.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn ce-tool-btn-primary h-8 px-3 text-xs"><i class="fa-solid fa-play"></i> 打开</button>` : ''}
                             ${variant.pushUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.pushUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn h-8 px-3 text-xs"><i class="fa-solid fa-file-zipper"></i> ZIP</button>` : ''}
                         </div>
@@ -2227,15 +2223,15 @@
                             <span>此用例涉及音频、录音或口语评测，仅由 Jolin 手动生成；未执行不计为失败。</span>
                         </div>
                     ` : ''}
-                    <div class="w-full aspect-video max-h-[260px] bg-slate-100 border-b border-slate-200 overflow-hidden flex items-center justify-center" ${hasPreview ? `data-generation-preview data-preview-url="${escapeAttr(variant.fileUrl)}"` : ''}>
+                    <div class="relative w-full aspect-video max-h-[260px] bg-slate-100 border-b border-slate-200 overflow-hidden flex items-center justify-center" ${hasPreview ? `data-generation-preview data-preview-url="${escapeAttr(variant.fileUrl)}"` : ''}>
                         ${hasPreview
                             ? `
-                                <div data-preview-loading class="w-full h-full flex flex-col items-center justify-center text-slate-400 text-sm px-6 text-center">
+                                <iframe data-preview-frame title="${escapeAttr(`${item.id} ${variant.label}课件预览`)}" class="absolute inset-0 h-full w-full bg-white border-0 opacity-0 transition-opacity duration-200" loading="lazy"></iframe>
+                                <div data-preview-loading class="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 text-sm px-6 text-center">
                                     <i class="fa-solid fa-circle-notch fa-spin text-lg mb-2"></i>
                                     <span>正在加载课件预览</span>
                                 </div>
-                                <iframe data-preview-frame title="${escapeAttr(`${item.id} ${variant.label}课件预览`)}" class="hidden h-full aspect-video w-auto max-w-full bg-white border-0 shrink-0" loading="lazy"></iframe>
-                                <div data-preview-fallback class="hidden w-full h-full flex flex-col items-center justify-center bg-amber-50 text-amber-800 text-sm px-8 text-center">
+                                <div data-preview-fallback class="hidden absolute inset-0 z-20 w-full h-full flex flex-col items-center justify-center bg-amber-50 text-amber-800 text-sm px-8 text-center">
                                     <i class="fa-solid ${isTestEnvironment ? 'fa-building-shield' : 'fa-triangle-exclamation'} text-xl mb-3"></i>
                                     <span class="font-bold">${isTestEnvironment ? '当前测试环境课件预览需在公司内网下进行' : '课件预览加载失败'}</span>
                                     <span class="text-xs text-amber-700 mt-1">${isTestEnvironment ? '连接公司内网后刷新页面，或点击上方“打开”重试。' : '请点击上方“打开”在新页面重试。'}</span>
