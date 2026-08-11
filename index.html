@@ -294,11 +294,11 @@
                             <h3 class="text-lg font-bold text-slate-800 flex items-center">
                                 <i class="fa-solid fa-wand-magic-sparkles text-blue-600 mr-2"></i> 课件生成效果
                             </h3>
-                            <p class="text-sm text-slate-500 mt-1">固定 12 个课件用例，左侧保留线上现状，右侧展示按当前指令生成的最新测试结果与评测。</p>
+                            <p class="text-sm text-slate-500 mt-1">固定 30 个课件用例：28 个自动生成，2 个音频与语音专项待手动生成；线上自动用例已生成完成。</p>
                         </div>
                         <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200 w-fit">
                             <button type="button" onclick="switchGenerationEvalMode('prompt')" id="generation-mode-prompt" class="px-4 py-2 rounded-md text-sm font-black bg-white text-blue-600 shadow-sm">
-                                线上现状对比
+                                提示词版本测试
                             </button>
                             <button type="button" onclick="switchGenerationEvalMode('model')" id="generation-mode-model" class="px-4 py-2 rounded-md text-sm font-black text-slate-500 hover:text-slate-700">
                                 模型效果对比
@@ -885,8 +885,15 @@
             zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
         };
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
-        const GENERATION_EVAL_STORAGE_KEY = 'coursewareeval.generation-prompt-workbench.v1';
-        const GENERATION_EXPERIMENT_STORAGE_KEY = 'coursewareeval.generation-experiment-comparison.v1';
+        const GENERATION_EVAL_STORAGE_KEY = 'coursewareeval.generation-prompt-workbench.v2';
+        const GENERATION_EXPERIMENT_STORAGE_KEY = 'coursewareeval.generation-fixed-suite.v2';
+        const LEGACY_GENERATION_STORAGE_KEYS = [
+            'coursewareeval.generation-prompt-workbench.v1',
+            'coursewareeval.generation-experiment-comparison.v1'
+        ];
+        try {
+            LEGACY_GENERATION_STORAGE_KEYS.forEach(key => localStorage.removeItem(key));
+        } catch (error) {}
         const SIDEBAR_STORAGE_KEY = 'coursewareeval.sidebar-collapsed.v1';
         const GENERATION_RUN_ERROR_BUILD_ID = 'generation-eval-20260711-runner-proxy';
         const GENERATION_LOCAL_RUNNER_URL = 'http://127.0.0.1:8789';
@@ -923,6 +930,9 @@
         let generationExperimentLoading = false;
         let generationExperimentState = loadGenerationExperimentState();
         let generationExperimentSummaryTimer = null;
+        let generationExperimentPreviewObserver = null;
+        const generationExperimentPreviewTimers = new WeakMap();
+        const GENERATION_EXPERIMENT_PREVIEW_TIMEOUT_MS = 12000;
 
         // 【新增】：多选筛选器状态
         let availableRaters = [];
@@ -1173,6 +1183,7 @@
             const isPromptMode = generationEvalState.activeMode !== 'model';
             updateGenerationModeTabs();
             container.innerHTML = isPromptMode ? renderGenerationPromptWorkbench(item, selected) : renderGenerationModelPlaceholder();
+            if (isPromptMode) requestAnimationFrame(initializeGenerationExperimentPreviews);
         }
 
         function renderGenerationModelPlaceholder() {
@@ -1727,12 +1738,17 @@
                     selectedCaseId: stored?.selectedCaseId || '',
                     selectedVersions: stored?.selectedVersions || {},
                     dataRevision: stored?.dataRevision || '',
+                    testSetId: stored?.testSetId || '',
+                    filters: {
+                        subject: stored?.filters?.subject || 'all',
+                        grade: stored?.filters?.grade || 'all'
+                    },
                     scoreView: stored?.scoreView || 'combined',
                     scoreEditor: stored?.scoreEditor || 'human',
                     ratings: stored?.ratings || {}
                 };
             } catch (error) {
-                return { selectedCaseId: '', selectedVersions: {}, dataRevision: '', scoreView: 'combined', scoreEditor: 'human', ratings: {} };
+                return { selectedCaseId: '', selectedVersions: {}, dataRevision: '', testSetId: '', filters: { subject: 'all', grade: 'all' }, scoreView: 'combined', scoreEditor: 'human', ratings: {} };
             }
         }
 
@@ -1747,13 +1763,32 @@
                 const response = await fetch('data/generation-experiment-seed.json', { cache: 'no-store' });
                 generationExperimentData = await response.json();
                 const dataRevision = String(generationExperimentData?.generatedAt || '');
-                if (dataRevision && generationExperimentState.dataRevision !== dataRevision) {
+                const testSetId = String(generationExperimentData?.testSetId || '');
+                const testSetChanged = generationExperimentState.testSetId !== testSetId;
+                if (dataRevision && testSetChanged) {
+                    generationExperimentState = {
+                        selectedCaseId: '',
+                        selectedVersions: {},
+                        dataRevision,
+                        testSetId,
+                        filters: { subject: 'all', grade: 'all' },
+                        scoreView: 'combined',
+                        scoreEditor: 'human',
+                        ratings: {}
+                    };
+                    (generationExperimentData?.cases || []).forEach(item => {
+                        const latestVersion = item.versions?.[item.versions.length - 1];
+                        if (latestVersion?.id) generationExperimentState.selectedVersions[item.id] = latestVersion.id;
+                    });
+                    saveGenerationExperimentState();
+                } else if (dataRevision && generationExperimentState.dataRevision !== dataRevision) {
                     generationExperimentState.selectedVersions = generationExperimentState.selectedVersions || {};
                     (generationExperimentData?.cases || []).forEach(item => {
                         const latestVersion = item.versions?.[item.versions.length - 1];
                         if (latestVersion?.id) generationExperimentState.selectedVersions[item.id] = latestVersion.id;
                     });
                     generationExperimentState.dataRevision = dataRevision;
+                    generationExperimentState.testSetId = testSetId;
                     saveGenerationExperimentState();
                 }
                 if (!generationExperimentState.selectedCaseId && generationExperimentData?.cases?.length) {
@@ -1770,6 +1805,15 @@
 
         function getGenerationExperimentCases() {
             return Array.isArray(generationExperimentData?.cases) ? generationExperimentData.cases : [];
+        }
+
+        function getFilteredGenerationExperimentCases() {
+            const filters = generationExperimentState.filters || { subject: 'all', grade: 'all' };
+            return getGenerationExperimentCases().filter(item => {
+                const subjectMatched = filters.subject === 'all' || item.subject === filters.subject;
+                const gradeMatched = filters.grade === 'all' || item.grade === filters.grade;
+                return subjectMatched && gradeMatched;
+            });
         }
 
         function getGenerationExperimentCase() {
@@ -1877,6 +1921,9 @@
         }
 
         function getExperimentCompareText(item) {
+            if (!item?.baseline?.fileUrl) return '线上待补跑';
+            const selectedVersion = getGenerationExperimentSelectedVersion(item);
+            if (!selectedVersion?.fileUrl) return '测试待生成';
             const baseline = getGenerationExperimentRating(item.id, 'baseline');
             const versions = item.versions || [];
             const latestVersion = versions[versions.length - 1] || { id: 'prompt-v1' };
@@ -1923,17 +1970,15 @@
                 return `<div class="border border-red-100 bg-red-50 text-red-700 rounded-2xl p-6 font-bold">实验数据加载失败：${escapeHtml(generationExperimentData.loadError)}</div>`;
             }
             const cases = getGenerationExperimentCases();
-            const conclusionStats = getGenerationExperimentConclusionStats(cases);
+            const filteredCases = getFilteredGenerationExperimentCases();
+            const runStats = getGenerationExperimentRunStats(cases, filteredCases);
             return `
                 <div class="space-y-5">
-                    <div id="generation-experiment-conclusion">
-                        ${renderGenerationExperimentConclusionCards(conclusionStats)}
-                    </div>
+                    ${renderGenerationExperimentFilters(cases, runStats)}
                     <div class="space-y-6">
-                        ${cases.map(item => renderGenerationExperimentCaseDetail(item)).join('')}
-                    </div>
-                    <div id="generation-experiment-overview">
-                        ${renderGenerationExperimentOverview(cases)}
+                        ${filteredCases.length
+                            ? filteredCases.map(item => renderGenerationExperimentCaseDetail(item)).join('')
+                            : '<div class="border border-dashed border-slate-300 bg-slate-50 p-10 text-center text-sm text-slate-500">当前筛选条件下没有测试用例。</div>'}
                     </div>
                 </div>
             `;
@@ -1952,60 +1997,67 @@
             `;
         }
 
-        function getGenerationExperimentConclusionStats(cases) {
-            const rows = cases.map(item => {
-                const version = getGenerationExperimentSelectedVersion(item);
-                const baselineRating = getGenerationExperimentRating(item.id, 'baseline');
-                const versionRating = version ? getGenerationExperimentRating(item.id, version.id) : null;
-                const baselineAvg = Number(getExperimentAverage(baselineRating));
-                const versionAvg = versionRating ? Number(getExperimentAverage(versionRating)) : NaN;
-                const diff = Number.isFinite(baselineAvg) && Number.isFinite(versionAvg) ? versionAvg - baselineAvg : null;
-                return { item, version, baselineAvg, versionAvg, diff, decision: versionRating?.decision || 'todo' };
-            });
-            const scoredRows = rows.filter(row => row.diff != null);
-            const better = scoredRows.filter(row => row.diff > 0).length;
-            const tie = scoredRows.filter(row => row.diff === 0).length;
-            const worse = scoredRows.filter(row => row.diff < 0).length;
-            const invalid = rows.filter(row => row.decision === 'invalid').length;
-            const avgDiff = scoredRows.length ? scoredRows.reduce((sum, row) => sum + row.diff, 0) / scoredRows.length : null;
-            let conclusion = '待评分';
-            if (scoredRows.length) {
-                if (better > worse) conclusion = '提示词版整体更优';
-                else if (worse > better) conclusion = '线上现状暂时更稳';
-                else conclusion = '两组暂时持平';
-            }
+        function getGenerationExperimentRunStats(cases, filteredCases) {
+            const automaticCases = cases.filter(item => item.generationMode !== 'manual');
+            const manualCases = cases.filter(item => item.generationMode === 'manual');
+            const testGenerated = automaticCases.filter(item => getGenerationExperimentSelectedVersion(item)?.fileUrl).length;
+            const testFailed = automaticCases.filter(item => getGenerationExperimentSelectedVersion(item)?.status === 'failed').length;
             return {
                 total: cases.length,
-                scored: scoredRows.length,
-                unscored: Math.max(0, cases.length - scoredRows.length),
-                better,
-                tie,
-                worse,
-                invalid,
-                avgDiff,
-                conclusion
+                visible: filteredCases.length,
+                automaticTotal: automaticCases.length,
+                testGenerated,
+                testFailed,
+                manualTotal: manualCases.length,
+                manualPending: manualCases.filter(item => !getGenerationExperimentSelectedVersion(item)?.fileUrl).length,
+                productionPending: cases.filter(item => !item.baseline?.fileUrl).length
             };
         }
 
-        function renderGenerationExperimentConclusionCards(stats) {
-            const diffText = stats.avgDiff == null ? '-' : stats.avgDiff > 0 ? `+${stats.avgDiff.toFixed(1)}` : stats.avgDiff.toFixed(1);
+        function renderGenerationExperimentFilters(cases, stats) {
+            const subjects = [...new Set(cases.map(item => item.subject).filter(Boolean))];
+            const gradeOrder = ['幼儿园', '一年级', '二年级', '三年级', '四年级', '五年级', '六年级', '未说明'];
+            const grades = [...new Set(cases.map(item => item.grade).filter(Boolean))].sort((a, b) => gradeOrder.indexOf(a) - gradeOrder.indexOf(b));
+            const filters = generationExperimentState.filters || { subject: 'all', grade: 'all' };
             return `
-                <section class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <div class="bg-white border border-slate-200 rounded-xl px-4 py-3">
-                        <div class="text-xs font-black text-slate-400">当前结论</div>
-                        <div class="mt-1 text-base font-black text-slate-900">${escapeHtml(stats.conclusion)}</div>
+                <section class="bg-white border border-slate-200 rounded-lg px-5 py-4 space-y-4">
+                    <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4">
+                        <div>
+                            <div class="text-sm font-black text-slate-900">固定测试集筛选</div>
+                            <div class="text-xs text-slate-500 mt-1">筛选只改变当前查看范围，不会改动生成结果。</div>
+                        </div>
+                        <div class="flex flex-wrap items-end gap-3">
+                            <div class="w-40">
+                                <div class="text-xs font-bold text-slate-500 mb-1.5">学科</div>
+                                ${renderCustomSelect({
+                                    id: 'generation-subject-filter',
+                                    value: filters.subject,
+                                    options: [{ value: 'all', label: '全部学科' }, ...subjects.map(value => ({ value, label: value }))],
+                                    onSelect: value => `setGenerationExperimentFilter('subject', ${jsString(value)})`
+                                })}
+                            </div>
+                            <div class="w-40">
+                                <div class="text-xs font-bold text-slate-500 mb-1.5">年级</div>
+                                ${renderCustomSelect({
+                                    id: 'generation-grade-filter',
+                                    value: filters.grade,
+                                    options: [{ value: 'all', label: '全部年级' }, ...grades.map(value => ({ value, label: value }))],
+                                    onSelect: value => `setGenerationExperimentFilter('grade', ${jsString(value)})`
+                                })}
+                            </div>
+                            ${(filters.subject !== 'all' || filters.grade !== 'all') ? `
+                                <button type="button" onclick="resetGenerationExperimentFilters()" class="ce-tool-btn h-[38px] px-3 text-xs">
+                                    <i class="fa-solid fa-rotate-left"></i> 清除筛选
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
-                    <div class="bg-white border border-slate-200 rounded-xl px-4 py-3">
-                        <div class="text-xs font-black text-slate-400">平均差值</div>
-                        <div class="mt-1 text-base font-black ${stats.avgDiff == null ? 'text-slate-500' : stats.avgDiff >= 0 ? 'text-green-700' : 'text-red-700'}">${escapeHtml(diffText)}</div>
-                    </div>
-                    <div class="bg-white border border-slate-200 rounded-xl px-4 py-3">
-                        <div class="text-xs font-black text-slate-400">优于 / 持平 / 不如</div>
-                        <div class="mt-1 text-base font-black text-slate-900">${stats.better} / ${stats.tie} / ${stats.worse}</div>
-                    </div>
-                    <div class="bg-white border border-slate-200 rounded-xl px-4 py-3">
-                        <div class="text-xs font-black text-slate-400">未完成评分</div>
-                        <div class="mt-1 text-base font-black text-slate-900">${stats.unscored}<span class="text-xs text-slate-400 ml-1">/ ${stats.total}</span></div>
+                    <div class="grid grid-cols-2 lg:grid-cols-5 border-t border-slate-100 pt-3 gap-3">
+                        <div><div class="text-[11px] text-slate-400">固定用例</div><div class="text-lg font-black text-slate-900">${stats.total}</div></div>
+                        <div><div class="text-[11px] text-slate-400">当前显示</div><div class="text-lg font-black text-blue-700">${stats.visible}</div></div>
+                        <div><div class="text-[11px] text-slate-400">测试环境已生成</div><div class="text-lg font-black ${stats.testFailed ? 'text-amber-700' : 'text-green-700'}">${stats.testGenerated}<span class="text-xs text-slate-400 ml-1">/ ${stats.automaticTotal}</span></div></div>
+                        <div><div class="text-[11px] text-slate-400">待手动生成</div><div class="text-lg font-black text-amber-700">${stats.manualPending}<span class="text-xs text-slate-400 ml-1">/ ${stats.manualTotal}</span></div></div>
+                        <div><div class="text-[11px] text-slate-400">线上待补跑</div><div class="text-lg font-black text-slate-700">${stats.productionPending}<span class="text-xs text-slate-400 ml-1">/ ${stats.total}</span></div></div>
                     </div>
                 </section>
             `;
@@ -2017,14 +2069,18 @@
             const diffText = getExperimentCompareText(item);
             const diffClass = diffText.startsWith('+') ? 'text-green-700 bg-green-50 border-green-100' : diffText.startsWith('-') ? 'text-red-700 bg-red-50 border-red-100' : 'text-slate-600 bg-slate-50 border-slate-200';
             return `
-                <section class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-                    <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                <section class="border-t-2 border-slate-200 pt-0">
+                    <div class="px-5 py-4 bg-slate-50 border-x border-b border-slate-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
-                                <h4 class="text-lg font-black text-slate-900">${String(item.index).padStart(2, '0')} · ${escapeHtml(item.requirement)}</h4>
+                                <h4 class="text-lg font-black text-slate-900">${escapeHtml(item.id || `T${String(item.index).padStart(2, '0')}`)}</h4>
                                 <span class="text-xs font-black border rounded-full px-2 py-1 ${diffClass}">${escapeHtml(diffText)}</span>
                             </div>
-                            <p class="text-sm text-slate-500 mt-1">${escapeHtml(item.subject || '其他')}</p>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-100 rounded-full px-2 py-1">${escapeHtml(item.subject || '其他')}</span>
+                                <span class="text-xs font-bold text-slate-600 bg-white border border-slate-200 rounded-full px-2 py-1">${escapeHtml(item.grade || '年级未说明')}</span>
+                                <span class="text-xs font-bold ${item.generationMode === 'manual' ? 'text-amber-700 bg-amber-50 border-amber-100' : 'text-green-700 bg-green-50 border-green-100'} border rounded-full px-2 py-1">${item.generationMode === 'manual' ? '手动专项' : '自动生成'}</span>
+                            </div>
                         </div>
                         <div class="flex flex-wrap gap-2 shrink-0">
                             <button type="button" onclick="document.getElementById('guide-modal').classList.remove('hidden')" class="ce-tool-btn ce-tool-btn-ghost">
@@ -2032,9 +2088,23 @@
                             </button>
                         </div>
                     </div>
-                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                    <div class="border-x border-b border-slate-200 bg-white px-5 py-4 grid grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(150px,0.65fr)_minmax(0,1.35fr)] gap-4">
+                        <div class="min-w-0">
+                            <div class="text-[11px] font-black text-slate-400">用户输入原文</div>
+                            <div class="mt-1 text-sm leading-6 text-slate-800">${escapeHtml(item.requirement)}</div>
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-black text-slate-400">主交互</div>
+                            <div class="mt-1 text-sm font-bold text-slate-800">${escapeHtml(item.mainInteraction || '-')}</div>
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-black text-slate-400">重点验收</div>
+                            <div class="mt-1 flex flex-wrap gap-1.5">${(item.keyChecks || []).map(check => `<span class="text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded px-2 py-1">${escapeHtml(check)}</span>`).join('') || '<span class="text-sm text-slate-400">-</span>'}</div>
+                        </div>
+                    </div>
+                    <div class="pt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                         ${renderGenerationExperimentVariantCard(item, baseline)}
-                        ${selectedVersion ? renderGenerationExperimentVariantCard(item, selectedVersion) : '<div class="border border-dashed border-slate-300 rounded-2xl p-8 text-slate-500">暂无提示词版本效果。</div>'}
+                        ${selectedVersion ? renderGenerationExperimentVariantCard(item, selectedVersion) : '<div class="border border-dashed border-slate-300 rounded-lg p-8 text-slate-500">暂无测试环境生成结果。</div>'}
                     </div>
                 </section>
             `;
@@ -2066,22 +2136,81 @@
             `;
         }
 
+        function clearGenerationExperimentPreviewTimer(shell) {
+            const timer = generationExperimentPreviewTimers.get(shell);
+            if (timer) clearTimeout(timer);
+            generationExperimentPreviewTimers.delete(shell);
+        }
+
+        function showGenerationExperimentPreviewFallback(shell) {
+            if (!shell || shell.dataset.previewStatus === 'loaded') return;
+            clearGenerationExperimentPreviewTimer(shell);
+            shell.dataset.previewStatus = 'failed';
+            shell.querySelector('[data-preview-loading]')?.classList.add('hidden');
+            shell.querySelector('[data-preview-frame]')?.classList.add('hidden');
+            shell.querySelector('[data-preview-fallback]')?.classList.remove('hidden');
+        }
+
+        function markGenerationExperimentPreviewLoaded(shell) {
+            if (!shell || shell.dataset.previewStatus === 'failed') return;
+            clearGenerationExperimentPreviewTimer(shell);
+            shell.dataset.previewStatus = 'loaded';
+            shell.querySelector('[data-preview-loading]')?.classList.add('hidden');
+            shell.querySelector('[data-preview-fallback]')?.classList.add('hidden');
+            shell.querySelector('[data-preview-frame]')?.classList.remove('hidden');
+        }
+
+        function startGenerationExperimentPreview(shell) {
+            if (!shell || shell.dataset.previewStatus) return;
+            const frame = shell.querySelector('[data-preview-frame]');
+            const previewUrl = shell.dataset.previewUrl;
+            if (!frame || !previewUrl) return;
+            shell.dataset.previewStatus = 'loading';
+            frame.addEventListener('load', () => markGenerationExperimentPreviewLoaded(shell), { once: true });
+            frame.addEventListener('error', () => showGenerationExperimentPreviewFallback(shell), { once: true });
+            frame.src = previewUrl;
+            const timer = setTimeout(() => {
+                if (shell.isConnected) showGenerationExperimentPreviewFallback(shell);
+            }, GENERATION_EXPERIMENT_PREVIEW_TIMEOUT_MS);
+            generationExperimentPreviewTimers.set(shell, timer);
+        }
+
+        function initializeGenerationExperimentPreviews() {
+            generationExperimentPreviewObserver?.disconnect();
+            const shells = [...document.querySelectorAll('[data-generation-preview]')];
+            if (!shells.length) return;
+            generationExperimentPreviewObserver = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    startGenerationExperimentPreview(entry.target);
+                    generationExperimentPreviewObserver?.unobserve(entry.target);
+                });
+            }, { rootMargin: '240px 0px' });
+            shells.forEach(shell => generationExperimentPreviewObserver.observe(shell));
+        }
+
         function renderGenerationExperimentVariantCard(item, variant) {
             const rating = getGenerationExperimentRating(item.id, variant.id);
             const isBaseline = variant.id === 'baseline';
             const latestVersionId = item.versions?.[item.versions.length - 1]?.id || '';
             const isLatestPromptVersion = !isBaseline && variant.id === latestVersionId;
             const badgeClass = isBaseline ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-blue-50 text-blue-700 border-blue-100';
-            const promptButtonLabel = isBaseline ? '线上 Prompt' : variant.promptType === 'raw-user-requirement' ? '原始需求' : 'Prompt';
+            const promptButtonLabel = variant.promptType === 'raw-user-requirement' ? '用户原文' : 'Prompt';
+            const isTestEnvironment = !isBaseline && (String(variant.environment || '').includes('box.test.xdf.cn') || String(variant.fileUrl || '').includes('.test.xdf.cn'));
+            const isManualCase = item.generationMode === 'manual';
+            const hasPreview = Boolean(variant.fileUrl);
+            const selectedVersion = getGenerationExperimentSelectedVersion(item);
+            const canEvaluate = Boolean(item.baseline?.fileUrl && selectedVersion?.fileUrl);
+            const resultName = variant.fileName || (isBaseline ? (variant.status === 'success' ? '线上生成结果' : '正式环境结果待补跑') : isManualCase ? '等待Jolin手动生成' : variant.status === 'failed' ? '生成未完成' : '测试环境结果待生成');
             return `
-                <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-2xl overflow-hidden bg-white min-w-0">
+                <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-lg overflow-hidden bg-white min-w-0">
                     <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-col 2xl:flex-row 2xl:items-start 2xl:justify-between gap-3">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-black border rounded-full px-2 py-1 whitespace-nowrap shrink-0 ${badgeClass}">${escapeHtml(variant.label)}</span>
-                                <span class="text-sm font-black text-slate-800 truncate">${escapeHtml(variant.fileName || item.requirement)}</span>
+                                <span class="text-sm font-black text-slate-800 truncate">${escapeHtml(resultName)}</span>
                             </div>
-                            <div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(variant.conversationId || '-')}</div>
+                            ${variant.conversationId ? `<div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(variant.conversationId)}</div>` : ''}
                         </div>
                         <div class="flex flex-wrap items-center justify-start 2xl:justify-end gap-2 shrink-0 max-w-full">
                             ${!isBaseline ? renderGenerationExperimentVersionControls(item, variant) : ''}
@@ -2092,12 +2221,38 @@
                             ${variant.pushUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.pushUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn h-8 px-3 text-xs"><i class="fa-solid fa-file-zipper"></i> ZIP</button>` : ''}
                         </div>
                     </div>
-                    <div class="w-full aspect-video max-h-[260px] bg-slate-100 border-b border-slate-200 overflow-hidden flex items-center justify-center">
-                        ${variant.fileUrl ? `<iframe src="${escapeAttr(variant.fileUrl)}" class="h-full aspect-video w-auto max-w-full bg-white border-0 shrink-0" loading="lazy"></iframe>` : `<div class="w-full h-full flex items-center justify-center text-slate-400 text-sm">暂无预览链接</div>`}
+                    ${isManualCase && !isBaseline ? `
+                        <div class="px-4 py-2.5 bg-amber-50 border-b border-amber-100 text-xs text-amber-800 flex items-start gap-2">
+                            <i class="fa-solid fa-microphone-lines mt-0.5 shrink-0"></i>
+                            <span>此用例涉及音频、录音或口语评测，仅由 Jolin 手动生成；未执行不计为失败。</span>
+                        </div>
+                    ` : ''}
+                    <div class="w-full aspect-video max-h-[260px] bg-slate-100 border-b border-slate-200 overflow-hidden flex items-center justify-center" ${hasPreview ? `data-generation-preview data-preview-url="${escapeAttr(variant.fileUrl)}"` : ''}>
+                        ${hasPreview
+                            ? `
+                                <div data-preview-loading class="w-full h-full flex flex-col items-center justify-center text-slate-400 text-sm px-6 text-center">
+                                    <i class="fa-solid fa-circle-notch fa-spin text-lg mb-2"></i>
+                                    <span>正在加载课件预览</span>
+                                </div>
+                                <iframe data-preview-frame title="${escapeAttr(`${item.id} ${variant.label}课件预览`)}" class="hidden h-full aspect-video w-auto max-w-full bg-white border-0 shrink-0" loading="lazy"></iframe>
+                                <div data-preview-fallback class="hidden w-full h-full flex flex-col items-center justify-center bg-amber-50 text-amber-800 text-sm px-8 text-center">
+                                    <i class="fa-solid ${isTestEnvironment ? 'fa-building-shield' : 'fa-triangle-exclamation'} text-xl mb-3"></i>
+                                    <span class="font-bold">${isTestEnvironment ? '当前测试环境课件预览需在公司内网下进行' : '课件预览加载失败'}</span>
+                                    <span class="text-xs text-amber-700 mt-1">${isTestEnvironment ? '连接公司内网后刷新页面，或点击上方“打开”重试。' : '请点击上方“打开”在新页面重试。'}</span>
+                                </div>
+                            `
+                            : `<div class="w-full h-full flex flex-col items-center justify-center text-slate-400 text-sm px-6 text-center"><i class="fa-regular fa-window-maximize text-xl mb-2"></i><span>${isBaseline ? '线上正式环境结果待补跑' : isManualCase ? '待Jolin手动生成' : variant.status === 'failed' ? '本次生成未完成，等待断点续跑' : '测试环境结果待生成'}</span>${variant.error ? `<span class="text-xs text-red-500 mt-2">${escapeHtml(variant.error)}</span>` : ''}</div>`}
                     </div>
-                    <div class="p-4 space-y-4 generation-experiment-score-card" data-case-id="${escapeAttr(item.id)}" data-variant-id="${escapeAttr(variant.id)}">
-                        ${renderGenerationExperimentScoreCardBody(item, variant, rating, isLatestPromptVersion)}
-                    </div>
+                    ${hasPreview && canEvaluate ? `
+                        <div class="p-4 space-y-4 generation-experiment-score-card" data-case-id="${escapeAttr(item.id)}" data-variant-id="${escapeAttr(variant.id)}">
+                            ${renderGenerationExperimentScoreCardBody(item, variant, rating, isLatestPromptVersion)}
+                        </div>
+                    ` : hasPreview ? `
+                        <div class="px-4 py-3 bg-slate-50 text-xs text-slate-500 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-slate-400"></i>
+                            <span>本轮只生成不测评，线上结果补齐后再开放对比评分。</span>
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }
@@ -2254,6 +2409,20 @@
         function selectGenerationExperimentVersion(caseId, versionId) {
             generationExperimentState.selectedVersions = generationExperimentState.selectedVersions || {};
             generationExperimentState.selectedVersions[caseId] = versionId;
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function setGenerationExperimentFilter(field, value) {
+            if (!['subject', 'grade'].includes(field)) return;
+            generationExperimentState.filters = generationExperimentState.filters || { subject: 'all', grade: 'all' };
+            generationExperimentState.filters[field] = value || 'all';
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function resetGenerationExperimentFilters() {
+            generationExperimentState.filters = { subject: 'all', grade: 'all' };
             saveGenerationExperimentState();
             renderGenerationEvalWorkbench();
         }
