@@ -1905,7 +1905,8 @@
             const versions = item?.versions || [];
             if (!versions.length) return null;
             const selectedId = generationExperimentState.selectedVersions?.[item.id];
-            return versions.find(version => version.id === selectedId) || versions[versions.length - 1];
+            const explicitLatest = versions.find(version => String(version.label || '').includes('最新版'));
+            return versions.find(version => version.id === selectedId) || explicitLatest || versions[versions.length - 1];
         }
 
         function renderGenerationPromptWorkbench() {
@@ -1940,11 +1941,11 @@
 
         function renderGenerationScoreSegment(label, options, currentValue, handlerName) {
             return `
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-black text-slate-400 shrink-0">${escapeHtml(label)}</span>
-                    <div class="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                <div class="flex items-center gap-1 whitespace-nowrap min-w-0">
+                    <span class="text-[10px] leading-none font-black text-slate-400 shrink-0">${escapeHtml(label)}</span>
+                    <div class="flex bg-slate-100 p-0.5 rounded-md border border-slate-200 shrink-0">
                         ${options.map(option => `
-                            <button type="button" onclick="${escapeAttr(`${handlerName}(${jsString(option.id)})`)}" class="h-7 px-2.5 rounded-md text-xs font-black transition ${currentValue === option.id ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">${escapeHtml(option.shortLabel || option.label)}</button>
+                            <button type="button" onclick="${escapeAttr(`${handlerName}(${jsString(option.id)})`)}" class="h-6 px-1.5 rounded text-[10px] leading-none font-black whitespace-nowrap transition ${currentValue === option.id ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">${escapeHtml(option.shortLabel || option.label)}</button>
                         `).join('')}
                     </div>
                 </div>
@@ -2042,12 +2043,25 @@
         function renderGenerationExperimentVersionControls(item, variant) {
             const versions = item.versions || [];
             if (versions.length <= 1) return '';
+            const selectId = `generation-version-${item.id}`;
+            const value = variant?.id || '';
             return `
-                <div class="flex flex-wrap gap-1.5">
-                    ${versions.map(version => {
-                        const active = variant?.id === version.id;
-                        return `<button type="button" onclick="${escapeAttr(`selectGenerationExperimentVersion(${jsString(item.id)}, ${jsString(version.id)})`)}" class="h-8 px-2.5 rounded-lg border text-xs font-black transition ${active ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-700 border-blue-200 hover:border-blue-400'}">${escapeHtml(version.label || version.id)}</button>`;
-                    }).join('')}
+                <div class="ce-custom-select relative w-[138px] shrink-0">
+                    <button type="button" onclick="toggleCustomSelect(${escapeAttr(jsString(selectId))}, event)" class="w-full h-8 border border-blue-200 rounded-lg px-2.5 bg-white text-xs font-black text-blue-700 outline-none hover:border-blue-400 focus:ring-2 focus:ring-blue-500 flex items-center justify-between gap-2">
+                        <span class="truncate">${escapeHtml(variant?.label || '选择版本')}</span>
+                        <i id="${escapeAttr(selectId)}-icon" class="fa-solid fa-chevron-down text-blue-400 text-[10px] transition-transform"></i>
+                    </button>
+                    <div id="${escapeAttr(selectId)}-menu" class="ce-custom-select-menu hidden absolute right-0 z-50 mt-1 w-full min-w-[150px] rounded-xl border border-slate-200 bg-white p-1.5 max-h-64 overflow-auto custom-scrollbar">
+                        ${versions.map(version => {
+                            const active = version.id === value;
+                            return `
+                                <button type="button" onclick="${escapeAttr(`selectGenerationExperimentVersion(${jsString(item.id)}, ${jsString(version.id)}); closeCustomSelect(${jsString(selectId)})`)}" class="w-full text-left px-3 py-2 rounded-lg text-xs font-black flex items-center justify-between ${active ? 'bg-blue-50 text-blue-700' : 'text-slate-700 hover:bg-slate-50'}">
+                                    <span class="truncate">${escapeHtml(version.label || version.id)}</span>
+                                    ${active ? '<i class="fa-solid fa-check text-blue-600 text-[10px] ml-2"></i>' : ''}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
                 </div>
             `;
         }
@@ -2100,7 +2114,7 @@
                         ${renderGenerationScoreSegment('滑杆写入', GENERATION_SCORE_EDITORS, generationExperimentState.scoreEditor || 'human', 'setGenerationExperimentScoreEditor')}
                         <div class="text-left sm:text-right sm:ml-1">
                             <div class="generation-experiment-average text-sm font-black text-blue-600">均分 ${escapeHtml(getExperimentAverage(rating))}</div>
-                            <div class="text-xs text-slate-400 mt-0.5">${escapeHtml(getGenerationScoreViewLabel())}</div>
+                            <div class="text-[10px] leading-none text-slate-400 mt-0.5 whitespace-nowrap">${escapeHtml(getGenerationScoreViewLabel())}</div>
                         </div>
                     </div>
                 </div>
@@ -2108,13 +2122,13 @@
                     ${dimensions.map(d => renderGenerationExperimentScoreControl(item.id, variant.id, rating, d)).join('')}
                 </div>
                 <div class="grid grid-cols-1 2xl:grid-cols-2 gap-3">
-                    <label class="block text-sm font-bold text-slate-700">
+                    <label class="block text-sm font-normal text-slate-700">
                         主要问题
-                        <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'issues', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录知识、教学、交互、视觉问题">${escapeHtml(rating.issues || '')}</textarea>
+                        <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'issues', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm font-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录知识、教学、交互、视觉问题">${escapeHtml(rating.issues || '')}</textarea>
                     </label>
-                    <label class="block text-sm font-bold text-slate-700">
-                        亮点 / 判断依据
-                        <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'strengths', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录比另一版好/差的原因">${escapeHtml(rating.strengths || '')}</textarea>
+                    <label class="block text-sm font-normal text-slate-700">
+                        当前版本亮点
+                        <textarea oninput="${escapeAttr(`updateGenerationExperimentText(${jsString(item.id)}, ${jsString(variant.id)}, 'strengths', this.value)`)}" class="mt-1 w-full h-20 border border-slate-300 rounded-xl px-3 py-2 text-sm font-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="记录当前版本的亮点，确保修改系统提示词后不会变差">${escapeHtml(rating.strengths || '')}</textarea>
                     </label>
                 </div>
                 ${renderGenerationExperimentDecisionControls(item, variant, rating)}
