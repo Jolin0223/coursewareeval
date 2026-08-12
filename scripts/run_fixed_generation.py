@@ -186,6 +186,12 @@ def main():
         default=[],
         help="Run only the specified case ID. May be repeated; completed results remain resumable.",
     )
+    parser.add_argument(
+        "--restart-case-id",
+        action="append",
+        default=[],
+        help="Create a new design conversation for the specified failed case instead of resuming it.",
+    )
     args = parser.parse_args()
 
     requests_file = Path(args.requests_file).resolve()
@@ -208,10 +214,13 @@ def main():
     ):
         raise SystemExit("The fixed set must be configured as generate-only.")
     selected_case_ids = set(args.case_id)
+    restart_case_ids = set(args.restart_case_id)
     known_case_ids = {case["id"] for case in cases}
-    unknown_case_ids = selected_case_ids - known_case_ids
+    unknown_case_ids = (selected_case_ids | restart_case_ids) - known_case_ids
     if unknown_case_ids:
         raise SystemExit(f"Unknown case IDs: {', '.join(sorted(unknown_case_ids))}")
+    if restart_case_ids - selected_case_ids:
+        raise SystemExit("--restart-case-id must also be selected with --case-id.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "requests.json").write_text(
@@ -256,7 +265,7 @@ def main():
             skill_dir,
             output_dir,
             base_url,
-            results_by_id.get(preflight_case["id"], {}).get("conversationId", ""),
+            "" if preflight_case["id"] in restart_case_ids else results_by_id.get(preflight_case["id"], {}).get("conversationId", ""),
         )
         with lock:
             results_by_id[preflight_result["id"]] = preflight_result
@@ -286,7 +295,7 @@ def main():
                     skill_dir,
                     output_dir,
                     base_url,
-                    results_by_id.get(case["id"], {}).get("conversationId", ""),
+                    "" if case["id"] in restart_case_ids else results_by_id.get(case["id"], {}).get("conversationId", ""),
                 )
                 futures[future] = case["id"]
                 print(
