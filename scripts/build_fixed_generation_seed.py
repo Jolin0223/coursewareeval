@@ -48,6 +48,20 @@ def append_version(previous_case, version):
     return previous_versions
 
 
+def parse_version_relabels(values):
+    relabels = {}
+    for value in values:
+        version_id, separator, label = value.partition("=")
+        version_id = version_id.strip()
+        label = label.strip()
+        if not separator or not version_id or not label:
+            raise SystemExit(
+                "--relabel-version must use VERSION_ID=DISPLAY_LABEL."
+            )
+        relabels[version_id] = label
+    return relabels
+
+
 def main():
     parser = ArgumentParser()
     parser.add_argument("--requests-file", required=True)
@@ -58,6 +72,12 @@ def main():
     parser.add_argument("--output-file", required=True)
     parser.add_argument("--version-id", default="box-test-v1.1-20260811")
     parser.add_argument("--version-label", default="测试环境 · 首次生成")
+    parser.add_argument(
+        "--relabel-version",
+        action="append",
+        default=[],
+        help="Rename a preserved version label without changing its internal ID.",
+    )
     args = parser.parse_args()
 
     test_set = load_json(Path(args.requests_file).resolve())
@@ -65,6 +85,11 @@ def main():
     generation = load_json(Path(args.generation_summary).resolve())
     production = load_json(Path(args.production_summary).resolve()) if args.production_summary else None
     previous_seed = load_json(Path(args.previous_seed).resolve()) if args.previous_seed else None
+    version_relabels = parse_version_relabels(args.relabel_version)
+    for previous_case in (previous_seed or {}).get("cases", []):
+        for previous_version in previous_case.get("versions") or []:
+            if previous_version.get("id") in version_relabels:
+                previous_version["label"] = version_relabels[previous_version["id"]]
     cases = test_set.get("cases") or []
     manual_cases = manual_test_set.get("cases") or []
     if len(cases) != EXPECTED_AUTOMATIC_COUNT:
