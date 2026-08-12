@@ -2203,7 +2203,7 @@
             const resultName = variant.fileName || (isBaseline ? (variant.status === 'success' ? '线上生成结果' : '正式环境结果待补跑') : isManualCase ? '等待Jolin手动生成' : variant.status === 'failed' ? '生成未完成' : '测试环境结果待生成');
             return `
                 <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-lg overflow-hidden bg-white min-w-0">
-                    <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-col 2xl:flex-row 2xl:items-start 2xl:justify-between gap-3">
+                    <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-row items-start justify-between gap-2">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-black border rounded-full px-2 py-1 whitespace-nowrap shrink-0 ${badgeClass}">${escapeHtml(variant.label)}</span>
@@ -2211,7 +2211,7 @@
                             </div>
                             ${variant.conversationId ? `<div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(variant.conversationId)}</div>` : ''}
                         </div>
-                        <div class="flex flex-wrap items-center justify-start 2xl:justify-end gap-2 shrink-0 max-w-full">
+                        <div class="flex flex-wrap items-center justify-end gap-2 shrink-0 max-w-[58%]">
                             ${!isBaseline ? renderGenerationExperimentVersionControls(item, variant) : ''}
                             ${variant.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn ce-tool-btn-primary h-8 px-3 text-xs"><i class="fa-solid fa-play"></i> 打开</button>` : ''}
                             ${variant.pushUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.pushUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn h-8 px-3 text-xs"><i class="fa-solid fa-file-zipper"></i> ZIP</button>` : ''}
