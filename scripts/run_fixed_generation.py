@@ -11,6 +11,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 
 
 TEST_BASE_URL = "https://box.test.xdf.cn"
@@ -60,6 +61,7 @@ def run_case(
     skill_dir,
     output_dir,
     base_url,
+    resume_conversation_id="",
 ):
     case_dir = output_dir / case["id"]
     case_dir.mkdir(parents=True, exist_ok=True)
@@ -69,8 +71,9 @@ def run_case(
     wrapper = (
         "import json,sys;"
         "sys.path.insert(0,sys.argv[1]);"
-        "from generate import generate;"
-        "result=generate(sys.argv[2],sys.argv[3]);"
+        "from generate import create_from_conversation,generate;"
+        "result=(create_from_conversation(sys.argv[4],sys.argv[3],max_attempts=2) "
+        "if sys.argv[4] else generate(sys.argv[2],sys.argv[3]));"
         f"print('{GENERATE_MARKER}'+json.dumps(result,ensure_ascii=False));"
         "raise SystemExit(0 if result.get('fileUrl') and result.get('pushUrl') else 1)"
     )
@@ -81,6 +84,7 @@ def run_case(
         str(skill_dir / "scripts"),
         case["prompt"],
         str(case_dir),
+        resume_conversation_id,
     ]
     command_cwd = skill_dir
     started_at = now_iso()
@@ -166,6 +170,17 @@ def main():
     )
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument(
+        "--launch-interval-seconds",
+        type=float,
+        default=0,
+        help="Delay between starting queued cases. Use with enough workers to stagger submissions.",
+    )
+    parser.add_argument(
+        "--skip-preflight",
+        action="store_true",
+        help="Launch the selected cases without waiting for the first case to complete.",
+    )
+    parser.add_argument(
         "--case-id",
         action="append",
         default=[],
@@ -233,7 +248,7 @@ def main():
 
     persist()
     print(f"Fixed generation: {len(results_by_id)} complete, {len(pending)} pending")
-    if pending:
+    if pending and not args.skip_preflight:
         preflight_index, preflight_case = pending.pop(0)
         preflight_result = run_case(
             preflight_case,
@@ -241,6 +256,7 @@ def main():
             skill_dir,
             output_dir,
             base_url,
+            results_by_id.get(preflight_case["id"], {}).get("conversationId", ""),
         )
         with lock:
             results_by_id[preflight_result["id"]] = preflight_result
@@ -256,18 +272,27 @@ def main():
             raise SystemExit(2)
 
     if pending:
-        with ThreadPoolExecutor(max_workers=max(1, min(args.workers, 3))) as executor:
-            futures = {
-                executor.submit(
+        max_workers = max(1, min(args.workers, EXPECTED_COUNT))
+        launch_interval = max(0, args.launch_interval_seconds)
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {}
+            for position, (index, case) in enumerate(pending):
+                if position and launch_interval:
+                    time.sleep(launch_interval)
+                future = executor.submit(
                     run_case,
                     case,
                     index,
                     skill_dir,
                     output_dir,
                     base_url,
-                ): case["id"]
-                for index, case in pending
-            }
+                    results_by_id.get(case["id"], {}).get("conversationId", ""),
+                )
+                futures[future] = case["id"]
+                print(
+                    f"[{case['id']}] launched | position={position + 1}/{len(pending)}",
+                    flush=True,
+                )
             for future in as_completed(futures):
                 result = future.result()
                 with lock:
