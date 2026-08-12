@@ -213,6 +213,44 @@
         .sidebar-collapsed .sidebar-user-box i {
             margin-right: 0;
         }
+        @media (max-width: 640px) {
+            .sidebar-shell {
+                width: 3.75rem !important;
+            }
+            .sidebar-logo-text,
+            .sidebar-section-label,
+            .sidebar-nav-label,
+            .sidebar-user-detail,
+            .sidebar-toggle,
+            .app-security-badge {
+                display: none !important;
+            }
+            .sidebar-logo,
+            .sidebar-nav-btn,
+            .sidebar-user-box {
+                justify-content: center !important;
+            }
+            .sidebar-logo,
+            .sidebar-nav-btn,
+            #user-profile-container {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+            .sidebar-nav-btn i,
+            .sidebar-user-box i {
+                margin-right: 0 !important;
+            }
+            .app-header {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            #content-area {
+                padding: 1rem !important;
+            }
+            #view-self-generation > div > .p-8 {
+                padding: 1rem !important;
+            }
+        }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden text-slate-800 relative">
@@ -260,9 +298,9 @@
     </aside>
 
     <main class="flex-1 flex flex-col overflow-hidden relative bg-slate-50">
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10 shrink-0">
+        <header class="app-header h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10 shrink-0">
             <h2 id="page-title" class="text-xl font-bold text-slate-800">互动课件效果评测台</h2>
-            <div class="text-sm text-slate-500 font-medium bg-slate-100 px-4 py-1.5 rounded-full flex items-center shadow-inner">
+            <div class="app-security-badge text-sm text-slate-500 font-medium bg-slate-100 px-4 py-1.5 rounded-full flex items-center shadow-inner">
                 <i class="fa-solid fa-shield-halved mr-2 text-green-500"></i> 数据快照隔离与真AI双擎版
             </div>
         </header>
@@ -1952,8 +1990,7 @@
             const versions = item?.versions || [];
             if (!versions.length) return null;
             const selectedId = generationExperimentState.selectedVersions?.[item.id];
-            const explicitLatest = versions.find(version => String(version.label || '').includes('最新版'));
-            return versions.find(version => version.id === selectedId) || explicitLatest || versions[versions.length - 1];
+            return versions.find(version => version.id === selectedId) || versions[versions.length - 1];
         }
 
         function renderGenerationPromptWorkbench() {
