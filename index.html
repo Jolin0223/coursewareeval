@@ -2112,8 +2112,6 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <h4 class="text-lg font-black text-slate-900">${escapeHtml(item.id || `T${String(item.index).padStart(2, '0')}`)}</h4>
                                 <span class="text-xs font-black border rounded-full px-2 py-1 ${diffClass}">${escapeHtml(diffText)}</span>
-                            </div>
-                            <div class="flex flex-wrap gap-2 mt-2">
                                 <span class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-100 rounded-full px-2 py-1">${escapeHtml(item.subject || '其他')}</span>
                                 <span class="text-xs font-bold text-slate-600 bg-white border border-slate-200 rounded-full px-2 py-1">${escapeHtml(item.grade || '年级未说明')}</span>
                                 <span class="text-xs font-bold ${item.generationMode === 'manual' ? 'text-amber-700 bg-amber-50 border-amber-100' : 'text-green-700 bg-green-50 border-green-100'} border rounded-full px-2 py-1">${item.generationMode === 'manual' ? '手动专项' : '自动生成'}</span>
