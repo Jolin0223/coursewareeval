@@ -190,7 +190,7 @@ def main():
         "--restart-case-id",
         action="append",
         default=[],
-        help="Create a new design conversation for the specified failed case instead of resuming it.",
+        help="Create a new design conversation for the specified case, including a successful case with incomplete resources.",
     )
     args = parser.parse_args()
 
@@ -235,10 +235,13 @@ def main():
     pending = [
         (index, case)
         for index, case in enumerate(cases, start=1)
-        if not (
-            results_by_id.get(case["id"], {}).get("status") == "success"
-            and results_by_id.get(case["id"], {}).get("fileUrl")
-            and results_by_id.get(case["id"], {}).get("pushUrl")
+        if (
+            case["id"] in restart_case_ids
+            or not (
+                results_by_id.get(case["id"], {}).get("status") == "success"
+                and results_by_id.get(case["id"], {}).get("fileUrl")
+                and results_by_id.get(case["id"], {}).get("pushUrl")
+            )
         )
         and (not selected_case_ids or case["id"] in selected_case_ids)
     ]
