@@ -48,6 +48,30 @@ def append_version(previous_case, version):
     return previous_versions
 
 
+def append_production_version(previous_case, version, previous_label):
+    previous_versions = list((previous_case or {}).get("productionVersions") or [])
+    previous_baseline = dict((previous_case or {}).get("baseline") or {})
+    if not previous_versions and previous_baseline.get("fileUrl"):
+        previous_baseline["id"] = previous_baseline.get("id") or "baseline"
+        previous_baseline["label"] = previous_label
+        previous_versions.append(previous_baseline)
+
+    duplicate = next(
+        (item for item in previous_versions if item.get("id") == version["id"]),
+        None,
+    )
+    if duplicate:
+        if not same_generated_result(duplicate, version):
+            raise SystemExit(
+                f"Production version {version['id']} already exists with different generation results."
+            )
+        previous_versions = [
+            item for item in previous_versions if item.get("id") != version["id"]
+        ]
+    previous_versions.append(version)
+    return previous_versions
+
+
 def parse_version_relabels(values):
     relabels = {}
     for value in values:
@@ -72,6 +96,9 @@ def main():
     parser.add_argument("--output-file", required=True)
     parser.add_argument("--version-id", default="box-test-v1.1-20260811")
     parser.add_argument("--version-label", default="测试环境 · 首次生成")
+    parser.add_argument("--production-version-id", default="box-production-20260813")
+    parser.add_argument("--production-version-label", default="8月13日版本")
+    parser.add_argument("--previous-production-label", default="历史线上版本")
     parser.add_argument(
         "--relabel-version",
         action="append",
@@ -120,6 +147,12 @@ def main():
             raise SystemExit("Only generate-only production results may be imported.")
         if production.get("evaluatedCount") != 0 or production.get("publishedCount") != 0:
             raise SystemExit("Evaluated or published production results cannot be imported.")
+        if (
+            production.get("successCount") != EXPECTED_AUTOMATIC_COUNT
+            or production.get("failureCount") != 0
+            or production.get("pendingCount") != 0
+        ):
+            raise SystemExit("The production generation run must have 28 complete successes.")
 
     results = {item["id"]: item for item in generation.get("results", [])}
     production_results = {item["id"]: item for item in (production or {}).get("results", [])}
@@ -158,8 +191,39 @@ def main():
         if previous_case and previous_case.get("requirement") != case["prompt"]:
             raise SystemExit(f"Previous seed prompt mismatch for {case['id']}.")
         previous_baseline = previous_case.get("baseline") or {}
-        if not production_result and previous_baseline.get("fileUrl"):
-            production_result = previous_baseline
+        production_variant = {
+            "id": args.production_version_id,
+            "label": args.production_version_label,
+            "group": "正式环境",
+            "status": production_result.get("status", "placeholder"),
+            "conversationId": production_result.get("conversationId", ""),
+            "fileUrl": production_result.get("fileUrl", ""),
+            "pushUrl": production_result.get("pushUrl", ""),
+            "fileName": production_result.get("fileName", ""),
+            "snapshotId": production_result.get("snapshotId", ""),
+            "finishedAt": production_result.get("finishedAt", ""),
+            "error": production_result.get("error", ""),
+            "prompt": case["prompt"],
+            "promptType": "raw-user-requirement",
+            "environment": PRODUCTION_BASE_URL,
+            "generationMethod": "box-pipeline-generate-only",
+            "published": False,
+            "evaluated": False,
+        }
+        production_versions = list(previous_case.get("productionVersions") or [])
+        if production_result:
+            production_versions = append_production_version(
+                previous_case,
+                production_variant,
+                args.previous_production_label,
+            )
+        elif not production_versions and previous_baseline.get("fileUrl"):
+            preserved_baseline = dict(previous_baseline)
+            preserved_baseline["id"] = preserved_baseline.get("id") or "baseline"
+            preserved_baseline["label"] = args.previous_production_label
+            production_versions = [preserved_baseline]
+
+        compatibility_baseline = previous_baseline if previous_baseline.get("fileUrl") else production_variant
         output_cases.append({
             "id": case["id"],
             "index": index,
@@ -169,24 +233,8 @@ def main():
             "mainInteraction": case["interaction"],
             "keyChecks": case["keyChecks"],
             "generationMode": "automatic",
-            "baseline": {
-                "id": "baseline",
-                "label": "线上现状" if production_result.get("fileUrl") else "线上现状 · 待补跑",
-                "group": "正式环境" if production_result.get("fileUrl") else "线上占位",
-                "status": production_result.get("status", "placeholder"),
-                "conversationId": production_result.get("conversationId", ""),
-                "fileUrl": production_result.get("fileUrl", ""),
-                "pushUrl": production_result.get("pushUrl", ""),
-                "fileName": production_result.get("fileName", ""),
-                "snapshotId": production_result.get("snapshotId", ""),
-                "finishedAt": production_result.get("finishedAt", ""),
-                "error": production_result.get("error", ""),
-                "prompt": case["prompt"],
-                "promptType": "raw-user-requirement",
-                "environment": PRODUCTION_BASE_URL,
-                "published": False,
-                "evaluated": False,
-            },
+            "baseline": compatibility_baseline,
+            "productionVersions": production_versions,
             "versions": append_version(previous_case, test_variant),
         })
 
@@ -248,7 +296,7 @@ def main():
 
     generated_at = datetime.now(timezone.utc).isoformat()
     payload = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "testSetId": test_set["testSetId"],
         "testSetVersion": test_set["version"],
         "manualTestSetId": manual_test_set["testSetId"],

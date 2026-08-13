@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "testSetId": "system-prompt-baseline-20260813-v1.2",
   "testSetVersion": "1.2",
   "manualTestSetId": "manual-recording-baseline-20260813-v1.1",
   "manualTestSetVersion": "1.1",
-  "generatedAt": "2026-08-12T13:33:01.556561+00:00",
+  "generatedAt": "2026-08-13T02:23:27.665985+00:00",
   "source": "Fixed 28-case Box test and production generation",
   "runPolicy": {
     "environment": "https://box.test.xdf.cn",
@@ -49,6 +49,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "9ef1c67764c54c0c966fe5445cb591e4",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-S5ZiMsTWTze7Dh8mguyyUA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-S5ZiMsTWTze7Dh8mguyyUA/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个幼儿园看图识字点选游戏，认识日、月、山、水。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "b6c3422cb7dc4ccbaaa5019257cbeb94",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-bd6X9HE6QwmPusskDyJcCQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-bd6X9HE6QwmPusskDyJcCQ/package.zip",
+          "fileName": "看图找汉字",
+          "snapshotId": "5ac00272a071467d9ba5fd2404d82e03",
+          "finishedAt": "2026-08-13T01:47:56.898346+00:00",
+          "error": "",
+          "prompt": "做一个幼儿园看图识字点选游戏，认识日、月、山、水。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -203,6 +242,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "f5e4fa1861384cf9b5810558ffb1c6ce",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-zBpUsb5_TLiPi-1cOYIWqw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-zBpUsb5_TLiPi-1cOYIWqw/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个海底寻宝主题的幼儿园5以内数量与数字配对游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "0e79a12908e04f18aa489cabd29ad573",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-1omsjqVvRICEojsC_1zDZg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-1omsjqVvRICEojsC_1zDZg/package.zip",
+          "fileName": "海底寻宝",
+          "snapshotId": "00fa45095b314a36b042429a889d8343",
+          "finishedAt": "2026-08-13T01:51:46.888328+00:00",
+          "error": "",
+          "prompt": "做一个海底寻宝主题的幼儿园5以内数量与数字配对游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -357,6 +435,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "210036e966ab4a53b59221b23ccf8be0",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-GYXblYMmSfGyYRZcN7fREQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-GYXblYMmSfGyYRZcN7fREQ/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个幼儿园动物英语单词翻翻卡，翻开后可以点击播放单词发音。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "719d96c3080145e8ab8e4af14334f0c8",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-mbRx4CwZT56iAgHyOhC1pQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-mbRx4CwZT56iAgHyOhC1pQ/package.zip",
+          "fileName": "Animal Flashcards",
+          "snapshotId": "cc4c51b694d544268cb185b45037b29f",
+          "finishedAt": "2026-08-13T01:52:03.031025+00:00",
+          "error": "",
+          "prompt": "做一个幼儿园动物英语单词翻翻卡，翻开后可以点击播放单词发音。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -511,6 +628,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "fd4b51c9418445e6bbf86bb0d106b765",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-WnLFwASzSaKfRHtUlgXEng/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-WnLFwASzSaKfRHtUlgXEng/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个云朵乐园主题的一年级拼音听音选声母课件，学生点击播放后选择听到的声母。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "13f5c1c683af4d998d12a31db4ad3c52",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-JibKnKwGQOqMcFjzooIMzg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-JibKnKwGQOqMcFjzooIMzg/package.zip",
+          "fileName": "Cloud Park Pinyin",
+          "snapshotId": "0366e17da0684fcab0a0d9deb297b22c",
+          "finishedAt": "2026-08-13T01:56:39.505144+00:00",
+          "error": "",
+          "prompt": "做一个云朵乐园主题的一年级拼音听音选声母课件，学生点击播放后选择听到的声母。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -665,6 +821,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "146e765c7165437ca45dd8c021ecf2ad",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-aAHdb4FiTdSNPXatBJbR7A/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-aAHdb4FiTdSNPXatBJbR7A/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个一年级数轴小车游戏，学生左右滑动小车找到正确数字。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "fa647e10ac77435d94fa018be90a3418",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-6J36PTJtTqeVh1yVfSftbA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-6J36PTJtTqeVh1yVfSftbA/package.zip",
+          "fileName": "数轴小车游戏",
+          "snapshotId": "84e9977950e745679ed61b2f024b31fe",
+          "finishedAt": "2026-08-13T01:52:22.604933+00:00",
+          "error": "",
+          "prompt": "做一个一年级数轴小车游戏，学生左右滑动小车找到正确数字。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -819,6 +1014,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "06bc18e6e6e5472f83ff6b9490914e25",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-ucWQcFhIR3aMQapq0WUixA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-ucWQcFhIR3aMQapq0WUixA/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个一年级英语字母A到D的四线三格书写练习。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "ad4ebb6413c041c780cc4986db7b7297",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-Da2dXhUbSrauceylt9Vm_Q/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-Da2dXhUbSrauceylt9Vm_Q/package.zip",
+          "fileName": "Write the letters",
+          "snapshotId": "6a4207f112dd47a79359d578a1c8fa44",
+          "finishedAt": "2026-08-13T01:53:43.434981+00:00",
+          "error": "",
+          "prompt": "做一个一年级英语字母A到D的四线三格书写练习。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -973,6 +1207,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "4594137559f0494b861aab9ec3f20a2b",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-amQH-1KATqyWZg2kbG5-cQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-amQH-1KATqyWZg2kbG5-cQ/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个二年级汉字与偏旁部首连线游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "b9b62e9219c84d739d2f34474da540a0",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-BcK6OWFHR4yWgPp5eGkTPw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-BcK6OWFHR4yWgPp5eGkTPw/package.zip",
+          "fileName": "连一连，组成字",
+          "snapshotId": "8b492a52a5a04a739e4699a645cb0a07",
+          "finishedAt": "2026-08-13T01:53:08.691097+00:00",
+          "error": "",
+          "prompt": "做一个二年级汉字与偏旁部首连线游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -1127,6 +1400,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "6899b16099f94f3da77d5875034e792e",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-CtIKet_ATTafOVmnH7rY1w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-CtIKet_ATTafOVmnH7rY1w/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个二年级认识整点和半点的拨时钟游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "73c7488cc1b5481d8b0cafe69da3325c",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-4fZ8as9RS5-7YkBTsKOj8w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-4fZ8as9RS5-7YkBTsKOj8w/package.zip",
+          "fileName": "认识整点和半点",
+          "snapshotId": "da84a4b0e3e845eeb2d7c5006ffcc6a9",
+          "finishedAt": "2026-08-13T01:53:35.706177+00:00",
+          "error": "",
+          "prompt": "做一个二年级认识整点和半点的拨时钟游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -1281,6 +1593,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "3b9bef1f5e8347609a90beffe6390abc",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-C7NzOMc3R0eIuzpSSdCHJA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-C7NzOMc3R0eIuzpSSdCHJA/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个二年级英语单词分类投篮游戏，把动物和食物单词放进对应篮筐。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "e6a1b7044fa44d1aad810dc34eb1199b",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-MOQoDytwSLmIbPDk5EPSuA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-MOQoDytwSLmIbPDk5EPSuA/package.zip",
+          "fileName": "Word Sorting Basketball Game",
+          "snapshotId": "5d32ce28218645fe8e3ad0c694689ad4",
+          "finishedAt": "2026-08-13T01:54:12.461014+00:00",
+          "error": "",
+          "prompt": "做一个二年级英语单词分类投篮游戏，把动物和食物单词放进对应篮筐。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -1435,6 +1786,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "d32aba59d29b43f3a3a7b13ed45a8a72",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-sKeCjVcMSHSma3uFKFQYGg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-sKeCjVcMSHSma3uFKFQYGg/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个三年级古诗句拖拽排序课件，内容是《绝句》。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "95fff81394e542ac8b78ccf73951a7b9",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-zElla1aiTQesm3ivcYGGrg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-zElla1aiTQesm3ivcYGGrg/package.zip",
+          "fileName": "绝句 - 诗句拖拽排序",
+          "snapshotId": "acf54cce61a04e0f92345f2aaca9eaf8",
+          "finishedAt": "2026-08-13T01:54:14.845673+00:00",
+          "error": "",
+          "prompt": "做一个三年级古诗句拖拽排序课件，内容是《绝句》。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -1589,6 +1979,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "3e2b308167e3448fb0e993d52dbc21fc",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-1ttvtvd1TWaPd13wVw-lIA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-1ttvtvd1TWaPd13wVw-lIA/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个三年级九九乘法棋盘点击游戏，根据算式找到正确的积。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "67e701c7a8d44eea9514f1c2ef546701",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-S-YMpmpUTjy6CUKxpPmx6g/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-S-YMpmpUTjy6CUKxpPmx6g/package.zip",
+          "fileName": "九九乘法棋盘寻宝",
+          "snapshotId": "209ec71d8e1f4e1595ec225328a7861b",
+          "finishedAt": "2026-08-13T01:55:17.611740+00:00",
+          "error": "",
+          "prompt": "做一个三年级九九乘法棋盘点击游戏，根据算式找到正确的积。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -1743,6 +2172,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "45b9fd52941148238bc9bf3e9f0440dd",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-Y5zI77i4SFGOkzvM2P57lg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-Y5zI77i4SFGOkzvM2P57lg/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "人教版三年级英语，做一个身体部位单词看图选词课件，支持点击播放单词发音。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "a2a3687653404898bef0e4fe9adc9892",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-Qj0Ye1EFTGSINfZKvTydaA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-Qj0Ye1EFTGSINfZKvTydaA/package.zip",
+          "fileName": "Listen and Choose - Body Parts",
+          "snapshotId": "22c311430cdd4fe9ba37d5bc8dc7dff1",
+          "finishedAt": "2026-08-13T01:54:06.156109+00:00",
+          "error": "",
+          "prompt": "人教版三年级英语，做一个身体部位单词看图选词课件，支持点击播放单词发音。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -1897,6 +2365,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "654e273f33f944f2b6343c2067cd121e",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-uGf0SsPYT9aloIFzONo1UA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-uGf0SsPYT9aloIFzONo1UA/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个四年级成语迷宫游戏，学生帮助角色走到正确成语出口。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "c0f5830e27524195ad2ac4168cbee31b",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-SK6hW6onR2W3PC-pHCrJkg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-SK6hW6onR2W3PC-pHCrJkg/package.zip",
+          "fileName": "成语迷宫游戏",
+          "snapshotId": "28212cdcb9024c57880cbc7ce5f73117",
+          "finishedAt": "2026-08-13T01:56:19.863369+00:00",
+          "error": "",
+          "prompt": "做一个四年级成语迷宫游戏，学生帮助角色走到正确成语出口。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -2051,6 +2558,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "2032b522d6684ead8851f69ea8b6c97c",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-sql308suQ5agDJHuUU3ATA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-sql308suQ5agDJHuUU3ATA/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个四年级分数大小比较滑杆课件，拖动滑杆观察并选择更大的分数。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "22ca44a0b0834a259c18afbcf1f32470",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-4eRg_znxRWCpWdjZgTP1gg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-4eRg_znxRWCpWdjZgTP1gg/package.zip",
+          "fileName": "Compare the Fractions",
+          "snapshotId": "657668114da5482e828c2b98d814f273",
+          "finishedAt": "2026-08-13T01:55:41.691596+00:00",
+          "error": "",
+          "prompt": "做一个四年级分数大小比较滑杆课件，拖动滑杆观察并选择更大的分数。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -2205,6 +2751,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "960a2a88b0464a89a70f1a2ea6e8ae9c",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-EkKXpXvoQfmRunAakYLVZg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-EkKXpXvoQfmRunAakYLVZg/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个四年级英语句子排序课件，把日常问候语的单词拖成正确句子。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "5217a8dd4bbc43099090a50b40740825",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-De65EWdiR0qqQYrmm_b9rw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-De65EWdiR0qqQYrmm_b9rw/package.zip",
+          "fileName": "Sentence Sorting Game",
+          "snapshotId": "e4bf3ef8ed334f2986a7d1add9d49b45",
+          "finishedAt": "2026-08-13T01:55:37.514122+00:00",
+          "error": "",
+          "prompt": "做一个四年级英语句子排序课件，把日常问候语的单词拖成正确句子。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -2359,6 +2944,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "f8aefeb016d245afb1f9f7e1352053d2",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-ZMtMq_7nSBOHOObs31tB8w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-ZMtMq_7nSBOHOObs31tB8w/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个五年级阅读课件，把文章的起因、经过、结果卡片拖拽排序。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "aa0a240ba102450a9141e0094c4594e0",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-GzUveLhDS9-E0dI0mjLqlw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-GzUveLhDS9-E0dI0mjLqlw/package.zip",
+          "fileName": "五年级阅读课件 - 拖拽排序",
+          "snapshotId": "e0cd03f140df42699acffd851f3d136a",
+          "finishedAt": "2026-08-13T01:56:41.576493+00:00",
+          "error": "",
+          "prompt": "做一个五年级阅读课件，把文章的起因、经过、结果卡片拖拽排序。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -2513,6 +3137,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "192a2b56d5944bfda327b4c3ddb74d25",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-WGLMo454RBO8AVQA9TM8gQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-WGLMo454RBO8AVQA9TM8gQ/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个五年级数独课件，支持填数、候选数笔记和擦除。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "baad4f2ac039481ab51d50c99943f427",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-OhWnXsWwRk28flJHtMzGcw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-OhWnXsWwRk28flJHtMzGcw/package.zip",
+          "fileName": "每日数独",
+          "snapshotId": "de6cd2d78b56407d81a882ec7a8e2019",
+          "finishedAt": "2026-08-13T01:57:01.323330+00:00",
+          "error": "",
+          "prompt": "做一个五年级数独课件，支持填数、候选数笔记和擦除。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -2667,6 +3330,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "46996d981c1448d3a150ad520ffe744b",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-ddOW_nrDQuOlTK5dOmtTfw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-ddOW_nrDQuOlTK5dOmtTfw/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "苏教版五年级双语故事表演，做一个问路对话的问句与答句连线课件，问句和答句都可以点击播放。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "0bd7a558593c4b56841f6247f2309c7e",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-WQkLAs9TScuTlD0cVB0k0Q/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-WQkLAs9TScuTlD0cVB0k0Q/package.zip",
+          "fileName": "Listen and match",
+          "snapshotId": "7225bb6e48dd4cc3830ccbd3639473b7",
+          "finishedAt": "2026-08-13T01:57:41.652381+00:00",
+          "error": "",
+          "prompt": "苏教版五年级双语故事表演，做一个问路对话的问句与答句连线课件，问句和答句都可以点击播放。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -2821,6 +3523,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "ca7678ae34904cd8a9d2c7aaa3a284c3",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-W_AJo6ErQKaSoCR9X_HBxQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-W_AJo6ErQKaSoCR9X_HBxQ/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个六年级语文论点与论据配对棋盘，点击选择能够支持论点的论据。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "71f4f6daef8f4b7092ce4e3b8f9fac3e",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-MyGm4IE7QFGrgJMqxvkODQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-MyGm4IE7QFGrgJMqxvkODQ/package.zip",
+          "fileName": "论点与论据配对棋盘",
+          "snapshotId": "e50502752c754bfdae10111f58d512e1",
+          "finishedAt": "2026-08-13T01:56:42.343473+00:00",
+          "error": "",
+          "prompt": "做一个六年级语文论点与论据配对棋盘，点击选择能够支持论点的论据。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -2975,6 +3716,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "fac4a643c49c4b76bf54bf40aeedaaf9",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-GIvRLblWRd2gwaSpdtE1CQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-GIvRLblWRd2gwaSpdtE1CQ/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个六年级长方体和正方体观察课件，可以拖动旋转、缩放和重置视角。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "26df7a58a6304b2693b7802120cfb16d",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-1guRW7OSR5mZ3lYQmQzzIg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-1guRW7OSR5mZ3lYQmQzzIg/package.zip",
+          "fileName": "长方体和正方体观察",
+          "snapshotId": "8d39b61b0a8a4d97831d8304a2f9cd49",
+          "finishedAt": "2026-08-13T01:58:43.738428+00:00",
+          "error": "",
+          "prompt": "做一个六年级长方体和正方体观察课件，可以拖动旋转、缩放和重置视角。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -3129,6 +3909,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "2c7fd54b3af84747818ce33a121d961c",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-ed709k8oSOWBYmbYDGerpQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-ed709k8oSOWBYmbYDGerpQ/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个六年级英语对话补全课件，学生点击播放并听完情境对话后，选择合适的答句完成对话。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "6b430268475b4ef481c65b00188ce48c",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-eNhNEPJbQWayigmHMpZ73w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-eNhNEPJbQWayigmHMpZ73w/package.zip",
+          "fileName": "Dialogue Completion",
+          "snapshotId": "9384285b2bbf4332a1433d1d6f4ded0a",
+          "finishedAt": "2026-08-13T01:58:32.981081+00:00",
+          "error": "",
+          "prompt": "做一个六年级英语对话补全课件，学生点击播放并听完情境对话后，选择合适的答句完成对话。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -3283,6 +4102,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "6055940188c94171a8b088be297a50c8",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-MKTw9XX3SliAb-JDHLuAMA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-MKTw9XX3SliAb-JDHLuAMA/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个比较物体长短的拖拽互动课件。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "bd3671114e984008ae33721897620185",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-ZyZ51LIAQkO0_lE6kSAlWA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-ZyZ51LIAQkO0_lE6kSAlWA/package.zip",
+          "fileName": "比较长短",
+          "snapshotId": "81975b0e4a634eeaa4053ec02d055713",
+          "finishedAt": "2026-08-13T01:58:45.306922+00:00",
+          "error": "",
+          "prompt": "做一个比较物体长短的拖拽互动课件。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -3437,6 +4295,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "bf6435abc5524a2d812a634a2d1cece6",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-rM-1AtM9TBGijpk2cvsbiQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-rM-1AtM9TBGijpk2cvsbiQ/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个动物英语单词听音选图游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "e193a2d83b1242f9adf4e4064568eef3",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-GkfJ_rrCRF-KR_GVg01wpg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-GkfJ_rrCRF-KR_GVg01wpg/package.zip",
+          "fileName": "Listen and Choose",
+          "snapshotId": "930e3efddb564d0ebd775bfddb9b8486",
+          "finishedAt": "2026-08-13T01:59:47.124688+00:00",
+          "error": "",
+          "prompt": "做一个动物英语单词听音选图游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -3591,6 +4488,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "443f948739e24ccb93a471972acc7563",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-sRMXYpoySlO50Wlyunr76w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-sRMXYpoySlO50Wlyunr76w/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个四年级七巧板拼图课件，把七块图形拼成指定图案并支持旋转。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "cae960c6346043f88c2b2eecbcdb5dae",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-ldwly3gERSOWCI2QkDcNiw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-ldwly3gERSOWCI2QkDcNiw/package.zip",
+          "fileName": "七巧板拼图",
+          "snapshotId": "6ed044ab2a5d48bcb0e820b7d47b3be0",
+          "finishedAt": "2026-08-13T02:00:40.179131+00:00",
+          "error": "",
+          "prompt": "做一个四年级七巧板拼图课件，把七块图形拼成指定图案并支持旋转。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -3745,6 +4681,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "225115bc0c1d41f69a427602f10bd0e2",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-uaGYBITNTi-j5zme2nP5nw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-uaGYBITNTi-j5zme2nP5nw/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个一年级拼音字母描摹课件，学生沿正确笔顺描写声母。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "a75aea747d7d413599e9e9d3810a53a3",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-vD6zzdUES3WxdfgRmEJIpA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-vD6zzdUES3WxdfgRmEJIpA/package.zip",
+          "fileName": "拼音字母描摹课件",
+          "snapshotId": "27265174f00b415890f1396852a68e50",
+          "finishedAt": "2026-08-13T02:01:49.730298+00:00",
+          "error": "",
+          "prompt": "做一个一年级拼音字母描摹课件，学生沿正确笔顺描写声母。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -3899,6 +4874,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "ff7731c5ec88489985b9fd43c9328f6c",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-uURqLeQ3TbO8DUZHnImK4A/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-uURqLeQ3TbO8DUZHnImK4A/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个四年级推箱子数学闯关课件，把数字箱子推到对应算式结果的位置。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "adc11e6e227d4551866cac476513a2e2",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-0pxY_nJ7T1umom-Lfw2Myg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-0pxY_nJ7T1umom-Lfw2Myg/package.zip",
+          "fileName": "推箱子数学闯关",
+          "snapshotId": "6da0f365533942b68fcf2af43c8a9b3d",
+          "finishedAt": "2026-08-13T02:00:40.036510+00:00",
+          "error": "",
+          "prompt": "做一个四年级推箱子数学闯关课件，把数字箱子推到对应算式结果的位置。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -4053,6 +5067,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "d2e01d373e6e45b6b20be488f17a19da",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-XB017VaQSAKupMPUvTSX9w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-XB017VaQSAKupMPUvTSX9w/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个五年级英语单词与释义配对转盘游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "5d2d647fc64d498ebeab88643e586036",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-qF_z2V4zQGam78rG1KZ6BA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-qF_z2V4zQGam78rG1KZ6BA/package.zip",
+          "fileName": "Word Spin Game",
+          "snapshotId": "e8be2a46f3e24ac5978411b94d7574bc",
+          "finishedAt": "2026-08-13T02:00:45.626454+00:00",
+          "error": "",
+          "prompt": "做一个五年级英语单词与释义配对转盘游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",
@@ -4207,6 +5260,45 @@
         "published": false,
         "evaluated": false
       },
+      "productionVersions": [
+        {
+          "id": "baseline",
+          "label": "8月11日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "cb09f33268ff47d0956f19a84348f9dd",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-M1FO7qbhTfeHiyzo37kYIQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/11-M1FO7qbhTfeHiyzo37kYIQ/package.zip",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "error": "",
+          "prompt": "做一个三年级乘法跑酷游戏，学生按住蓄力跳跃，碰到正确答案得分。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "published": false,
+          "evaluated": false
+        },
+        {
+          "id": "box-production-20260813",
+          "label": "8月13日版本",
+          "group": "正式环境",
+          "status": "success",
+          "conversationId": "18503c3bfd074fdfbe025cb106a7502d",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-VhDqiT_BSYmuTejqWa214A/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-08/13-VhDqiT_BSYmuTejqWa214A/package.zip",
+          "fileName": "三年级乘法跑酷游戏",
+          "snapshotId": "6c19f1319b804423b9de5d07aa91bd9a",
+          "finishedAt": "2026-08-13T02:00:58.526382+00:00",
+          "error": "",
+          "prompt": "做一个三年级乘法跑酷游戏，学生按住蓄力跳跃，碰到正确答案得分。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false
+        }
+      ],
       "versions": [
         {
           "id": "box-test-v1.2-20260811",

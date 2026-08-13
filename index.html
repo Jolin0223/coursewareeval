@@ -1775,6 +1775,7 @@
                 return {
                     selectedCaseId: stored?.selectedCaseId || '',
                     selectedVersions: stored?.selectedVersions || {},
+                    selectedProductionVersions: stored?.selectedProductionVersions || {},
                     dataRevision: stored?.dataRevision || '',
                     testSetId: stored?.testSetId || '',
                     filters: {
@@ -1786,7 +1787,7 @@
                     ratings: stored?.ratings || {}
                 };
             } catch (error) {
-                return { selectedCaseId: '', selectedVersions: {}, dataRevision: '', testSetId: '', filters: { subject: 'all', grade: 'all' }, scoreView: 'combined', scoreEditor: 'human', ratings: {} };
+                return { selectedCaseId: '', selectedVersions: {}, selectedProductionVersions: {}, dataRevision: '', testSetId: '', filters: { subject: 'all', grade: 'all' }, scoreView: 'combined', scoreEditor: 'human', ratings: {} };
             }
         }
 
@@ -1807,6 +1808,7 @@
                     generationExperimentState = {
                         selectedCaseId: '',
                         selectedVersions: {},
+                        selectedProductionVersions: {},
                         dataRevision,
                         testSetId,
                         filters: { subject: 'all', grade: 'all' },
@@ -1817,13 +1819,20 @@
                     (generationExperimentData?.cases || []).forEach(item => {
                         const latestVersion = item.versions?.[item.versions.length - 1];
                         if (latestVersion?.id) generationExperimentState.selectedVersions[item.id] = latestVersion.id;
+                        const productionVersions = getGenerationExperimentProductionVersions(item);
+                        const latestProductionVersion = productionVersions[productionVersions.length - 1];
+                        if (latestProductionVersion?.id) generationExperimentState.selectedProductionVersions[item.id] = latestProductionVersion.id;
                     });
                     saveGenerationExperimentState();
                 } else if (dataRevision && generationExperimentState.dataRevision !== dataRevision) {
                     generationExperimentState.selectedVersions = generationExperimentState.selectedVersions || {};
+                    generationExperimentState.selectedProductionVersions = generationExperimentState.selectedProductionVersions || {};
                     (generationExperimentData?.cases || []).forEach(item => {
                         const latestVersion = item.versions?.[item.versions.length - 1];
                         if (latestVersion?.id) generationExperimentState.selectedVersions[item.id] = latestVersion.id;
+                        const productionVersions = getGenerationExperimentProductionVersions(item);
+                        const latestProductionVersion = productionVersions[productionVersions.length - 1];
+                        if (latestProductionVersion?.id) generationExperimentState.selectedProductionVersions[item.id] = latestProductionVersion.id;
                     });
                     generationExperimentState.dataRevision = dataRevision;
                     generationExperimentState.testSetId = testSetId;
@@ -1862,17 +1871,38 @@
         function getGenerationExperimentVariants(item) {
             if (!item) return [];
             return [
-                { ...(item.baseline || {}), id: 'baseline', label: '线上现状', tone: 'baseline' },
+                ...getGenerationExperimentProductionVersions(item).map(version => ({ ...version, tone: 'baseline' })),
                 ...((item.versions || []).map(version => ({ ...version, tone: 'experiment' })))
             ];
+        }
+
+        function getGenerationExperimentProductionVersions(item) {
+            const versions = Array.isArray(item?.productionVersions) && item.productionVersions.length
+                ? item.productionVersions
+                : (item?.baseline ? [item.baseline] : []);
+            return versions.map((version, index) => ({
+                ...version,
+                id: version.id || (index === 0 ? 'baseline' : `production-${index + 1}`),
+                label: version.label || (versions.length > 1 ? `线上版本 ${index + 1}` : '线上现状'),
+                tone: 'baseline'
+            }));
+        }
+
+        function getGenerationExperimentSelectedProductionVersion(item) {
+            const versions = getGenerationExperimentProductionVersions(item);
+            if (!versions.length) return null;
+            const selectedId = generationExperimentState.selectedProductionVersions?.[item.id];
+            return versions.find(version => version.id === selectedId) || versions[versions.length - 1];
+        }
+
+        function getGenerationExperimentVariant(item, variantId) {
+            return getGenerationExperimentVariants(item).find(variant => variant.id === variantId) || null;
         }
 
         function getGenerationExperimentRating(caseId, variantId) {
             generationExperimentState.ratings[caseId] = generationExperimentState.ratings[caseId] || {};
             const item = getGenerationExperimentCases().find(entry => entry.id === caseId);
-            const variant = variantId === 'baseline'
-                ? item?.baseline
-                : item?.versions?.find(entry => entry.id === variantId);
+            const variant = getGenerationExperimentVariant(item, variantId);
             const seededEvaluation = variant?.evaluation || {};
             generationExperimentState.ratings[caseId][variantId] = generationExperimentState.ratings[caseId][variantId] || {
                 issues: seededEvaluation.issues || '',
@@ -1959,13 +1989,12 @@
         }
 
         function getExperimentCompareText(item) {
-            if (!item?.baseline?.fileUrl) return '线上待补跑';
+            const selectedProductionVersion = getGenerationExperimentSelectedProductionVersion(item);
+            if (!selectedProductionVersion?.fileUrl) return '线上待补跑';
             const selectedVersion = getGenerationExperimentSelectedVersion(item);
             if (!selectedVersion?.fileUrl) return '测试待生成';
-            const baseline = getGenerationExperimentRating(item.id, 'baseline');
-            const versions = item.versions || [];
-            const latestVersion = versions[versions.length - 1] || { id: 'prompt-v1' };
-            const version = getGenerationExperimentRating(item.id, latestVersion.id);
+            const baseline = getGenerationExperimentRating(item.id, selectedProductionVersion.id);
+            const version = getGenerationExperimentRating(item.id, selectedVersion.id);
             const b = Number(getExperimentAverage(baseline));
             const v = Number(getExperimentAverage(version));
             if (!Number.isFinite(b) || !Number.isFinite(v)) return '待评分';
@@ -2047,7 +2076,7 @@
                 testFailed,
                 manualTotal: manualCases.length,
                 manualPending: manualCases.filter(item => !getGenerationExperimentSelectedVersion(item)?.fileUrl).length,
-                productionPending: cases.filter(item => !item.baseline?.fileUrl).length
+                productionPending: cases.filter(item => !getGenerationExperimentSelectedProductionVersion(item)?.fileUrl).length
             };
         }
 
@@ -2094,7 +2123,7 @@
                         <div><div class="text-[11px] text-slate-400">当前显示</div><div class="text-lg font-black text-blue-700">${stats.visible}</div></div>
                         <div><div class="text-[11px] text-slate-400">测试环境已生成</div><div class="text-lg font-black ${stats.testFailed ? 'text-amber-700' : 'text-green-700'}">${stats.testGenerated}<span class="text-xs text-slate-400 ml-1">/ ${stats.automaticTotal}</span></div></div>
                         <div><div class="text-[11px] text-slate-400">待手动生成</div><div class="text-lg font-black text-amber-700">${stats.manualPending}<span class="text-xs text-slate-400 ml-1">/ ${stats.manualTotal}</span></div></div>
-                        <div><div class="text-[11px] text-slate-400">线上待补跑</div><div class="text-lg font-black text-slate-700">${stats.productionPending}<span class="text-xs text-slate-400 ml-1">/ ${stats.total}</span></div></div>
+                        <div><div class="text-[11px] text-slate-400">线上已生成</div><div class="text-lg font-black ${stats.productionPending ? 'text-amber-700' : 'text-green-700'}">${stats.total - stats.productionPending}<span class="text-xs text-slate-400 ml-1">/ ${stats.total}</span></div></div>
                     </div>
                 </section>
             `;
@@ -2102,7 +2131,7 @@
 
         function renderGenerationExperimentCaseDetail(item) {
             const selectedVersion = getGenerationExperimentSelectedVersion(item);
-            const baseline = { ...(item.baseline || {}), id: 'baseline', label: '线上现状', tone: 'baseline' };
+            const baseline = getGenerationExperimentSelectedProductionVersion(item);
             const diffText = getExperimentCompareText(item);
             const diffClass = diffText.startsWith('+') ? 'text-green-700 bg-green-50 border-green-100' : diffText.startsWith('-') ? 'text-red-700 bg-red-50 border-red-100' : 'text-slate-600 bg-slate-50 border-slate-200';
             return `
@@ -2138,7 +2167,7 @@
                         </div>
                     </div>
                     <div class="pt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                        ${renderGenerationExperimentVariantCard(item, baseline)}
+                        ${baseline ? renderGenerationExperimentVariantCard(item, baseline) : '<div class="border border-dashed border-slate-300 rounded-lg p-8 text-slate-500">暂无线上生成结果。</div>'}
                         ${selectedVersion ? renderGenerationExperimentVariantCard(item, selectedVersion) : '<div class="border border-dashed border-slate-300 rounded-lg p-8 text-slate-500">暂无测试环境生成结果。</div>'}
                     </div>
                 </section>
@@ -2163,6 +2192,32 @@
                                 <button type="button" onclick="${escapeAttr(`selectGenerationExperimentVersion(${jsString(item.id)}, ${jsString(version.id)}); closeCustomSelect(${jsString(selectId)})`)}" class="w-full text-left px-3 py-2 rounded-lg text-xs font-black flex items-center justify-between ${active ? 'bg-blue-50 text-blue-700' : 'text-slate-700 hover:bg-slate-50'}">
                                     <span class="truncate">${escapeHtml(version.label || version.id)}</span>
                                     ${active ? '<i class="fa-solid fa-check text-blue-600 text-[10px] ml-2"></i>' : ''}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGenerationExperimentProductionVersionControls(item, variant) {
+            const versions = getGenerationExperimentProductionVersions(item);
+            if (versions.length <= 1) return '';
+            const selectId = `generation-production-version-${item.id}`;
+            const value = variant?.id || '';
+            return `
+                <div class="ce-custom-select relative w-[126px] shrink-0">
+                    <button type="button" onclick="toggleCustomSelect(${escapeAttr(jsString(selectId))}, event)" class="w-full h-8 border border-slate-300 rounded-lg px-2.5 bg-white text-xs font-black text-slate-700 outline-none hover:border-slate-400 focus:ring-2 focus:ring-slate-400 flex items-center justify-between gap-2">
+                        <span class="truncate">${escapeHtml(variant?.label || '选择线上版本')}</span>
+                        <i id="${escapeAttr(selectId)}-icon" class="fa-solid fa-chevron-down text-slate-400 text-[10px] transition-transform"></i>
+                    </button>
+                    <div id="${escapeAttr(selectId)}-menu" class="ce-custom-select-menu hidden absolute right-0 z-50 mt-1 w-full min-w-[150px] rounded-xl border border-slate-200 bg-white p-1.5 max-h-64 overflow-auto custom-scrollbar">
+                        ${versions.slice().reverse().map(version => {
+                            const active = version.id === value;
+                            return `
+                                <button type="button" onclick="${escapeAttr(`selectGenerationExperimentProductionVersion(${jsString(item.id)}, ${jsString(version.id)}); closeCustomSelect(${jsString(selectId)})`)}" class="w-full text-left px-3 py-2 rounded-lg text-xs font-black flex items-center justify-between ${active ? 'bg-slate-100 text-slate-900' : 'text-slate-700 hover:bg-slate-50'}">
+                                    <span class="truncate">${escapeHtml(version.label || version.id)}</span>
+                                    ${active ? '<i class="fa-solid fa-check text-slate-700 text-[10px] ml-2"></i>' : ''}
                                 </button>
                             `;
                         }).join('')}
@@ -2226,7 +2281,7 @@
 
         function renderGenerationExperimentVariantCard(item, variant) {
             const rating = getGenerationExperimentRating(item.id, variant.id);
-            const isBaseline = variant.id === 'baseline';
+            const isBaseline = variant.tone === 'baseline' || String(variant.environment || '').includes('box.xdf.cn');
             const latestVersionId = item.versions?.[item.versions.length - 1]?.id || '';
             const isLatestPromptVersion = !isBaseline && variant.id === latestVersionId;
             const badgeClass = isBaseline ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-blue-50 text-blue-700 border-blue-100';
@@ -2234,20 +2289,22 @@
             const isManualCase = item.generationMode === 'manual';
             const hasPreview = Boolean(variant.fileUrl);
             const selectedVersion = getGenerationExperimentSelectedVersion(item);
-            const canEvaluate = Boolean(item.baseline?.fileUrl && selectedVersion?.fileUrl);
+            const selectedProductionVersion = getGenerationExperimentSelectedProductionVersion(item);
+            const canEvaluate = Boolean(selectedProductionVersion?.fileUrl && selectedVersion?.fileUrl);
             const resultName = variant.fileName || (isBaseline ? (variant.status === 'success' ? '线上生成结果' : '正式环境结果待补跑') : isManualCase ? '等待Jolin手动生成' : variant.status === 'failed' ? '生成未完成' : '测试环境结果待生成');
             return `
                 <div class="border ${isBaseline ? 'border-slate-200' : 'border-blue-200'} rounded-lg overflow-hidden bg-white min-w-0">
                     <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-row items-start justify-between gap-2">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                <span class="text-xs font-black border rounded-full px-2 py-1 whitespace-nowrap shrink-0 ${badgeClass}">${escapeHtml(variant.label)}</span>
+                                <span class="text-xs font-black border rounded-full px-2 py-1 whitespace-nowrap shrink-0 ${badgeClass}">${escapeHtml(isBaseline ? '线上现状' : variant.label)}</span>
+                                <span class="text-xs font-black text-slate-500 whitespace-nowrap shrink-0">${escapeHtml(variant.label)}</span>
                                 <span class="text-sm font-black text-slate-800 truncate">${escapeHtml(resultName)}</span>
                             </div>
                             ${variant.conversationId ? `<div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(variant.conversationId)}</div>` : ''}
                         </div>
                         <div class="flex flex-wrap items-center justify-end gap-2 shrink-0 max-w-[58%]">
-                            ${!isBaseline ? renderGenerationExperimentVersionControls(item, variant) : ''}
+                            ${isBaseline ? renderGenerationExperimentProductionVersionControls(item, variant) : renderGenerationExperimentVersionControls(item, variant)}
                             ${variant.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn ce-tool-btn-primary h-8 px-3 text-xs"><i class="fa-solid fa-play"></i> 打开</button>` : ''}
                             ${variant.pushUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(variant.pushUrl)}, '_blank', 'noopener,noreferrer')`)}" class="ce-tool-btn h-8 px-3 text-xs"><i class="fa-solid fa-file-zipper"></i> ZIP</button>` : ''}
                         </div>
@@ -2323,7 +2380,7 @@
         }
 
         function renderGenerationExperimentDecisionControls(item, variant, rating) {
-            const isBaseline = variant.id === 'baseline';
+            const isBaseline = variant.tone === 'baseline' || String(variant.environment || '').includes('box.xdf.cn');
             if (isBaseline) return '';
             const options = isBaseline
                 ? [['todo', '待评审'], ['baseline-ok', '可作基线'], ['invalid', '不可用']]
@@ -2402,7 +2459,8 @@
                             </thead>
                             <tbody class="divide-y divide-slate-100">
                                 ${rows.map(({ item, version }) => {
-                                    const baseline = getGenerationExperimentRating(item.id, 'baseline');
+                                    const productionVersion = getGenerationExperimentSelectedProductionVersion(item);
+                                    const baseline = getGenerationExperimentRating(item.id, productionVersion?.id || 'baseline');
                                     const versionRating = getGenerationExperimentRating(item.id, version.id);
                                     const baselineAvg = Number(getExperimentAverage(baseline));
                                     const versionAvg = Number(getExperimentAverage(versionRating));
@@ -2418,7 +2476,7 @@
                                             <td class="px-4 py-3 font-black">${escapeHtml(getExperimentAverage(baseline))}</td>
                                             <td class="px-4 py-3 font-black text-blue-600">${escapeHtml(getExperimentAverage(versionRating))}</td>
                                             <td class="px-4 py-3 font-black">${escapeHtml(diffText)}</td>
-                                            <td class="px-4 py-3">${item.baseline?.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(item.baseline.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="text-slate-700 font-black hover:text-blue-600">打开</button>` : '-'}</td>
+                                            <td class="px-4 py-3">${productionVersion?.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(productionVersion.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="text-slate-700 font-black hover:text-blue-600">打开</button>` : '-'}</td>
                                             <td class="px-4 py-3">${version.fileUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(version.fileUrl)}, '_blank', 'noopener,noreferrer')`)}" class="text-blue-600 font-black hover:text-blue-700">打开</button>` : '-'}</td>
                                             <td class="px-4 py-3 text-slate-700 font-bold">${escapeHtml(getExperimentDecisionLabel(versionRating.decision))}</td>
                                         </tr>
@@ -2440,6 +2498,13 @@
         function selectGenerationExperimentVersion(caseId, versionId) {
             generationExperimentState.selectedVersions = generationExperimentState.selectedVersions || {};
             generationExperimentState.selectedVersions[caseId] = versionId;
+            saveGenerationExperimentState();
+            renderGenerationEvalWorkbench();
+        }
+
+        function selectGenerationExperimentProductionVersion(caseId, versionId) {
+            generationExperimentState.selectedProductionVersions = generationExperimentState.selectedProductionVersions || {};
+            generationExperimentState.selectedProductionVersions[caseId] = versionId;
             saveGenerationExperimentState();
             renderGenerationEvalWorkbench();
         }
@@ -2478,13 +2543,11 @@
                 const variantId = container.dataset.variantId;
                 const item = cases.find(entry => entry.id === caseId);
                 if (!item) return;
-                const variant = variantId === 'baseline'
-                    ? { ...(item.baseline || {}), id: 'baseline', label: '线上现状', tone: 'baseline' }
-                    : (item.versions || []).find(entry => entry.id === variantId);
+                const variant = getGenerationExperimentVariant(item, variantId);
                 if (!variant) return;
                 const rating = getGenerationExperimentRating(caseId, variantId);
                 const latestVersionId = item.versions?.[item.versions.length - 1]?.id || '';
-                const isLatestPromptVersion = variantId !== 'baseline' && variantId === latestVersionId;
+                const isLatestPromptVersion = variant.tone !== 'baseline' && variantId === latestVersionId;
                 container.innerHTML = renderGenerationExperimentScoreCardBody(item, variant, rating, isLatestPromptVersion);
             });
             const conclusion = document.getElementById('generation-experiment-conclusion');
@@ -2637,9 +2700,7 @@
         function showGenerationExperimentPrompt(caseId, variantId) {
             const item = getGenerationExperimentCases().find(entry => entry.id === caseId);
             if (!item) return showToast('未找到这个课件用例。', 'warning');
-            const variant = variantId === 'baseline'
-                ? { ...(item.baseline || {}), id: 'baseline', label: '线上现状' }
-                : (item.versions || []).find(version => version.id === variantId);
+            const variant = getGenerationExperimentVariant(item, variantId);
             if (!variant) return showToast('未找到这个提示词版本。', 'warning');
             const promptText = variant.prompt || variant.systemPrompt || variant.userPrompt || '';
             const content = promptText || '当前实验数据未包含这一版本的提示词正文。';
