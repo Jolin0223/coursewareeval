@@ -159,6 +159,10 @@
         .sidebar-user-detail {
             transition: opacity .12s ease, width .18s ease;
         }
+        .sidebar-logo-text {
+            flex: 1;
+            white-space: nowrap;
+        }
         .sidebar-nav-btn {
             display: flex;
             align-items: center;
@@ -257,9 +261,8 @@
 
     <aside id="sidebar-shell" class="sidebar-shell bg-slate-900 text-white flex flex-col shadow-2xl z-20 shrink-0">
         <div class="sidebar-logo h-16 flex items-center justify-between gap-2 border-b border-slate-700 bg-slate-800 px-4 relative">
-            <div class="flex items-center min-w-0">
-                <i class="fa-solid fa-cube text-blue-400 mr-2 text-xl shrink-0"></i>
-                <span class="sidebar-logo-text font-bold text-base leading-tight truncate">互动课件AI Agent测评系统</span>
+            <div class="flex items-center min-w-0 flex-1">
+                <span class="sidebar-logo-text font-bold text-[15px] leading-tight">AI课件 agent 测评系统</span>
             </div>
             <button type="button" onclick="toggleSidebar()" class="sidebar-toggle ce-has-tooltip w-8 h-8 rounded-lg border border-slate-600 bg-slate-900/60 text-slate-300 hover:text-white hover:bg-slate-700 transition shrink-0" data-tooltip="收起/展开侧边栏" aria-label="收起或展开侧边栏">
                 <i id="sidebar-toggle-icon" class="fa-solid fa-angles-left text-xs"></i>
@@ -273,6 +276,9 @@
             </button>
             <button type="button" onclick="switchView('self-style')" id="nav-self-style" class="sidebar-nav-btn w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
                 <i class="fa-solid fa-palette mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">画面风格调整</span>
+            </button>
+            <button type="button" onclick="switchView('self-similar')" id="nav-self-similar" class="sidebar-nav-btn w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
+                <i class="fa-solid fa-layer-group mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">相似课件推荐</span>
             </button>
             <button type="button" onclick="switchView('self-template')" id="nav-self-template" class="sidebar-nav-btn w-full text-left px-6 py-2.5 text-slate-300 hover:bg-slate-800 hover:text-white transition border-r-4 border-transparent cursor-pointer">
                 <i class="fa-solid fa-puzzle-piece mr-3 w-5 text-center shrink-0"></i><span class="sidebar-nav-label">套用玩法</span>
@@ -377,6 +383,27 @@
                             </aside>
                             <section id="style-eval-detail" class="min-w-0"></section>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-self-similar" class="hidden max-w-7xl mx-auto space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                                <i class="fa-solid fa-layer-group text-blue-600 mr-2"></i> 相似课件推荐效果测评
+                            </h3>
+                            <p class="text-sm text-slate-500 mt-1">固定 30 条真实 Query（语文、数学、英语各 10 条），逐条核验当前算法原始 Top6，并沉淀人工判断和优化理由。</p>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <button type="button" onclick="exportSimilarRecoExcel()" class="px-4 py-2 bg-green-50 text-green-700 text-sm font-bold rounded-lg hover:bg-green-100 transition shadow-sm border border-green-200">
+                                <i class="fa-solid fa-file-excel mr-1"></i> 导出人工标注
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-8">
+                        <div id="similar-reco-eval-workbench"></div>
                     </div>
                 </div>
             </div>
@@ -923,6 +950,7 @@
             zipUrl: 'https://aigc-cdn.xdf.cn/material/openapi/xa-ig-kpm/dfe0dceea6b646a09f6abeed586c27e5/package.zip'
         };
         const TEMPLATE_PROMPT_STORAGE_KEY = 'coursewareeval.template-prompt-workbench.v1';
+        const SIMILAR_RECO_STORAGE_KEY = 'coursewareeval.similar-recommendation-eval.v1';
         const GENERATION_EVAL_STORAGE_KEY = 'coursewareeval.generation-prompt-workbench.v2';
         const GENERATION_EXPERIMENT_STORAGE_KEY = 'coursewareeval.generation-fixed-suite.v2';
         const LEGACY_GENERATION_STORAGE_KEYS = [
@@ -963,6 +991,11 @@
         let templatePromptQuery = '';
         let templateCategoryQuery = '';
         let hasLoadedTemplatePromptData = false;
+        let similarRecoData = null;
+        let similarRecoLoading = false;
+        let similarRecoState = loadSimilarRecoState();
+        let similarRecoAttribution = { queryTeachers: {}, publishers: {} };
+        let similarRecoAttributionStatus = 'idle';
         let generationEvalState = loadGenerationEvalState();
         let generationExperimentData = null;
         let generationExperimentLoading = false;
@@ -4268,6 +4301,465 @@
             XLSX.writeFile(workbook, `灵感推荐区_审核版开发使用表_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
 
+        // ================= 相似课件推荐：30 条 Query × Top6 人工测评 =================
+        function loadSimilarRecoState() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(SIMILAR_RECO_STORAGE_KEY) || 'null');
+                return {
+                    dataRevision: stored?.dataRevision || '',
+                    selectedVersionId: stored?.selectedVersionId || '',
+                    filters: { subject: stored?.filters?.subject || 'all' },
+                    annotations: stored?.annotations || {}
+                };
+            } catch (error) {
+                return { dataRevision: '', selectedVersionId: '', filters: { subject: 'all' }, annotations: {} };
+            }
+        }
+
+        function saveSimilarRecoState() {
+            localStorage.setItem(SIMILAR_RECO_STORAGE_KEY, JSON.stringify(similarRecoState));
+        }
+
+        async function ensureSimilarRecoData() {
+            if (similarRecoData || similarRecoLoading) return;
+            similarRecoLoading = true;
+            try {
+                const response = await fetch('data/similar-material-eval-seed.json', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                similarRecoData = await response.json();
+                const revision = String(similarRecoData?.generatedAt || '');
+                const versions = similarRecoData?.versions || [];
+                const latestVersionId = String(similarRecoData?.latestVersionId || versions[versions.length - 1]?.id || '');
+                similarRecoState.dataRevision = revision;
+                similarRecoState.selectedVersionId = latestVersionId;
+                saveSimilarRecoState();
+                ensureSimilarRecoAttribution();
+            } catch (error) {
+                similarRecoData = { versions: [], cases: [], loadError: error.message || String(error) };
+            } finally {
+                similarRecoLoading = false;
+                renderSimilarRecoEvalWorkbench();
+            }
+        }
+
+        async function ensureSimilarRecoAttribution() {
+            if (similarRecoAttributionStatus === 'loading' || similarRecoAttributionStatus === 'loaded') return;
+            if (!dbClient) {
+                similarRecoAttributionStatus = 'unavailable';
+                return;
+            }
+            similarRecoAttributionStatus = 'loading';
+            try {
+                const { data } = await dbClient.auth.getSession();
+                const accessToken = data?.session?.access_token || '';
+                if (!accessToken) {
+                    similarRecoAttributionStatus = 'login-required';
+                    renderSimilarRecoEvalWorkbench();
+                    return;
+                }
+                const response = await fetch('/api/similar-eval/attribution', {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                    cache: 'no-store'
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const payload = await response.json();
+                similarRecoAttribution = {
+                    queryTeachers: payload.queryTeachers || {},
+                    publishers: payload.publishers || {}
+                };
+                similarRecoAttributionStatus = 'loaded';
+            } catch (error) {
+                similarRecoAttributionStatus = 'unavailable';
+            }
+            renderSimilarRecoEvalWorkbench();
+        }
+
+        function getSimilarRecoVersions() {
+            return Array.isArray(similarRecoData?.versions) ? similarRecoData.versions : [];
+        }
+
+        function getSimilarRecoVersion() {
+            const versions = getSimilarRecoVersions();
+            const selectedId = similarRecoState.selectedVersionId || similarRecoData?.latestVersionId || '';
+            return versions.find(item => item.id === selectedId)
+                || versions.find(item => item.id === similarRecoData?.latestVersionId)
+                || versions[versions.length - 1]
+                || null;
+        }
+
+        function getSimilarRecoCases() {
+            const version = getSimilarRecoVersion();
+            if (!version) return [];
+            const subject = similarRecoState.filters?.subject || 'all';
+            return (similarRecoData?.cases || []).filter(item => {
+                if (!item.runs?.[version.id]) return false;
+                return subject === 'all' || item.subject === subject;
+            });
+        }
+
+        function getSimilarRecoCandidateKey(candidate) {
+            return String(candidate?.materialId || candidate?.snapshotId || `rank-${candidate?.rank || 0}`);
+        }
+
+        function getSimilarRecoAnnotation(versionId, caseId, candidate) {
+            const key = getSimilarRecoCandidateKey(candidate);
+            return similarRecoState.annotations?.[versionId]?.[caseId]?.[key] || { judgement: 'pending', reason: '' };
+        }
+
+        function ensureSimilarRecoAnnotation(versionId, caseId, candidateKey) {
+            similarRecoState.annotations[versionId] = similarRecoState.annotations[versionId] || {};
+            similarRecoState.annotations[versionId][caseId] = similarRecoState.annotations[versionId][caseId] || {};
+            similarRecoState.annotations[versionId][caseId][candidateKey] = similarRecoState.annotations[versionId][caseId][candidateKey] || { judgement: 'pending', reason: '' };
+            return similarRecoState.annotations[versionId][caseId][candidateKey];
+        }
+
+        function isSimilarRecoAnnotationComplete(annotation) {
+            return Boolean(annotation && annotation.judgement && annotation.judgement !== 'pending' && String(annotation.reason || '').trim());
+        }
+
+        function getSimilarRecoJudgementLabel(value) {
+            return { similar: '相似', notSimilar: '不相似', uncertain: '无法判断', pending: '待评估' }[value] || '待评估';
+        }
+
+        function getSimilarRecoAttribution(kind, ref, status) {
+            if (status === 'unmatched' || !ref) return { label: '未匹配', className: 'text-amber-700' };
+            const source = kind === 'queryTeacher' ? similarRecoAttribution.queryTeachers : similarRecoAttribution.publishers;
+            const record = source?.[ref];
+            if (record?.name) return { label: record.name, className: 'text-slate-800' };
+            if (similarRecoAttributionStatus === 'login-required') return { label: '登录管理员后显示', className: 'text-slate-500' };
+            if (similarRecoAttributionStatus === 'loading') return { label: '归属加载中', className: 'text-slate-500' };
+            return { label: '归属数据待安全接入', className: 'text-amber-700' };
+        }
+
+        function getSimilarRecoStats(version) {
+            const allCases = (similarRecoData?.cases || []).filter(item => item.runs?.[version.id]);
+            const candidates = allCases.flatMap(item => item.runs[version.id].results || []);
+            let complete = 0;
+            let similar = 0;
+            let notSimilar = 0;
+            let uncertain = 0;
+            allCases.forEach(item => {
+                (item.runs[version.id].results || []).forEach(candidate => {
+                    const annotation = getSimilarRecoAnnotation(version.id, item.id, candidate);
+                    if (isSimilarRecoAnnotationComplete(annotation)) complete += 1;
+                    if (annotation.judgement === 'similar') similar += 1;
+                    if (annotation.judgement === 'notSimilar') notSimilar += 1;
+                    if (annotation.judgement === 'uncertain') uncertain += 1;
+                });
+            });
+            return {
+                queryCount: allCases.length,
+                candidateCount: candidates.length,
+                complete,
+                similar,
+                notSimilar,
+                uncertain,
+                historicalCount: candidates.filter(item => item.snapshotPublishStatus === '2').length,
+                duplicateFamilyCount: candidates.filter(item => Number(item.sameFamilyCount || 1) > 1).length
+            };
+        }
+
+        function formatSimilarRecoRunTime(value) {
+            if (!value) return '未记录';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return value;
+            return new Intl.DateTimeFormat('zh-CN', {
+                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
+            }).format(date);
+        }
+
+        function renderSimilarRecoVersionControl(version) {
+            const versions = getSimilarRecoVersions().slice().reverse();
+            const latestId = similarRecoData?.latestVersionId || '';
+            return `
+                <div class="w-full sm:w-[220px]">
+                    <div class="text-xs font-bold text-slate-500 mb-1.5">算法版本</div>
+                    ${renderCustomSelect({
+                        id: 'similar-reco-version',
+                        value: version.id,
+                        options: versions.map(item => ({ value: item.id, label: `${item.label}${item.id === latestId ? ' · 最新' : ''}` })),
+                        onSelect: value => `selectSimilarRecoVersion(${jsString(value)})`
+                    })}
+                </div>
+            `;
+        }
+
+        function renderSimilarRecoSummary(version, stats) {
+            const newest = version.id === similarRecoData?.latestVersionId;
+            return `
+                <section class="border border-slate-200 rounded-2xl bg-white overflow-visible">
+                    <div class="p-5 flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4">
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-sm font-black text-slate-900">${escapeHtml(version.label || version.id)}</span>
+                                ${newest ? '<span class="px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100 text-xs font-black">当前最新版</span>' : '<span class="px-2 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-black">历史算法</span>'}
+                                <span class="text-xs text-slate-500">运行时间 ${escapeHtml(formatSimilarRecoRunTime(version.runAt))}</span>
+                            </div>
+                            <div class="text-sm text-slate-600 mt-2">${escapeHtml(version.algorithmNote || '相似课件推荐算法')}</div>
+                            <div class="text-xs text-slate-400 mt-1">material_id 与快照状态使用截至 ${escapeHtml(similarRecoData?.source?.resourceInventoryAsOf || '未记录')} 的资源数据映射。</div>
+                        </div>
+                        <div class="flex flex-wrap items-end gap-3">
+                            ${renderSimilarRecoVersionControl(version)}
+                            <div class="w-full sm:w-[170px]">
+                                <div class="text-xs font-bold text-slate-500 mb-1.5">学科筛选</div>
+                                ${renderCustomSelect({
+                                    id: 'similar-reco-subject',
+                                    value: similarRecoState.filters?.subject || 'all',
+                                    options: [
+                                        { value: 'all', label: '全部学科（30）' },
+                                        { value: '语文', label: '语文（10）' },
+                                        { value: '数学', label: '数学（10）' },
+                                        { value: '英语', label: '英语（10）' }
+                                    ],
+                                    onSelect: value => `setSimilarRecoSubjectFilter(${jsString(value)})`
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 border-t border-slate-100 bg-slate-50/70">
+                        ${[
+                            ['固定 Query', stats.queryCount, 'text-slate-900'],
+                            ['候选课件', stats.candidateCount, 'text-blue-700'],
+                            ['完整标注', `${stats.complete}/${stats.candidateCount}`, stats.complete === stats.candidateCount ? 'text-green-700' : 'text-amber-700'],
+                            ['判定相似', stats.similar, 'text-green-700'],
+                            ['历史版本候选', stats.historicalCount, stats.historicalCount ? 'text-amber-700' : 'text-slate-900'],
+                            ['重复资源族候选', stats.duplicateFamilyCount, stats.duplicateFamilyCount ? 'text-amber-700' : 'text-slate-900']
+                        ].map(([label, value, className]) => `
+                            <div class="px-4 py-3 border-r border-b lg:border-b-0 border-slate-100 last:border-r-0">
+                                <div class="text-[11px] text-slate-400">${escapeHtml(label)}</div>
+                                <div class="text-lg font-black ${className}">${escapeHtml(value)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+                <div class="border border-blue-100 bg-blue-50/60 rounded-xl px-4 py-3 text-xs sm:text-sm text-blue-900 leading-6">
+                    <i class="fa-solid fa-circle-info text-blue-600 mr-1"></i>
+                    当前保留接口原始 Top6，不排除由该 Query 生成的课件，也不做资源族去重，用于真实观察召回能力；同资源族和历史版本已单独标记，便于判断下一版是否需要过滤或折叠。
+                </div>
+            `;
+        }
+
+        function renderSimilarRecoJudgement(caseItem, version, candidate, annotation) {
+            const options = [
+                { value: 'pending', label: '待评估', active: 'bg-slate-700 text-white border-slate-700' },
+                { value: 'similar', label: '相似', active: 'bg-green-600 text-white border-green-600' },
+                { value: 'notSimilar', label: '不相似', active: 'bg-red-500 text-white border-red-500' },
+                { value: 'uncertain', label: '无法判断', active: 'bg-amber-500 text-white border-amber-500' }
+            ];
+            const candidateKey = getSimilarRecoCandidateKey(candidate);
+            const statusId = `similar-reco-status-${version.id}-${caseItem.id}-${candidate.rank}`;
+            const complete = isSimilarRecoAnnotationComplete(annotation);
+            return `
+                <div class="grid grid-cols-1 xl:grid-cols-[auto_minmax(300px,1fr)] gap-3 xl:items-start">
+                    <div>
+                        <div class="text-[11px] font-black text-slate-400 mb-1.5">人工判断</div>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${options.map(option => `
+                                <button type="button" onclick="${escapeAttr(`updateSimilarRecoJudgement(${jsString(version.id)}, ${jsString(caseItem.id)}, ${jsString(candidateKey)}, ${jsString(option.value)})`)}" class="h-8 px-3 rounded-lg border text-xs font-black transition ${annotation.judgement === option.value ? option.active : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}">${escapeHtml(option.label)}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <label class="block text-[11px] font-black text-slate-400">
+                        判断理由 / 下一版优化线索
+                        <textarea oninput="${escapeAttr(`updateSimilarRecoReason(${jsString(version.id)}, ${jsString(caseItem.id)}, ${jsString(candidateKey)}, this.value)`)}" onblur="renderSimilarRecoEvalWorkbench()" class="mt-1.5 w-full min-h-[68px] border ${annotation.judgement !== 'pending' && !String(annotation.reason || '').trim() ? 'border-amber-300 bg-amber-50/40' : 'border-slate-300 bg-white'} rounded-lg px-3 py-2 text-sm font-normal text-slate-700 placeholder:font-normal outline-none focus:ring-2 focus:ring-blue-500 resize-y" placeholder="写清相似/不相似依据，例如学科年级、知识点、玩法、任务目标、资源族重复或历史版本问题">${escapeHtml(annotation.reason || '')}</textarea>
+                        <span id="${escapeAttr(statusId)}" class="mt-1 block text-[11px] font-bold ${complete ? 'text-green-600' : 'text-amber-600'}">${complete ? '已完成并自动保存在本机' : annotation.judgement === 'pending' ? '请选择判断并填写理由' : '已选择判断，还需补充理由'}</span>
+                    </label>
+                </div>
+            `;
+        }
+
+        function renderSimilarRecoCandidate(caseItem, version, candidate) {
+            const annotation = getSimilarRecoAnnotation(version.id, caseItem.id, candidate);
+            const queryTeacher = getSimilarRecoAttribution('queryTeacher', caseItem.queryTeacherRef, caseItem.queryTeacherAttributionStatus);
+            const publisher = getSimilarRecoAttribution('publisher', candidate.publisherRef, candidate.publisherAttributionStatus);
+            const score = Number(candidate.score || 0);
+            const scorePercent = Math.max(0, Math.min(100, score * 100));
+            const publishStatus = candidate.snapshotPublishStatus === '1'
+                ? { label: '当前已发布版本', className: 'bg-green-50 text-green-700 border-green-100' }
+                : candidate.snapshotPublishStatus === '2'
+                    ? { label: '历史版本', className: 'bg-amber-50 text-amber-700 border-amber-100' }
+                    : { label: '状态未识别', className: 'bg-slate-100 text-slate-600 border-slate-200' };
+            return `
+                <article class="border border-slate-200 rounded-xl bg-white overflow-hidden">
+                    <div class="p-4 grid grid-cols-1 xl:grid-cols-[56px_minmax(190px,1.1fr)_120px_minmax(180px,.85fr)_minmax(220px,1.15fr)] gap-4 xl:items-start">
+                        <div class="flex xl:block items-center gap-2">
+                            <div class="w-9 h-9 rounded-lg ${candidate.rank <= 3 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'} flex items-center justify-center font-black text-sm">${escapeHtml(candidate.rank)}</div>
+                            <div class="text-[10px] font-black text-slate-400 mt-1">TOP ${escapeHtml(candidate.rank)}</div>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-sm font-black text-slate-900 leading-5">${escapeHtml(candidate.resourceName || '未命名课件')}</div>
+                            <div class="mt-2 flex flex-wrap gap-1.5">
+                                <span class="px-2 py-1 rounded-full border text-[11px] font-black ${publishStatus.className}">${publishStatus.label}</span>
+                                ${Number(candidate.sameFamilyCount || 1) > 1 ? `<span class="px-2 py-1 rounded-full border bg-violet-50 text-violet-700 border-violet-100 text-[11px] font-black">${escapeHtml(candidate.familyRef)} 同资源族 ×${escapeHtml(candidate.sameFamilyCount)}</span>` : `<span class="px-2 py-1 rounded-full border bg-slate-50 text-slate-500 border-slate-200 text-[11px] font-black">${escapeHtml(candidate.familyRef || '独立资源族')}</span>`}
+                            </div>
+                            ${candidate.previewUrl ? `<button type="button" onclick="${escapeAttr(`window.open(${jsString(candidate.previewUrl)}, '_blank', 'noopener,noreferrer')`)}" class="mt-3 ce-tool-btn ce-tool-btn-primary h-8 px-3 text-xs"><i class="fa-solid fa-up-right-from-square"></i> 查看课件</button>` : '<div class="mt-3 text-xs font-bold text-amber-700">预览链接未返回</div>'}
+                        </div>
+                        <div>
+                            <div class="text-[11px] font-black text-slate-400">算法相似度</div>
+                            <div class="mt-1 text-xl font-black text-blue-700 font-mono">${escapeHtml(score.toFixed(4))}</div>
+                            <div class="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full bg-blue-500 rounded-full" style="width:${scorePercent.toFixed(2)}%"></div></div>
+                        </div>
+                        <div class="text-xs leading-5">
+                            <div><span class="text-slate-400">学科：</span><span class="font-bold text-slate-700">${escapeHtml(candidate.subject || '未说明')}</span></div>
+                            <div><span class="text-slate-400">年级：</span><span class="font-bold text-slate-700">${escapeHtml(candidate.grade || '未说明')}</span></div>
+                            <div><span class="text-slate-400">发布老师：</span><span class="font-bold ${publisher.className}">${escapeHtml(publisher.label)}</span></div>
+                            <div><span class="text-slate-400">需求老师：</span><span class="font-bold ${queryTeacher.className}">${escapeHtml(queryTeacher.label)}</span></div>
+                        </div>
+                        <div class="min-w-0 text-xs leading-5">
+                            <div class="text-slate-400">素材 ID</div>
+                            <div class="font-mono font-bold text-slate-700 break-all select-all">${escapeHtml(candidate.materialId || '未匹配')}</div>
+                            <div class="text-slate-400 mt-1">快照 ID</div>
+                            <div class="font-mono text-slate-500 break-all select-all">${escapeHtml(candidate.snapshotId || '未匹配')}</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-100 bg-slate-50/70 px-4 py-3">
+                        ${renderSimilarRecoJudgement(caseItem, version, candidate, annotation)}
+                    </div>
+                </article>
+            `;
+        }
+
+        function renderSimilarRecoCase(caseItem, version) {
+            const run = caseItem.runs?.[version.id] || { results: [] };
+            const teacher = getSimilarRecoAttribution('queryTeacher', caseItem.queryTeacherRef, caseItem.queryTeacherAttributionStatus);
+            return `
+                <section class="border border-slate-200 rounded-2xl bg-white overflow-hidden shadow-sm">
+                    <div class="px-5 py-4 bg-slate-50 border-b border-slate-200">
+                        <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-lg font-black text-slate-900">${escapeHtml(caseItem.id)}</span>
+                                    <span class="px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100 text-xs font-black">${escapeHtml(caseItem.subject)}</span>
+                                    <span class="px-2 py-1 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-black">${escapeHtml(caseItem.grade)}</span>
+                                    <span class="px-2 py-1 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-black">${escapeHtml(caseItem.category)}</span>
+                                </div>
+                                <div class="mt-3 text-[11px] font-black text-slate-400">用户 Query</div>
+                                <div class="mt-1 text-sm leading-6 text-slate-800 whitespace-pre-wrap">${escapeHtml(caseItem.query)}</div>
+                            </div>
+                            <div class="xl:w-[220px] shrink-0 bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs leading-5">
+                                <div><span class="text-slate-400">原始需求老师：</span><span class="font-black ${teacher.className}">${escapeHtml(teacher.label)}</span></div>
+                                <div><span class="text-slate-400">接口耗时：</span><span class="font-bold text-slate-700">${escapeHtml(run.costMs || '-')} ms</span></div>
+                                <div><span class="text-slate-400">返回结果：</span><span class="font-bold text-slate-700">${escapeHtml(run.results?.length || 0)} / 6</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        ${(run.results || []).map(candidate => renderSimilarRecoCandidate(caseItem, version, candidate)).join('') || '<div class="border border-dashed border-amber-300 bg-amber-50 rounded-xl p-6 text-center text-sm font-bold text-amber-800">该 Query 没有完整返回 Top6，不进入本轮有效测评。</div>'}
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderSimilarRecoEvalWorkbench() {
+            const container = document.getElementById('similar-reco-eval-workbench');
+            if (!container) return;
+            if (!similarRecoData) {
+                ensureSimilarRecoData();
+                container.innerHTML = '<div class="border border-slate-200 rounded-2xl bg-white p-10 text-center"><i class="fa-solid fa-circle-notch fa-spin text-blue-600 text-2xl"></i><div class="mt-3 text-sm font-bold text-slate-600">正在加载 30 条 Query 的最新版算法结果...</div></div>';
+                return;
+            }
+            if (similarRecoData.loadError) {
+                container.innerHTML = `<div class="border border-red-100 bg-red-50 text-red-700 rounded-2xl p-6 font-bold">相似课件测评数据加载失败：${escapeHtml(similarRecoData.loadError)}</div>`;
+                return;
+            }
+            const version = getSimilarRecoVersion();
+            if (!version) {
+                container.innerHTML = '<div class="border border-dashed border-slate-300 bg-slate-50 p-10 text-center text-sm text-slate-500">暂无算法版本数据。</div>';
+                return;
+            }
+            const cases = getSimilarRecoCases();
+            const stats = getSimilarRecoStats(version);
+            container.innerHTML = `
+                <div class="space-y-5">
+                    ${renderSimilarRecoSummary(version, stats)}
+                    <div class="space-y-6">
+                        ${cases.length ? cases.map(item => renderSimilarRecoCase(item, version)).join('') : '<div class="border border-dashed border-slate-300 bg-slate-50 p-10 text-center text-sm text-slate-500">当前筛选条件下没有 Query。</div>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectSimilarRecoVersion(versionId) {
+            const valid = getSimilarRecoVersions().some(item => item.id === versionId);
+            if (!valid) return;
+            similarRecoState.selectedVersionId = versionId;
+            saveSimilarRecoState();
+            renderSimilarRecoEvalWorkbench();
+        }
+
+        function setSimilarRecoSubjectFilter(subject) {
+            similarRecoState.filters = { subject: ['all', '语文', '数学', '英语'].includes(subject) ? subject : 'all' };
+            saveSimilarRecoState();
+            renderSimilarRecoEvalWorkbench();
+        }
+
+        function updateSimilarRecoJudgement(versionId, caseId, candidateKey, judgement) {
+            if (!['pending', 'similar', 'notSimilar', 'uncertain'].includes(judgement)) return;
+            const annotation = ensureSimilarRecoAnnotation(versionId, caseId, candidateKey);
+            annotation.judgement = judgement;
+            saveSimilarRecoState();
+            renderSimilarRecoEvalWorkbench();
+        }
+
+        function updateSimilarRecoReason(versionId, caseId, candidateKey, reason) {
+            const annotation = ensureSimilarRecoAnnotation(versionId, caseId, candidateKey);
+            annotation.reason = reason;
+            saveSimilarRecoState();
+        }
+
+        function exportSimilarRecoExcel() {
+            if (!window.XLSX) return showToast('Excel 导出组件还没加载完成，请稍后再试。', 'warning');
+            if (!similarRecoData) return showToast('相似课件测评数据还未加载完成。', 'warning');
+            const version = getSimilarRecoVersion();
+            if (!version) return showToast('当前没有可导出的算法版本。', 'warning');
+            const rows = [];
+            (similarRecoData.cases || []).forEach(caseItem => {
+                const run = caseItem.runs?.[version.id];
+                if (!run) return;
+                const queryTeacher = getSimilarRecoAttribution('queryTeacher', caseItem.queryTeacherRef, caseItem.queryTeacherAttributionStatus);
+                (run.results || []).forEach(candidate => {
+                    const publisher = getSimilarRecoAttribution('publisher', candidate.publisherRef, candidate.publisherAttributionStatus);
+                    const annotation = getSimilarRecoAnnotation(version.id, caseItem.id, candidate);
+                    rows.push({
+                        '算法版本': version.label || version.id,
+                        'Case ID': caseItem.id,
+                        'Query学科': caseItem.subject,
+                        'Query年级': caseItem.grade,
+                        '需求类型': caseItem.category,
+                        '原始Query': caseItem.query,
+                        'message_id': caseItem.queryMessageId || '',
+                        'conversation_id': caseItem.queryConversationId || '',
+                        '原始需求老师': queryTeacher.label,
+                        '候选排名': candidate.rank,
+                        '候选课件名': candidate.resourceName,
+                        '算法相似度': candidate.score,
+                        '候选学科': candidate.subject,
+                        '候选年级': candidate.grade,
+                        'material_id': candidate.materialId || '未匹配',
+                        'snapshot_id': candidate.snapshotId || '未匹配',
+                        '预览链接': candidate.previewUrl || '',
+                        '快照状态': candidate.snapshotPublishStatus === '1' ? '当前已发布版本' : candidate.snapshotPublishStatus === '2' ? '历史版本' : '状态未识别',
+                        '资源族': candidate.familyRef || '',
+                        '同族候选数': candidate.sameFamilyCount || 1,
+                        '课件发布老师': publisher.label,
+                        '人工判断': getSimilarRecoJudgementLabel(annotation.judgement),
+                        '人工判断理由': annotation.reason || '',
+                        '是否完整标注': isSimilarRecoAnnotationComplete(annotation) ? '是' : '否'
+                    });
+                });
+            });
+            const worksheet = XLSX.utils.json_to_sheet(rows);
+            worksheet['!cols'] = [
+                { wch: 18 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 20 }, { wch: 60 }, { wch: 36 }, { wch: 36 }, { wch: 18 },
+                { wch: 10 }, { wch: 24 }, { wch: 14 }, { wch: 10 }, { wch: 12 }, { wch: 34 }, { wch: 34 },
+                { wch: 50 }, { wch: 16 }, { wch: 10 }, { wch: 12 }, { wch: 18 }, { wch: 12 }, { wch: 52 }, { wch: 14 }
+            ];
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '相似课件Top6人工标注');
+            XLSX.writeFile(workbook, `相似课件推荐_${version.id}_人工标注_${new Date().toISOString().slice(0,10)}.xlsx`);
+            showToast(`已导出 ${rows.length} 条候选的人工标注。`, 'success');
+        }
+
         function escapeHtml(value) {
             return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
         }
@@ -4425,10 +4917,11 @@
         // ================= 路由与视图控制 =================
         function switchView(viewName) {
             try {
-                const viewNames = ['self-generation', 'self-style', 'self-template', 'self-same', 'teacher', 'admin-task', 'admin-stats'];
+                const viewNames = ['self-generation', 'self-style', 'self-similar', 'self-template', 'self-same', 'teacher', 'admin-task', 'admin-stats'];
                 const viewTitles = {
                     'self-generation': '课件生成效果',
                     'self-style': '画面风格调整',
+                    'self-similar': '相似课件推荐',
                     'self-template': '套用玩法',
                     'self-same': '一键同款',
                     teacher: '竞品测评',
@@ -4451,6 +4944,7 @@
                 if (viewName === 'teacher') renderTeacherList();
                 if (viewName === 'self-generation') renderGenerationEvalWorkbench();
                 if (viewName === 'self-style') { renderStyleEvalWorkbench(); ensureStyleEvalData(); }
+                if (viewName === 'self-similar') { renderSimilarRecoEvalWorkbench(); ensureSimilarRecoAttribution(); }
                 if (viewName === 'self-template') { renderTemplatePromptWorkbench(); ensureTemplatePromptData(); }
                 if (viewName === 'admin-task') toggleAdminTaskView('list');
 

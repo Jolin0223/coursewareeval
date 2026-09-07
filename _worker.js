@@ -411,6 +411,35 @@ async function verifyAdminUser(request, env) {
     return { ok: true, user };
 }
 
+async function readSimilarEvalAttribution(request, env) {
+    if (request.method !== 'GET') {
+        return jsonResponse({ error: 'METHOD_NOT_ALLOWED', message: 'Only GET is supported.' }, 405);
+    }
+    const adminCheck = await verifyAdminUser(request, env);
+    if (!adminCheck.ok) return adminCheck.response;
+
+    const raw = String(env.SIMILAR_EVAL_ATTRIBUTION_JSON || '').trim();
+    if (!raw) {
+        return jsonResponse({
+            error: 'MISSING_ATTRIBUTION_DATA',
+            message: '相似课件测评的教师归属保护数据尚未配置。'
+        }, 503);
+    }
+    let payload;
+    try {
+        payload = JSON.parse(raw);
+    } catch (error) {
+        return jsonResponse({
+            error: 'INVALID_ATTRIBUTION_DATA',
+            message: '相似课件测评的教师归属保护数据不是合法 JSON。'
+        }, 500);
+    }
+    return jsonResponse({
+        queryTeachers: payload.queryTeachers || {},
+        publishers: payload.publishers || {}
+    }, 200);
+}
+
 function extractJsonObjectsFromEventStream(text) {
     const results = [];
     text.split(/\r?\n/).forEach(line => {
@@ -1173,6 +1202,15 @@ export default {
                 generationRunnerProxySupported: true,
                 generationRunnerConfigured: Boolean(String(env.GENERATION_RUNNER_URL || '').trim())
             }, 200);
+        }
+
+        if (url.pathname === '/api/similar-eval/attribution') {
+            try {
+                return await readSimilarEvalAttribution(request, env);
+            } catch (error) {
+                error.code = error.code || 'SIMILAR_EVAL_ATTRIBUTION_ERROR';
+                return apiErrorResponse(error, error.status || 500);
+            }
         }
 
         // =========================================================
