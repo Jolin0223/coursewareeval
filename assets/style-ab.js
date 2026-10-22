@@ -6,7 +6,7 @@
   const checks=[['texture','质感目标'],['cover','封面入口'],['content','教学内容'],['interaction','交互保留']];
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const url=u=>{if(typeof u!=='string'||!u.trim())return '';try{const p=new URL(u,location.href);return ['https:','http:'].includes(p.protocol)?p.href:'';}catch{return '';}};
-  let data=null,error='',filter={subject:'全部学科',grade:'全部年级',mode:'全部方式',query:''},mode='ab';
+  let data=null,error='',filter={subject:'全部学科',grade:'全部年级',mode:'全部方式',query:new URLSearchParams(location.search).get('styleCase')||''},mode='ab';
   let state={};try{state=JSON.parse(localStorage.getItem(KEY)||'{}');}catch{}
   const getCase=id=>data?.cases.find(c=>c.id===id);
   const signature=c=>`${data.id}:${c.id}:${c.old.promptHash}:${c.new.promptHash}`;
@@ -30,7 +30,7 @@
     if(action==='close-dialog')document.getElementById('sab-dialog')?.close();
     else if(action==='retry')load();
     else if(action==='filter'){filter[b.dataset.key]=b.dataset.value;render();}
-    else if(action==='source'&&c){const s=c.source||{};dialog(c.id+' · 冻结源课件',`<p>${esc(c.sourceKind)} · ${esc(c.inspiration)}</p><p>状态：${s.status==='completed'?'已生成':'尚未生成'}${s.snapshotId?' · 快照 '+esc(s.snapshotId):''}</p><div class="sab-toolbar">${url(s.fileUrl)?`<a class="sab-btn primary" href="${esc(url(s.fileUrl))}" target="_blank" rel="noopener">打开源课件</a>`:''}${url(s.pushUrl)?`<a class="sab-btn" href="${esc(url(s.pushUrl))}" target="_blank" rel="noopener">源 ZIP</a>`:''}</div><p class="sab-muted">两个调整版本必须来自这个源版本，不串行互改。</p><pre>${esc(c.sourcePrompt)}</pre>${s.sourceHash?`<p class="sab-muted">源包 SHA-256：${esc(s.sourceHash)}</p>`:''}`);}
+    else if(action==='source'&&c){const s=c.source||{};dialog(c.id+' · 冻结源课件',`<p>${esc(c.sourceKind)} · ${esc(c.inspiration)}</p><p>状态：${s.status==='completed'?'已生成':'尚未生成'}${s.snapshotId?' · 快照 '+esc(s.snapshotId):''}</p><div class="sab-toolbar">${url(s.fileUrl)?`<a class="sab-btn primary" href="${esc(url(s.fileUrl))}" target="_blank" rel="noopener">打开源课件</a>`:''}${url(s.pushUrl)?`<a class="sab-btn" href="${esc(url(s.pushUrl))}" target="_blank" rel="noopener">源 ZIP</a>`:''}</div><p class="sab-muted">两个调整版本必须来自这个源版本，不串行互改。</p><pre>${esc(c.sourcePrompt)}</pre>${s.sourceHash?`<p class="sab-muted">源文件清单 SHA-256：${esc(s.sourceHash)}</p>`:''}`);}
     else if(action==='prompt'&&c){const v=c[side];dialog(c.id+' · '+(side==='old'?'当前线上提示词':'新版提示词'),`<p>${esc(c.selectionLabel)}</p><p class="sab-muted">${esc(v.executionLabel||'待执行')} · 提示词 SHA-256：${esc(v.promptHash)}</p><pre>${esc(v.prompt)}</pre>`);}
     else if(action==='preview'&&c&&url(c[side].fileUrl)){const p=document.getElementById(`sab-preview-${c.id}-${side}`);p.innerHTML=`<iframe src="${esc(url(c[side].fileUrl))}" sandbox="allow-scripts allow-same-origin allow-forms" allow="autoplay" title="${esc(c.id+' '+side+'运行预览')}"></iframe>`;}
     else if(action==='screenshot'&&c){const s=c[side].screenshots[Number(b.dataset.index)];document.getElementById(`sab-preview-${c.id}-${side}`).innerHTML=`<img src="${esc(url(s.url||s))}" alt="${esc(s.label||'实测截图')}">`;}
