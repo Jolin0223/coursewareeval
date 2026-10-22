@@ -256,6 +256,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="assets/style-ab.css?v=20261022">
 </head>
 <body class="flex h-screen overflow-hidden text-slate-800 relative">
 
@@ -362,18 +363,20 @@
                             <h3 class="text-lg font-bold text-slate-800 flex items-center">
                                 <i class="fa-solid fa-palette text-blue-600 mr-2"></i> 画面风格调整
                             </h3>
-                            <p class="text-sm text-slate-500 mt-1">基于同一个课件批量测试 19 种基础风格，沉淀每版效果、问题、解决方法和下一版参考提示词。</p>
+                            <p class="text-sm text-slate-500 mt-1">同一源课件，左侧当前线上提示词，右侧新版提示词；核对质感、封面、教学内容与交互保留。</p>
                         </div>
                         <div class="flex flex-wrap gap-3">
-                            <button onclick="exportStyleEvalExcel()" class="px-4 py-2 bg-green-50 text-green-700 text-sm font-bold rounded-lg hover:bg-green-100 transition shadow-sm border border-green-200">
+                            <button data-style-legacy-action hidden onclick="exportStyleEvalExcel()" class="px-4 py-2 bg-green-50 text-green-700 text-sm font-bold rounded-lg hover:bg-green-100 transition shadow-sm border border-green-200">
                                 <i class="fa-solid fa-file-excel mr-1"></i> 下载开发 Excel
                             </button>
-                            <button onclick="queueStyleLibraryUpdate()" class="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition shadow-sm">
+                            <button data-style-legacy-action hidden onclick="queueStyleLibraryUpdate()" class="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition shadow-sm">
                                 <i class="fa-solid fa-database mr-1"></i> 一键入库
                             </button>
                         </div>
                     </div>
-                    <div class="p-8">
+                    <div class="px-8 pt-5 sab-tabs"><button data-style-view="ab" onclick="StyleAB.setView('ab')" class="active">新旧提示词对照</button><button data-style-view="legacy" onclick="StyleAB.setView('legacy')">历史调试记录</button></div>
+                    <div id="style-ab-workbench" class="p-8"></div>
+                    <div id="style-legacy-workbench" class="p-8" hidden>
                         <div class="grid grid-cols-1 xl:grid-cols-[320px_minmax(0,1fr)] gap-6 items-start">
                             <aside class="border border-slate-200 rounded-2xl overflow-hidden bg-white">
                                 <div class="p-4 border-b border-slate-200 bg-slate-50">
@@ -5960,5 +5963,6 @@ ${feedbackArray.join('\n')}
         checkSession();
 
     </script>
+<script src="assets/style-ab.js?v=20261022"></script>
 </body>
 </html>
