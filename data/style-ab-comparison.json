@@ -1,7 +1,7 @@
 {
   "id": "style-texture-ab-20261022",
   "date": "2026-10-22",
-  "statusMessage": "原批次30个源课件、60个调整结果保留。19种基础风格V1改写已否决，相关组合暂停推荐；V2回到线上原词，仅修封面接入。V2尚未生成，线上接口预检返回HTTP 500。9种仅质感结果本次未改。",
+  "statusMessage": "原批次30个源课件、60个调整结果保留。19种基础风格已完成源／线上原词／V1内页分项复查：保留线上封面美术，吸收V1有效内页改进；V2.1仅为候选稿，尚未生成。9种质感本轮未改词。",
   "executionBoundary": "左侧使用用户确认的线上提示词文本；本次按用户要求在线上环境执行。各卡片标明真实路径，尚未核验路径一致性时，不等同线上专用功能效果。",
   "cases": [
     {
@@ -819,12 +819,6 @@
         "environmentLabel": "线上环境",
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
-          "scores": {
-            "0": 3.5,
-            "1": 3,
-            "2": 3.5,
-            "3": 3
-          },
           "checks": {
             "texture": "na",
             "cover": "fail",
@@ -832,19 +826,38 @@
             "interaction": "pass",
             "coverDesign": "pass"
           },
-          "findings": "封面背景含一套标题与假进入游戏按钮，HTML又叠加标题和真按钮，出现重叠与双入口；16格题目、8个已知数和答案保留，空提交、正确解、重置已实测通过。",
-          "method": "实际截图视觉审阅；交互结论仅来自保存的浏览器操作记录。",
+          "findings": "内页复查：题目保持；网格线比源版浅，题板和选项仍能区分。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
           "reviewer": "Codex",
-          "coverReview": "主标题、进入按钮明显重复。"
+          "coverReview": "主标题、进入按钮明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "scores": {
+              "0": 3.5,
+              "1": 3,
+              "2": 3.5,
+              "3": 3
+            },
+            "checks": {
+              "texture": "na",
+              "cover": "fail",
+              "content": "pass",
+              "interaction": "pass",
+              "coverDesign": "pass"
+            },
+            "findings": "封面背景含一套标题与假进入游戏按钮，HTML又叠加标题和真按钮，出现重叠与双入口；16格题目、8个已知数和答案保留，空提交、正确解、重置已实测通过。",
+            "method": "实际截图视觉审阅；交互结论仅来自保存的浏览器操作记录。",
+            "reviewer": "Codex",
+            "coverReview": "主标题、进入按钮明显重复。"
+          }
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S10/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S10-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S10/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S10/old/cover.webp",
+            "label": "封面 / 首屏"
           },
           {
             "url": "assets/style-ab-evidence/S10/old/completed.webp",
@@ -872,18 +885,31 @@
             "interaction": "pass",
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】退化为草地背景＋小号普通标题按钮。 原四维评分撤回，历史生成物和已实测的交互记录保留。",
-          "method": "实际截图视觉审阅；交互结论仅来自保存的浏览器操作记录。",
-          "reviewer": "Codex"
+          "findings": "内页复查：数字和格子清楚，背景更简洁。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "reviewer": "Codex",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "texture": "na",
+              "cover": "pass",
+              "content": "pass",
+              "interaction": "pass",
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】退化为草地背景＋小号普通标题按钮。 原四维评分撤回，历史生成物和已实测的交互记录保留。",
+            "method": "实际截图视觉审阅；交互结论仅来自保存的浏览器操作记录。",
+            "reviewer": "Codex"
+          },
+          "coverReview": "退化为草地背景＋小号普通标题按钮。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S10/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S10-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S10/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S10/new/cover.webp",
+            "label": "封面 / 首屏"
           },
           {
             "url": "assets/style-ab-evidence/S10/new/completed.webp",
@@ -913,10 +939,10 @@
           "method": "实际截图视觉审阅；交互结论仅来自保存的浏览器操作记录。",
           "reviewer": "Codex"
         },
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：退化为草地背景＋小号普通标题按钮。 原词需修：主标题、进入按钮明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留现有布局，网格不随浅色风格淡化。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "kidslogic",
         "displayName": "清晰逻辑风",
@@ -924,6 +950,18 @@
         "promptHash": "13988eeecf93fb9a9b277bdc25b565d9d74eaad00c9f5bf9a7cf5cab1722782f",
         "status": "待生成验证",
         "basePromptHash": "a43d80cf679915d6eee000c6acc4b9b6180e2f8e4b0a82319204055cd5d197d1"
+      },
+      "interiorReview": {
+        "id": "S10",
+        "style": "清晰逻辑风",
+        "title": "四宫格数独",
+        "source": "数独格和按钮完整可见。",
+        "old": "题目保持；网格线比源版浅，题板和选项仍能区分。",
+        "v1": "数字和格子清楚，背景更简洁。",
+        "action": "保留现有布局，网格不随浅色风格淡化。",
+        "rules": "P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -967,19 +1005,32 @@
             "interaction": "fail",
             "coverDesign": "pass"
           },
-          "findings": "开始后出现 leftPos is not defined，五组鱼卡片重叠在左下，初始化中断；背景还加入了可数的小鱼，违反原需求。该结果按运行硬失败保留，未修补生成代码。",
-          "method": "源/旧/新实际教学页截图与单图视觉审阅，浏览器运行错误记录；未进行本样本完整交互验收，因此不提供四维总评分。",
+          "findings": "内页复查：进入后报 leftPos 未定义；五组卡片坐标相同，完全重叠。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
           "reviewer": "Codex",
-          "coverReview": "主标题、进入按钮明显重复；另有已记录的游戏初始化报错。"
+          "coverReview": "主标题、进入按钮明显重复；另有已记录的游戏初始化报错。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "texture": "na",
+              "cover": "pending",
+              "content": "fail",
+              "interaction": "fail",
+              "coverDesign": "pass"
+            },
+            "findings": "开始后出现 leftPos is not defined，五组鱼卡片重叠在左下，初始化中断；背景还加入了可数的小鱼，违反原需求。该结果按运行硬失败保留，未修补生成代码。",
+            "method": "源/旧/新实际教学页截图与单图视觉审阅，浏览器运行错误记录；未进行本样本完整交互验收，因此不提供四维总评分。",
+            "reviewer": "Codex",
+            "coverReview": "主标题、进入按钮明显重复；另有已记录的游戏初始化报错。"
+          }
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S11/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S11-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S11/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S11/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-8f0yoI-dQIG_a9PtVkSGHA/index.html",
@@ -1000,21 +1051,34 @@
             "texture": "na",
             "cover": "pending",
             "content": "fail",
-            "interaction": "pending",
+            "interaction": "pass",
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】改成近写实浅海空景，水泡标题、角色和按钮设计丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。",
-          "method": "源/旧/新实际教学页截图与单图视觉审阅，浏览器运行错误记录；未进行本样本完整交互验收，因此不提供四维总评分。",
-          "reviewer": "Codex"
+          "findings": "内页复查：卡片排开并加白底；但2条、5条鱼素材中新增设备和道具。 定向实测通过错误拖拽回弹、五组匹配、完成和重置。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "reviewer": "Codex",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "texture": "na",
+              "cover": "pending",
+              "content": "fail",
+              "interaction": "pass",
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】改成近写实浅海空景，水泡标题、角色和按钮设计丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。",
+            "method": "源/旧/新实际教学页截图与单图视觉审阅，浏览器运行错误记录；未进行本样本完整交互验收，因此不提供四维总评分。",
+            "reviewer": "Codex"
+          },
+          "coverReview": "改成近写实浅海空景，水泡标题、角色和按钮设计丢失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S11/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S11-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S11/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S11/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-Qn5SMmcgTJyPgjFE6Sgs6w/index.html",
@@ -1034,10 +1098,10 @@
           "method": "源/旧/新实际教学页截图与单图视觉审阅，浏览器运行错误记录；未进行本样本完整交互验收，因此不提供四维总评分。",
           "reviewer": "Codex"
         },
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：改成近写实浅海空景，水泡标题、角色和按钮设计丢失。 原词需修：主标题、进入按钮明显重复；另有已记录的游戏初始化报错。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留排布与白底；复用原鱼图，保护初始化逻辑。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "underwater",
         "displayName": "海洋探索风",
@@ -1045,6 +1109,18 @@
         "promptHash": "a00200a3f9e03ff79c21a198c8e909e7755c320d07fe48742f06506726c96365",
         "status": "待生成验证",
         "basePromptHash": "0535be8b34ee9cdc5f2ae2d65250e66e5fb7944afd31118d041b890b78470154"
+      },
+      "interiorReview": {
+        "id": "S11",
+        "style": "海洋探索风",
+        "title": "海底数量配对",
+        "source": "五组鱼分开摆放。",
+        "old": "进入后报 leftPos 未定义；五组卡片坐标相同，完全重叠。",
+        "v1": "卡片排开并加白底；但2条、5条鱼素材中新增设备和道具。",
+        "action": "保留排布与白底；复用原鱼图，保护初始化逻辑。",
+        "rules": "P2/P3/P6",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1081,18 +1157,28 @@
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
           "checks": {
-            "coverDesign": "pass"
+            "coverDesign": "pass",
+            "interaction": "pass"
           },
-          "coverReview": "本截图未见明显重复，不应重做已有效的封面设计。"
+          "coverReview": "本截图未见明显重复，不应重做已有效的封面设计。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass",
+              "interaction": "pass"
+            },
+            "coverReview": "本截图未见明显重复，不应重做已有效的封面设计。"
+          },
+          "findings": "内页复查：树素材新增大量假苹果，篮子素材预装水果；背景又画了篮子。 定向实测通过绿苹果拒收、收集三红、完成与重置；不代表视觉目标无歧义。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S12/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S12-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S12/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S12/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-PHBpqkVRS6mgEWbbHj84IQ/index.html",
@@ -1110,18 +1196,28 @@
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
           "checks": {
-            "coverDesign": "fail"
+            "coverDesign": "fail",
+            "interaction": "pass"
           },
-          "findings": "【封面复查：V1已否决】变成秋日空草地，核心果园封面设计丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：树和篮子恢复干净；红苹果素材新增“苹果”文字。 定向实测通过绿苹果拒收、收集三红、完成与重置；不代表视觉目标无歧义。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail",
+              "interaction": "pass"
+            },
+            "findings": "【封面复查：V1已否决】变成秋日空草地，核心果园封面设计丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "变成秋日空草地，核心果园封面设计丢失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S12/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S12-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S12/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S12/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-KyHA_HsFRLu8SqZOwciWkw/index.html",
@@ -1131,10 +1227,10 @@
         "elapsedSeconds": 160.8,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：变成秋日空草地，核心果园封面设计丢失。 原词需修：本截图未见明显重复，不应重做已有效的封面设计。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：背景、承载物和教学对象都要分别约束。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "autumn",
         "displayName": "果园认知风",
@@ -1142,6 +1238,18 @@
         "promptHash": "7b7d12288438c3f096ab455ce88bdf09e58afc378f1cae467eed8dbb0ee21968",
         "status": "待生成验证",
         "basePromptHash": "0aac583f03cbf6a5b3025fbcf22d834b03d5c70fde01a01034dcca16e1ba9965"
+      },
+      "interiorReview": {
+        "id": "S12",
+        "style": "果园认知风",
+        "title": "摘红苹果",
+        "source": "树无果、篮为空，3红2绿是独立拖拽对象。",
+        "old": "树素材新增大量假苹果，篮子素材预装水果；背景又画了篮子。",
+        "v1": "树和篮子恢复干净；红苹果素材新增“苹果”文字。",
+        "action": "背景、承载物和教学对象都要分别约束。",
+        "rules": "P2/P3",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1181,16 +1289,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "coverReview": "完整封面被作为小插图嵌入另一封面，外围再叠标题和按钮。"
+          "coverReview": "完整封面被作为小插图嵌入另一封面，外围再叠标题和按钮。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "coverReview": "完整封面被作为小插图嵌入另一封面，外围再叠标题和按钮。"
+          },
+          "findings": "内页复查：5个苹果清楚，选项使用不透明底板。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S13/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S13-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S13/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S13/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-nuppVKBuTjCzL-mA7FqoxQ/index.html",
@@ -1210,16 +1326,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】只剩普通标题、树木插画和普通按钮，木牌标题与伙伴系统丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：苹果下多了小底座；背景变得更浓，未见首屏布局收益。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】只剩普通标题、树木插画和普通按钮，木牌标题与伙伴系统丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "只剩普通标题、树木插画和普通按钮，木牌标题与伙伴系统丢失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S13/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S13-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S13/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S13/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-m-c564ImRL-TfSJwnmTEXg/index.html",
@@ -1229,10 +1353,10 @@
         "elapsedSeconds": 120.6,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：只剩普通标题、树木插画和普通按钮，木牌标题与伙伴系统丢失。 原词需修：完整封面被作为小插图嵌入另一封面，外围再叠标题和按钮。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留线上清楚的任务区；不为统一风格改造计数对象。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "forest",
         "displayName": "森林冒险风",
@@ -1240,6 +1364,18 @@
         "promptHash": "00e38e40390c2bf3fbc0948375991e2c1557c73cb838d0776788d619df4f12b4",
         "status": "待生成验证",
         "basePromptHash": "7c91014d5d1b018cab12cf535b309dc4533bef9eb47bac6165ebffc22f23bff4"
+      },
+      "interiorReview": {
+        "id": "S13",
+        "style": "森林冒险风",
+        "title": "十以内减法",
+        "source": "5个独立苹果和3个数字选项。",
+        "old": "5个苹果清楚，选项使用不透明底板。",
+        "v1": "苹果下多了小底座；背景变得更浓，未见首屏布局收益。",
+        "action": "保留线上清楚的任务区；不为统一风格改造计数对象。",
+        "rules": "P3/P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1278,16 +1414,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "主标题、开始按钮明显重复。"
+          "coverReview": "主标题、开始按钮明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "主标题、开始按钮明显重复。"
+          },
+          "findings": "内页复查：白字粉描边、浅色线段叠在糖果景上，辨识度下降。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S14/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S14-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S14/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S14/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-sSnpHq0wRFuTq8OBYps7PA/index.html",
@@ -1307,16 +1451,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】变成浅色糖果背景＋黑字按钮，主要角色和艺术标题丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：深色题干与标签、鲜明线段，主体更清楚。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】变成浅色糖果背景＋黑字按钮，主要角色和艺术标题丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "变成浅色糖果背景＋黑字按钮，主要角色和艺术标题丢失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S14/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S14-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S14/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S14/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-IXYXeWHhTLuDGJX-uUAIwQ/index.html",
@@ -1326,10 +1478,10 @@
         "elapsedSeconds": 131.5,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：变成浅色糖果背景＋黑字按钮，主要角色和艺术标题丢失。 原词需修：主标题、开始按钮明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：吸收V1的对比度和低干扰中心。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "candy",
         "displayName": "糖果乐园风",
@@ -1337,6 +1489,18 @@
         "promptHash": "40709ba6492e4eb69bf637e969ae9471c2f74d0e5d263674f12fcdad4220db43",
         "status": "待生成验证",
         "basePromptHash": "0e031ddecee2d91853e03d2ff1945665386eb250730eec298d79f488a9a3410c"
+      },
+      "interiorReview": {
+        "id": "S14",
+        "style": "糖果乐园风",
+        "title": "线段比较",
+        "source": "A/B/C与线段清楚。",
+        "old": "白字粉描边、浅色线段叠在糖果景上，辨识度下降。",
+        "v1": "深色题干与标签、鲜明线段，主体更清楚。",
+        "action": "吸收V1的对比度和低干扰中心。",
+        "rules": "P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1376,16 +1540,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "本截图未见明显重复，原图式首页应保留。"
+          "coverReview": "本截图未见明显重复，原图式首页应保留。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "本截图未见明显重复，原图式首页应保留。"
+          },
+          "findings": "内页复查：仍用原图；边缘新增海龟等，接近词卡。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S15/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S15-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S15/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S15/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-TMDPIpFTSSmC5ejplvuuGQ/index.html",
@@ -1405,16 +1577,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】只保留边缘珊瑚和普通英文标题按钮，主体美术层丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：词卡主体更简洁，但鱼等装饰仍出现在连接点附近。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】只保留边缘珊瑚和普通英文标题按钮，主体美术层丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "只保留边缘珊瑚和普通英文标题按钮，主体美术层丢失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S15/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S15-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S15/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S15/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-oZDlOIdySx2cWimctUzU7w/index.html",
@@ -1424,10 +1604,10 @@
         "elapsedSeconds": 182.3,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：只保留边缘珊瑚和普通英文标题按钮，主体美术层丢失。 原词需修：本截图未见明显重复，原图式首页应保留。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留主体简化；可操作动物不在背景重复，连线区净空。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "ocean_clay",
         "displayName": "软萌海底风",
@@ -1435,6 +1615,18 @@
         "promptHash": "bf2ed4f73958ca1a92cb5c723dda5dacb239e5b23726be8b4e8436e9b0a8ef0f",
         "status": "待生成验证",
         "basePromptHash": "c5d79aa231d37590ac36c4726939a0e7c3e652153a45bae06f999e592c7392a5"
+      },
+      "interiorReview": {
+        "id": "S15",
+        "style": "软萌海底风",
+        "title": "海洋动物词卡",
+        "source": "词图连线；原图内装饰较多。",
+        "old": "仍用原图；边缘新增海龟等，接近词卡。",
+        "v1": "词卡主体更简洁，但鱼等装饰仍出现在连接点附近。",
+        "action": "保留主体简化；可操作动物不在背景重复，连线区净空。",
+        "rules": "P2/P3/P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1470,12 +1662,6 @@
         "environmentLabel": "线上环境",
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
-          "scores": {
-            "0": 4.5,
-            "1": 4,
-            "2": 4.5,
-            "3": 2.5
-          },
           "checks": {
             "texture": "na",
             "cover": "fail",
@@ -1483,19 +1669,38 @@
             "interaction": "fail",
             "coverDesign": "pass"
           },
-          "findings": "原课件没有封面，旧词新增整屏封面。点击封面中央会从1/3推进到2/3，入口点击穿透到下方答案；改点角落进入后，三题、答案、错误反馈、完成和重置正常。",
-          "method": "实际截图与浏览器点击操作",
+          "findings": "内页复查：新增整张封面；内页数字与选项清楚。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
           "reviewer": "Codex",
-          "coverReview": "封面本身完整；已有点击穿透问题应修进入事件，不能靠删封面解决。"
+          "coverReview": "源课件无封面，线上原词新增封面；原实测记录出现入口点击穿透，需保护原入口结构。",
+          "previousReviewBeforeInteriorAudit": {
+            "scores": {
+              "0": 4.5,
+              "1": 4,
+              "2": 4.5,
+              "3": 2.5
+            },
+            "checks": {
+              "texture": "na",
+              "cover": "fail",
+              "content": "pass",
+              "interaction": "fail",
+              "coverDesign": "pass"
+            },
+            "findings": "原课件没有封面，旧词新增整屏封面。点击封面中央会从1/3推进到2/3，入口点击穿透到下方答案；改点角落进入后，三题、答案、错误反馈、完成和重置正常。",
+            "method": "实际截图与浏览器点击操作",
+            "reviewer": "Codex",
+            "coverReview": "封面本身完整；已有点击穿透问题应修进入事件，不能靠删封面解决。"
+          }
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S16/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S16-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S16/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S16/old/cover.webp",
+            "label": "封面 / 首屏"
           },
           {
             "url": "assets/style-ab-evidence/S16/old/completed.webp",
@@ -1521,20 +1726,33 @@
             "cover": "pass",
             "content": "pass",
             "interaction": "pass",
-            "coverDesign": "fail"
+            "coverDesign": "na"
           },
-          "findings": "【封面复查：V1已否决】直接移除整张美术封面，不能将此记作封面优化。 原四维评分撤回，历史生成物和已实测的交互记录保留。",
-          "method": "实际截图与浏览器点击操作",
-          "reviewer": "Codex"
+          "findings": "内页复查：保持直接出题；浅底深字清楚。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "reviewer": "Codex",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "texture": "na",
+              "cover": "pass",
+              "content": "pass",
+              "interaction": "pass",
+              "coverDesign": "na"
+            },
+            "findings": "【封面复查：V1已否决】直接移除整张美术封面，不能将此记作封面优化。 原四维评分撤回，历史生成物和已实测的交互记录保留。",
+            "method": "实际截图与浏览器点击操作",
+            "reviewer": "Codex"
+          },
+          "coverReview": "更正：源课件明确无封面，V1直接出题符合原需求，不属于封面退化。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S16/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S16-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S16/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S16/new/cover.webp",
+            "label": "封面 / 首屏"
           },
           {
             "url": "assets/style-ab-evidence/S16/new/completed.webp",
@@ -1564,10 +1782,10 @@
           "method": "实际截图与浏览器点击操作",
           "reviewer": "Codex"
         },
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：直接移除整张美术封面，不能将此记作封面优化。 原词需修：封面本身完整；已有点击穿透问题应修进入事件，不能靠删封面解决。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：无封面源课件不新增封面；内页两版都可保留优点。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "space",
         "displayName": "太空探索风",
@@ -1575,6 +1793,18 @@
         "promptHash": "b94cdd84c497d19c46e696cb8666a484017207ea3a7dcbe799e200e13483ab67",
         "status": "待生成验证",
         "basePromptHash": "55ad2633311020827ee489dce815ca4be14253504ad101569284128fd93bb6c7"
+      },
+      "interiorReview": {
+        "id": "S16",
+        "style": "太空探索风",
+        "title": "数字规律",
+        "source": "原课件直接出题，无封面。",
+        "old": "新增整张封面；内页数字与选项清楚。",
+        "v1": "保持直接出题；浅底深字清楚。",
+        "action": "无封面源课件不新增封面；内页两版都可保留优点。",
+        "rules": "P1/P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1614,16 +1844,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "本截图未见明显重复。"
+          "coverReview": "本截图未见明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "本截图未见明显重复。"
+          },
+          "findings": "内页复查：背景堆放同类积木；图标元素从80缩到48屏幕像素。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S17/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S17-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S17/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S17/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-v6p_K_S5TFu6dJil6MlDlg/index.html",
@@ -1643,16 +1881,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】标题变为普通说明，角色和积木艺术字消失，零散素材拼接。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：收纳框变成装满物体的形状玩具，并出现英文；黄积木形状改变。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】标题变为普通说明，角色和积木艺术字消失，零散素材拼接。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "标题变为普通说明，角色和积木艺术字消失，零散素材拼接。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S17/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S17-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S17/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S17/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-_k3OcqgFSFuC0IN2xo1rQg/index.html",
@@ -1662,10 +1908,10 @@
         "elapsedSeconds": 132.4,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：标题变为普通说明，角色和积木艺术字消失，零散素材拼接。 原词需修：本截图未见明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留颜色任务语义，空框仍为空框；不把图标缩成装饰。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "blocks",
         "displayName": "积木教具风",
@@ -1673,6 +1919,18 @@
         "promptHash": "43790d3d8e77a7fc8bff697863774173ec1054e5846d3af4e03ea11c526689a9",
         "status": "待生成验证",
         "basePromptHash": "afbe0454aabe21d6387aa6c80878877d376762b2cd6d7e661a522a4f673adcd8"
+      },
+      "interiorReview": {
+        "id": "S17",
+        "style": "积木教具风",
+        "title": "积木颜色分类",
+        "source": "3个空色框与6块积木；重置和声音图标清楚。",
+        "old": "背景堆放同类积木；图标元素从80缩到48屏幕像素。",
+        "v1": "收纳框变成装满物体的形状玩具，并出现英文；黄积木形状改变。",
+        "action": "保留颜色任务语义，空框仍为空框；不把图标缩成装饰。",
+        "rules": "P2/P3/P4",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1712,16 +1970,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "本截图未见明显重复。"
+          "coverReview": "本截图未见明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "本截图未见明显重复。"
+          },
+          "findings": "内页复查：不透明大题板隔离背景，内容层次清楚。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S18/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S18-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S18/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S18/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-wyXepp0MRi-u5R7M2FQ-hg/index.html",
@@ -1741,16 +2007,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】变成教室背景＋书包贴图，英语启蒙封面视觉被替换。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：槽位齐全，但书架和台面贴近拼写区。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】变成教室背景＋书包贴图，英语启蒙封面视觉被替换。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "变成教室背景＋书包贴图，英语启蒙封面视觉被替换。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S18/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S18-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S18/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S18/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-0TU-OKEoQpWUO6_dlJQeQA/index.html",
@@ -1760,10 +2034,10 @@
         "elapsedSeconds": 199.0,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：变成教室背景＋书包贴图，英语启蒙封面视觉被替换。 原词需修：本截图未见明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留线上任务板；无需为“内页干净”去掉有效题板。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "english_start",
         "displayName": "英语启蒙风",
@@ -1771,6 +2045,18 @@
         "promptHash": "dd3db3292d97481926d7e21e446df9164373f55e9ae80ec468cee8712b220c54",
         "status": "待生成验证",
         "basePromptHash": "6eafd903b0fcec09f443fab2af2b64d8d776b6bc8b8fe4df8ca3543684786adc"
+      },
+      "interiorReview": {
+        "id": "S18",
+        "style": "英语启蒙风",
+        "title": "长单词拼写",
+        "source": "9字母拼写槽及字母池齐全。",
+        "old": "不透明大题板隔离背景，内容层次清楚。",
+        "v1": "槽位齐全，但书架和台面贴近拼写区。",
+        "action": "保留线上任务板；无需为“内页干净”去掉有效题板。",
+        "rules": "P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1809,16 +2095,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "主标题存在图文重复。"
+          "coverReview": "主标题存在图文重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "主标题存在图文重复。"
+          },
+          "findings": "内页复查：浅色实底田字格清楚。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S19/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S19-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S19/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S19/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-dX7tMHksRoWwwJb-yCiaVQ/index.html",
@@ -1838,16 +2132,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】变成普通教室与小标题，入口退化为极小符号，主题与入口均弱化。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：组合槽透明，背景窗框穿过槽位。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】变成普通教室与小标题，入口退化为极小符号，主题与入口均弱化。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "变成普通教室与小标题，入口退化为极小符号，主题与入口均弱化。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S19/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S19-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S19/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S19/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-6EjjnXR_SsimGO1g9J2LRw/index.html",
@@ -1857,10 +2159,10 @@
         "elapsedSeconds": 147.4,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：变成普通教室与小标题，入口退化为极小符号，主题与入口均弱化。 原词需修：主标题存在图文重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留线上实底；教学格线独立于背景纹理。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "chinese_start",
         "displayName": "汉字启蒙风",
@@ -1868,6 +2170,18 @@
         "promptHash": "6e4b85111b0bcc24af8f6d598803ca6fd5527d7b14292cc339973a5cf4a3d3ea",
         "status": "待生成验证",
         "basePromptHash": "4b8bba85c81671af666ecdf28cfaf7aeea5bd18311c757c2c21b8c0f7d3ab76a"
+      },
+      "interiorReview": {
+        "id": "S19",
+        "style": "汉字启蒙风",
+        "title": "偏旁组合",
+        "source": "部件与组合槽可见。",
+        "old": "浅色实底田字格清楚。",
+        "v1": "组合槽透明，背景窗框穿过槽位。",
+        "action": "保留线上实底；教学格线独立于背景纹理。",
+        "rules": "P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -1905,18 +2219,28 @@
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
           "checks": {
-            "coverDesign": "pass"
+            "coverDesign": "pass",
+            "cover": "pass"
           },
-          "coverReview": "本截图未见明显重复。"
+          "coverReview": "本截图未见明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass",
+              "cover": "pass"
+            },
+            "coverReview": "本截图未见明显重复。"
+          },
+          "findings": "内页复查：此例封面已退出；分类标签白字在浅底上偏弱。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S20/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S20-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S20/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S20/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-kSP7pVGNToOhudQ2kfq3og/index.html",
@@ -1934,18 +2258,28 @@
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
           "checks": {
-            "coverDesign": "fail"
+            "coverDesign": "fail",
+            "cover": "fail"
           },
-          "findings": "【封面复查：V1已否决】剩普通黑字与云朵山丘，Q弹角色与核心艺术字丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：继承源版封面残留；主体图片有重绘。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail",
+              "cover": "fail"
+            },
+            "findings": "【封面复查：V1已否决】剩普通黑字与云朵山丘，Q弹角色与核心艺术字丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "剩普通黑字与云朵山丘，Q弹角色与核心艺术字丢失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S20/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S20-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S20/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S20/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-isa-nUFwS1i_-9y8QEzQAg/index.html",
@@ -1955,10 +2289,10 @@
         "elapsedSeconds": 165.3,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：剩普通黑字与云朵山丘，Q弹角色与核心艺术字丢失。 原词需修：本截图未见明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留线上退出封面的修复，保留V1深色标签；源缺陷单列修复。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "bouncy_cute",
         "displayName": "弹跳萌趣风",
@@ -1966,6 +2300,18 @@
         "promptHash": "e31d349555859108a822fa8f2329a462a45ef3ea65f9f7aefbe23c20709d5113",
         "status": "待生成验证",
         "basePromptHash": "bb08a0b7d14ac501991df325936a577e124a5db072039cfc9c47a0c8d5806339"
+      },
+      "interiorReview": {
+        "id": "S20",
+        "style": "弹跳萌趣风",
+        "title": "动物食物分类",
+        "source": "进入游戏后封面标题和Start仍透出。",
+        "old": "此例封面已退出；分类标签白字在浅底上偏弱。",
+        "v1": "继承源版封面残留；主体图片有重绘。",
+        "action": "保留线上退出封面的修复，保留V1深色标签；源缺陷单列修复。",
+        "rules": "P1/P5/P6",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2005,16 +2351,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "本截图未见明显重复。"
+          "coverReview": "本截图未见明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "本截图未见明显重复。"
+          },
+          "findings": "内页复查：深色面板隔离科技背景，内容清楚。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S21/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S21-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S21/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S21/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-dArd6dCrQl2tFDkTXhgpQw/index.html",
@@ -2034,16 +2388,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】退化为普通科技舱室，竞技感、人物和艺术字丢失，按钮对比也低。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：浅色面板也清楚；首屏未见必须改写的布局问题。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】退化为普通科技舱室，竞技感、人物和艺术字丢失，按钮对比也低。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "退化为普通科技舱室，竞技感、人物和艺术字丢失，按钮对比也低。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S21/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S21-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S21/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S21/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-W3P8gu64Q6KzZZzRRxy8Iw/index.html",
@@ -2053,10 +2415,10 @@
         "elapsedSeconds": 195.3,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：退化为普通科技舱室，竞技感、人物和艺术字丢失，按钮对比也低。 原词需修：本截图未见明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留现有题目与操作，风格化不应额外改业务。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "tech_competition",
         "displayName": "科技竞技风",
@@ -2064,6 +2426,18 @@
         "promptHash": "c884b993bc68c994f40cf9f0705a25f885a340e0109e1d98b30c6e8d871a7269",
         "status": "待生成验证",
         "basePromptHash": "abb827f33500c0acf8edfe67405743a7a820fc384182441c321121f7e7a54a18"
+      },
+      "interiorReview": {
+        "id": "S21",
+        "style": "科技竞技风",
+        "title": "小数比较",
+        "source": "小数题和比较符号清楚。",
+        "old": "深色面板隔离科技背景，内容清楚。",
+        "v1": "浅色面板也清楚；首屏未见必须改写的布局问题。",
+        "action": "保留现有题目与操作，风格化不应额外改业务。",
+        "rules": "P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2101,18 +2475,28 @@
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
           "checks": {
-            "coverDesign": "pass"
+            "coverDesign": "pass",
+            "interaction": "fail"
           },
-          "coverReview": "本截图未见明显重复。"
+          "coverReview": "本截图未见明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass",
+              "interaction": "fail"
+            },
+            "coverReview": "本截图未见明显重复。"
+          },
+          "findings": "内页复查：沿用源版坐标问题。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S22/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S22-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S22/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S22/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-oNgWGKmgRF26NVam30qjKQ/index.html",
@@ -2130,18 +2514,28 @@
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
           "checks": {
-            "coverDesign": "fail"
+            "coverDesign": "fail",
+            "interaction": "fail"
           },
-          "findings": "【封面复查：V1已否决】改成泛童话远景与小字，绘本房间和兔子主体消失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：仍沿用同一问题；浅色槽和按钮辨识度也弱。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail",
+              "interaction": "fail"
+            },
+            "findings": "【封面复查：V1已否决】改成泛童话远景与小字，绘本房间和兔子主体消失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "改成泛童话远景与小字，绘本房间和兔子主体消失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S22/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S22-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S22/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S22/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-kty9AGMaSQWn5YADFSlZTg/index.html",
@@ -2151,10 +2545,10 @@
         "elapsedSeconds": 224.1,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：改成泛童话远景与小字，绘本房间和兔子主体消失。 原词需修：本截图未见明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：先修源版坐标，再用于换肤对比；不得记为风格新增缺陷。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "misty_fairy",
         "displayName": "奶雾童话风",
@@ -2162,6 +2556,18 @@
         "promptHash": "59df989791fc2d11b668eef13fbeb17374cdf16fdfb734289bda2b0d8fe13e7d",
         "status": "待生成验证",
         "basePromptHash": "436fd43ea1a31d50fb68ab2b95bd8328cb3aa1c937a05145c72ee0209243301d"
+      },
+      "interiorReview": {
+        "id": "S22",
+        "style": "奶雾童话风",
+        "title": "古诗排序",
+        "source": "四张诗句卡实际位于画布下方，首屏无法拖。",
+        "old": "沿用源版坐标问题。",
+        "v1": "仍沿用同一问题；浅色槽和按钮辨识度也弱。",
+        "action": "先修源版坐标，再用于换肤对比；不得记为风格新增缺陷。",
+        "rules": "P5/P6",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2198,18 +2604,28 @@
         "executionLabel": "便捷风格测评链路",
         "evaluation": {
           "checks": {
-            "coverDesign": "fail"
+            "coverDesign": "fail",
+            "interaction": "fail"
           },
-          "coverReview": "原词保存产物是空白/未初始化首屏，无法比较原图式封面的美术优劣，需单独核查产物。"
+          "coverReview": "原词保存产物是空白/未初始化首屏，无法比较原图式封面的美术优劣，需单独核查产物。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail",
+              "interaction": "fail"
+            },
+            "coverReview": "原词保存产物是空白/未初始化首屏，无法比较原图式封面的美术优劣，需单独核查产物。"
+          },
+          "findings": "内页复查：CSS仅余基础重置，主界面近乎空白，不能正常评图。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S23/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S23-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S23/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S23/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-pHCzp6vEQjyHYJ1yVUp7dA/index.html",
@@ -2229,16 +2645,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】只有山丘背景和普通标题，未执行原有封面描述；不能因可显示就判艺术设计合格。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：页面恢复，图形更简洁；随机题目须按对象ID核对。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】只有山丘背景和普通标题，未执行原有封面描述；不能因可显示就判艺术设计合格。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "只有山丘背景和普通标题，未执行原有封面描述；不能因可显示就判艺术设计合格。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S23/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S23-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S23/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S23/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-7TIi9EUARfuShxhC2mNAqw/index.html",
@@ -2248,10 +2672,10 @@
         "elapsedSeconds": 170.8,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：只有山丘背景和普通标题，未执行原有封面描述；不能因可显示就判艺术设计合格。 原词需修：原词保存产物是空白/未初始化首屏，无法比较原图式封面的美术优劣，需单独核查产物。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：缺样式为硬失败；源图语义有疑问时先修正基线。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "lowpoly_kids",
         "displayName": "低多边形童趣风",
@@ -2259,6 +2683,18 @@
         "promptHash": "74de2acbb661a1ff29a251a329d272a878823c445f7c615be1dd665eb4583670",
         "status": "待生成验证",
         "basePromptHash": "e0346dd89d9341b0ec23a025e685ae8ce9b1e1610db08aa1f85b7a94e5d84d8d"
+      },
+      "interiorReview": {
+        "id": "S23",
+        "style": "低多边形童趣风",
+        "title": "立体图形辨认",
+        "source": "有教具图，但长方体示例含斜面，需核对教学准确性。",
+        "old": "CSS仅余基础重置，主界面近乎空白，不能正常评图。",
+        "v1": "页面恢复，图形更简洁；随机题目须按对象ID核对。",
+        "action": "缺样式为硬失败；源图语义有疑问时先修正基线。",
+        "rules": "P3/P6",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2297,16 +2733,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "本截图未见明显重复。"
+          "coverReview": "本截图未见明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "本截图未见明显重复。"
+          },
+          "findings": "内页复查：边缘装饰可控，卡片清楚。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S24/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S24-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S24/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S24/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-tKS9xJC2TQCSBMDZIsTMVA/index.html",
@@ -2326,16 +2770,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】极简被误做成空白：小标题、小插图、小按钮，视觉层级退化。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：平底更简洁，卡片清楚，暂无明确首屏硬失败。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】极简被误做成空白：小标题、小插图、小按钮，视觉层级退化。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "极简被误做成空白：小标题、小插图、小按钮，视觉层级退化。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S24/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S24-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S24/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S24/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-W7g_w_3rQK6Va5e3KfMS2A/index.html",
@@ -2345,10 +2797,10 @@
         "elapsedSeconds": 184.9,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：极简被误做成空白：小标题、小插图、小按钮，视觉层级退化。 原词需修：本截图未见明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：不强行判胜负；保留主题与清楚连线区域即可。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "minimal_flat",
         "displayName": "极简扁平童趣风",
@@ -2356,6 +2808,18 @@
         "promptHash": "7d6364f2f3576a4f9d20ae8822a9810629f69faa59a3d92846d071fc3ef88de0",
         "status": "待生成验证",
         "basePromptHash": "2386c6b870f4fb73f436c9916e99230c611a06e3e25fdea7195eccdb7110883f"
+      },
+      "interiorReview": {
+        "id": "S24",
+        "style": "极简扁平童趣风",
+        "title": "近义词连线",
+        "source": "近义词卡和连线空间清楚。",
+        "old": "边缘装饰可控，卡片清楚。",
+        "v1": "平底更简洁，卡片清楚，暂无明确首屏硬失败。",
+        "action": "不强行判胜负；保留主题与清楚连线区域即可。",
+        "rules": "P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2395,16 +2859,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "本截图未见明显重复。"
+          "coverReview": "本截图未见明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "本截图未见明显重复。"
+          },
+          "findings": "内页复查：同样67×67图框，图标实际约19×21像素；最长句换行。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S25/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S25-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S25/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S25/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-cAYam1X9SM-roIGJyFwMyw/index.html",
@@ -2424,16 +2896,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】变成近写实旧教室＋耳机贴图，原奶油童趣交换机视觉被替换。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：图标增加金属外壳；槽位透出复杂机房背景。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】变成近写实旧教室＋耳机贴图，原奶油童趣交换机视觉被替换。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "变成近写实旧教室＋耳机贴图，原奶油童趣交换机视觉被替换。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S25/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S25-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S25/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S25/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-Ukndbv7HSqWJpjPWvcgcsg/index.html",
@@ -2443,10 +2923,10 @@
         "elapsedSeconds": 183.8,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：变成近写实旧教室＋耳机贴图，原奶油童趣交换机视觉被替换。 原词需修：本截图未见明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：验收实际图形大小，保留播放符号和稳定槽位底色。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "telephone_switchboard",
         "displayName": "电话接线风",
@@ -2454,6 +2934,18 @@
         "promptHash": "cf79a15134ebda31a0d3f42131f3854984739405a8c366c615b9b341fe6508d9",
         "status": "待生成验证",
         "basePromptHash": "ca271ef38a5d106a414dd07286f29876226ff4ff7b4489c1313520c0c2277461"
+      },
+      "interiorReview": {
+        "id": "S25",
+        "style": "电话接线风",
+        "title": "电话问候排序",
+        "source": "播放符号实际约44×44像素。",
+        "old": "同样67×67图框，图标实际约19×21像素；最长句换行。",
+        "v1": "图标增加金属外壳；槽位透出复杂机房背景。",
+        "action": "验收实际图形大小，保留播放符号和稳定槽位底色。",
+        "rules": "P4/P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2493,16 +2985,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "主标题、进入按钮明显重复。"
+          "coverReview": "主标题、进入按钮明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "主标题、进入按钮明显重复。"
+          },
+          "findings": "内页复查：白色网格底板，坐标与题干更清楚。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S26/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S26-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S26/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S26/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-8NrvQ-dYRSSLFA24vJ8AzA/index.html",
@@ -2522,16 +3022,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】变成普通海景房间，海图指挥台与艺术标题丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：半透明底板，船形装饰靠近横轴数字。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】变成普通海景房间，海图指挥台与艺术标题丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "变成普通海景房间，海图指挥台与艺术标题丢失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S26/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S26-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S26/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S26/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-bFbYSJsXSj2dxDe7Zltjmw/index.html",
@@ -2541,10 +3049,10 @@
         "elapsedSeconds": 119.3,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：变成普通海景房间，海图指挥台与艺术标题丢失。 原词需修：主标题、进入按钮明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：保留线上实底网格与坐标净空。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "seaMapCommand",
         "displayName": "海图指挥台风",
@@ -2552,6 +3060,18 @@
         "promptHash": "3a4b5f52a680b2fced7873743c19f17c13e2d69568bf72b941d656807dbb575f",
         "status": "待生成验证",
         "basePromptHash": "cf7bd83dc1b6de3193d00b3eb1f477dbb248696357ad0991bd3d4bf3f0e32b50"
+      },
+      "interiorReview": {
+        "id": "S26",
+        "style": "海图指挥台风",
+        "title": "坐标寻宝",
+        "source": "透明坐标网格可见背景。",
+        "old": "白色网格底板，坐标与题干更清楚。",
+        "v1": "半透明底板，船形装饰靠近横轴数字。",
+        "action": "保留线上实底网格与坐标净空。",
+        "rules": "P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2591,16 +3111,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "本截图未见明显重复。"
+          "coverReview": "本截图未见明显重复。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "本截图未见明显重复。"
+          },
+          "findings": "内页复查：保留字形与格线，边缘装饰未明显遮挡。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S27/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S27-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S27/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S27/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-eq8zwJLYQyW3nZfLCfZ-yA/index.html",
@@ -2620,16 +3148,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】只剩草地和开始按钮，标题、副标题与主角色全部丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：画面更简洁，字形和选项仍可见。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】只剩草地和开始按钮，标题、副标题与主角色全部丢失。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "只剩草地和开始按钮，标题、副标题与主角色全部丢失。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S27/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S27-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S27/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S27/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-W2gXu2oZT9GBw_8A_O5MKQ/index.html",
@@ -2639,10 +3175,10 @@
         "elapsedSeconds": 227.7,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：只剩草地和开始按钮，标题、副标题与主角色全部丢失。 原词需修：本截图未见明显重复。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：本例未见必须重写的首屏问题；继续守住字形和格线。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "hanzi_board",
         "displayName": "汉字白板风",
@@ -2650,6 +3186,18 @@
         "promptHash": "5677341b4de77c8b434227447f04277d13ac6782549a9f73ffb44724e194a670",
         "status": "待生成验证",
         "basePromptHash": "09ab104fef2c65397108d85c7129fc61c0d79d61ce312b9b1d50753ba31ba30e"
+      },
+      "interiorReview": {
+        "id": "S27",
+        "style": "汉字白板风",
+        "title": "田字格识字",
+        "source": "字形、田字格和三个选项可见。",
+        "old": "保留字形与格线，边缘装饰未明显遮挡。",
+        "v1": "画面更简洁，字形和选项仍可见。",
+        "action": "本例未见必须重写的首屏问题；继续守住字形和格线。",
+        "rules": "P3/P5",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2688,16 +3236,24 @@
           "checks": {
             "coverDesign": "pass"
           },
-          "coverReview": "主标题、副标题存在重复叠加。"
+          "coverReview": "主标题、副标题存在重复叠加。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "pass"
+            },
+            "coverReview": "主标题、副标题存在重复叠加。"
+          },
+          "findings": "内页复查：水果主体仍可辨，容器约250×250。",
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S28/old/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S28-old.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S28/old/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S28/old/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22-4NBdXiIsTjiN_3ajYopjlg/index.html",
@@ -2717,16 +3273,24 @@
           "checks": {
             "coverDesign": "fail"
           },
-          "findings": "【封面复查：V1已否决】退化为纸片背景＋普通小标题按钮，主题与主角色被抹去。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          "findings": "内页复查：水果容器约217×217；橙子被徽章外圈包围，喇叭变成方形饰件。",
+          "previousReviewBeforeInteriorAudit": {
+            "checks": {
+              "coverDesign": "fail"
+            },
+            "findings": "【封面复查：V1已否决】退化为纸片背景＋普通小标题按钮，主题与主角色被抹去。 原四维评分撤回，历史生成物和已实测的交互记录保留。"
+          },
+          "method": "2026-10-24实际进入内页截图、素材与代码核查。未给出四维总分；非全部关卡验收。",
+          "coverReview": "退化为纸片背景＋普通小标题按钮，主题与主角色被抹去。"
         },
         "screenshots": [
           {
-            "url": "assets/style-ab-evidence/S28/new/cover.webp",
-            "label": "封面 / 首屏"
+            "url": "assets/style-interior-20261024/S28-new.webp",
+            "label": "内页复查 · 10月24日"
           },
           {
-            "url": "assets/style-ab-evidence/S28/new/game.webp",
-            "label": "教学操作页"
+            "url": "assets/style-ab-evidence/S28/new/cover.webp",
+            "label": "封面 / 首屏"
           }
         ],
         "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/22--acb_0MpR7eFruJ3hRSTBA/index.html",
@@ -2736,10 +3300,10 @@
         "elapsedSeconds": 334.6,
         "errorMessage": null,
         "historicalEvaluation": {},
-        "reviewStatus": "rejected",
-        "variantLabel": "V1 改写 · 已否决"
+        "reviewStatus": "cover_rejected_interior_reviewed",
+        "variantLabel": "V1试验版 · 分项复查"
       },
-      "comparisonSummary": "更正结论：退化为纸片背景＋普通小标题按钮，主题与主角色被抹去。 原词需修：主标题、副标题存在重复叠加。 V2仅修改原词第2节接入规则，原美术描述逐字保留；尚未生成，右侧仍是被否决的V1结果。",
+      "comparisonSummary": "10月24日分项结论：图形主体优先，减少素材内边框；保护音频按钮符号。 V2.1已整理为待评审提示词，尚未生成；右侧仍为既有V1产物。",
       "candidateV2": {
         "styleCode": "candy_task_board",
         "displayName": "糖果任务板风",
@@ -2747,6 +3311,18 @@
         "promptHash": "6d79a91faabb921e516fd8c884fbd2d5d903b1946b8e0fdee6c0a7d5c115cd1c",
         "status": "待生成验证",
         "basePromptHash": "877fa1b4433179ee21ba74bc9c4df1a28866e45a1f7a14886039de3d63dd9430"
+      },
+      "interiorReview": {
+        "id": "S28",
+        "style": "糖果任务板风",
+        "title": "水果听音选图",
+        "source": "水果主体可辨；图像容器约267×267像素。",
+        "old": "水果主体仍可辨，容器约250×250。",
+        "v1": "水果容器约217×217；橙子被徽章外圈包围，喇叭变成方形饰件。",
+        "action": "图形主体优先，减少素材内边框；保护音频按钮符号。",
+        "rules": "P3/P4",
+        "date": "2026-10-24",
+        "scope": "实际内页首屏、素材及相关代码检查；定向操作验收见详情"
       }
     },
     {
@@ -2935,5 +3511,5 @@
       }
     }
   ],
-  "revisionNotice": "封面复查更正：原艺术字、角色、场景和按钮设计被V1削弱。现在仅禁止HTML重复叠加，保留图片封面的完整设计。右侧历史V1不代表V2效果。"
+  "revisionNotice": "10月24日内页复查：查看19种三版证据与V2.1逐条改动，再决定是否生成。"
 }

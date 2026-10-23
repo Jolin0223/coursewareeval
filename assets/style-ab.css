@@ -4,3 +4,8 @@
 .sab-revision-note{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 19px;background:#fffbeb;color:#854d0e;border-bottom:1px solid #fde68a;font-size:12px;line-height:1.8}.sab-revision-notice{padding:14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;margin-top:16px;font-size:13px;line-height:1.8;color:#9a3412}.sab-revision-notice .sab-toolbar{margin-top:10px}.sab-variant[data-review-status="rejected"]{border-color:#fca5a5}.sab-variant[data-review-status="rejected"] .sab-variant-head{background:#fff1f2}.sab-variant[data-review-status="rejected"] .sab-tag{color:#9f1239;border-color:#fecdd3;background:#fff1f2}
 
 .sab-dialog-body{overflow-wrap:anywhere}.sab-dialog-head b{min-width:0;overflow-wrap:anywhere}
+
+/* 默认运行课件；截图仅作为手动切换的实测证据。 */
+.sab-preview-mode{font-size:10px;line-height:1.6;color:#64748b;background:#fff;padding:5px 12px;border-bottom:1px solid #e2e8f0}.sab-toolbar .sab-btn.selected,.sab-screenshot-nav .sab-btn.selected{color:#1d4ed8;border-color:#93b7fe;background:#eff6ff}.sab-screenshot-nav{flex-wrap:wrap;align-items:center}.sab-case-head>.sab-toolbar{flex-shrink:0}@media(max-width:700px){.sab-case-head{flex-wrap:wrap}.sab-case-head>.sab-toolbar{flex-shrink:1}}
+
+.sab-preview-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#64748b;padding:18px;text-align:center;font-size:12px;line-height:1.8;z-index:1}
