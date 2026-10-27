@@ -2089,6 +2089,8 @@
                             <p class="mt-2 text-sm text-slate-700">${escapeHtml(generationExperimentData.currentRun.note)}</p>
                             <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(generationExperimentData.currentRun.boundary)}</p>
                             <div class="mt-3 text-xs font-bold text-blue-900">本轮生成：成功 ${generationExperimentData.currentRun.successCount} / 28 · 失败 ${generationExperimentData.currentRun.failureCount} · 待完成 ${generationExperimentData.currentRun.pendingCount}</div>
+                            ${generationExperimentData.currentRun.verificationNote ? `<p class="mt-2 text-xs leading-5 text-slate-600">${escapeHtml(generationExperimentData.currentRun.verificationNote)}</p>` : ''}
+                            ${generationExperimentData.currentRun.historicalBaselineNote ? `<p class="mt-1 text-xs leading-5 text-amber-800">${escapeHtml(generationExperimentData.currentRun.historicalBaselineNote)}</p>` : ''}
                         </section>` : ''}
                     ${renderGenerationExperimentFilters(cases, runStats)}
                     <div class="space-y-6">
@@ -2126,7 +2128,7 @@
                 testFailed,
                 manualTotal: manualCases.length,
                 manualPending: manualCases.filter(item => !getGenerationExperimentSelectedVersion(item)?.fileUrl).length,
-                productionPending: cases.filter(item => !getGenerationExperimentSelectedProductionVersion(item)?.fileUrl).length
+                productionPending: automaticCases.filter(item => !getGenerationExperimentSelectedProductionVersion(item)?.fileUrl).length
             };
         }
 
@@ -2173,7 +2175,7 @@
                         <div><div class="text-[11px] text-slate-400">当前显示</div><div class="text-lg font-black text-blue-700">${stats.visible}</div></div>
                         <div><div class="text-[11px] text-slate-400">测试环境已生成</div><div class="text-lg font-black ${stats.testFailed ? 'text-amber-700' : 'text-green-700'}">${stats.testGenerated}<span class="text-xs text-slate-400 ml-1">/ ${stats.automaticTotal}</span></div></div>
                         <div><div class="text-[11px] text-slate-400">待手动生成</div><div class="text-lg font-black text-amber-700">${stats.manualPending}<span class="text-xs text-slate-400 ml-1">/ ${stats.manualTotal}</span></div></div>
-                        <div><div class="text-[11px] text-slate-400">线上已生成</div><div class="text-lg font-black ${stats.productionPending ? 'text-amber-700' : 'text-green-700'}">${stats.total - stats.productionPending}<span class="text-xs text-slate-400 ml-1">/ ${stats.total}</span></div></div>
+                        <div><div class="text-[11px] text-slate-400">线上已生成</div><div class="text-lg font-black ${stats.productionPending ? 'text-amber-700' : 'text-green-700'}">${stats.automaticTotal - stats.productionPending}<span class="text-xs text-slate-400 ml-1">/ ${stats.automaticTotal}</span></div></div>
                     </div>
                 </section>
             `;
@@ -2382,6 +2384,7 @@
                             `
                             : `<div class="w-full h-full flex flex-col items-center justify-center text-slate-400 text-sm px-6 text-center"><i class="fa-regular fa-window-maximize text-xl mb-2"></i><span>${isBaseline ? '线上正式环境结果待补跑' : isManualCase ? '待Jolin手动生成' : variant.status === 'failed' ? '本次生成未完成，等待断点续跑' : '测试环境结果待生成'}</span>${variant.error ? `<span class="text-xs text-red-500 mt-2">${escapeHtml(variant.error)}</span>` : ''}</div>`}
                     </div>
+                    ${variant.verification ? `<div class="px-4 py-3 border-t border-slate-100 text-xs leading-5 text-slate-600"><div class="font-bold text-slate-800">本轮检查记录</div><div>JS语法：${escapeHtml(variant.verification.scriptSyntax)} · 包内路径：${escapeHtml(variant.verification.literalResourceReferences)} · 音频解码：${escapeHtml(variant.verification.audioDecode)}（${variant.verification.audioFileCount}个文件）</div>${Number.isInteger(variant.verification.httpResourceCount) ? `<div>在线资源：${variant.verification.httpResourceCount - variant.verification.httpFailureCount} / ${variant.verification.httpResourceCount} 可访问</div>` : ''}<div>画面：${escapeHtml(variant.verification.visualStatus)} · 交互：待验证 · 音频听感：待验证</div>${variant.verification.visualNote ? `<p class="mt-1">${escapeHtml(variant.verification.visualNote)}</p>` : ''}${(variant.verification.sourceFindings || []).map(f => `<p class="mt-2 text-amber-800">源码待复测 · ${escapeHtml(f.promptRule)}：${escapeHtml(f.finding)} <span class="font-mono">${escapeHtml(f.file)}:${f.line}</span></p>`).join('')}</div>` : ''}
                     ${hasPreview && canEvaluate ? `
                         <div class="p-4 space-y-4 generation-experiment-score-card" data-case-id="${escapeAttr(item.id)}" data-variant-id="${escapeAttr(variant.id)}">
                             ${renderGenerationExperimentScoreCardBody(item, variant, rating, isLatestPromptVersion)}
