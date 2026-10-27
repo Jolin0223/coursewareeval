@@ -1,0 +1,1723 @@
+{
+  "name": "10月27日 V1 · 原始Badcase定向复测",
+  "cases": [
+    {
+      "id": "Q98670",
+      "queryId": "98670",
+      "query": "适当扩大选项框大小，确保所有选项算式内容均可完整显示于框内",
+      "originalConversationId": "21965d891dbd499b98354c67061fecf9",
+      "before": {
+        "snapshot_id": "abc25d9fc34d4fa78c8877f530a5fa61",
+        "version": "4",
+        "sequence": "4",
+        "snapshot_time": "2026-10-07 08:22:10",
+        "generation_end": "2026-10-07 08:22:15.279272819",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/07-5Vv3FEpDTiCiPD9AMm23Yg/index.html",
+        "source_user_message_id": "128406",
+        "assistant_message_id": "128407",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "61fa6bdf17b94d09a40b783da98c3035",
+        "version": "5",
+        "sequence": "5",
+        "snapshot_time": "2026-10-07 08:26:02",
+        "generation_end": "2026-10-07 08:26:07.975009780",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/07-khnyxZi9Tvu_jxAG4Qep0Q/index.html",
+        "source_user_message_id": "98670",
+        "assistant_message_id": "98671",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/07-5Vv3FEpDTiCiPD9AMm23Yg/package.zip",
+      "fileName": "等差数列求和PK",
+      "rules": [
+        "P01",
+        "A03"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "文字与布局",
+      "title": "长算式选项框",
+      "acceptance": "四个选项的完整算式均在框内，字号仍适合课堂；判分与抢答玩法不变。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q98670",
+        "status": "success",
+        "conversationId": "3f14576b1ce24ce5922a115f75df1ce5",
+        "generationMessageId": 39908,
+        "finishedAt": "2026-10-27T06:10:41.419888+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-xB0-QWZiRl6CxcbVShGrow/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-xB0-QWZiRl6CxcbVShGrow/package.zip",
+        "fileName": "等差数列求和PK",
+        "snapshotId": "56b174b01a7d4dea92d931a18b574f77",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "29540084e6a14216ae6c9da2cdfe7b0c",
+        "sourceSnapshotId": "abc25d9fc34d4fa78c8877f530a5fa61",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "首屏改善",
+          "text": "选项框扩大、字号从48降到42；本次截图中四个完整算式与边框的间距更充足。",
+          "scope": "1280×720真实截图；随机题目不同，未固定随机种子，不代表出题内容被改动。",
+          "tone": "good"
+        },
+        {
+          "label": "范围控制",
+          "text": "仅css/style.css变化，出题、判分脚本和素材保留。抢答按钮点击测试超时，未确认完整玩法。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q98670",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 6333
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q98670",
+        "environment": "test",
+        "htmlSha256": "ac47b211b44bf288845da8dbc2d7bee1d3278bc379e46e45e3f032db8de70417",
+        "fileCount": 12,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 0,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "css/style.css"
+        ],
+        "added": [],
+        "removed": []
+      },
+      "sourceEvidence": [],
+      "screenshots": [
+        {
+          "label": "修改前原版 · 1280×720",
+          "url": "assets/badcase-20261027/Q98670-before.jpg"
+        },
+        {
+          "label": "本次测试修改后 · 1280×720",
+          "url": "assets/badcase-20261027/Q98670-after.jpg"
+        }
+      ]
+    },
+    {
+      "id": "Q158199",
+      "queryId": "158199",
+      "query": "优化 挖掘坑显示不完整，将挖掘坑两排呈现",
+      "originalConversationId": "6328e0261848437ba49d242bbc557b49",
+      "before": {
+        "snapshot_id": "42605b7ea8d641b5a043bc0ce8d81dbd",
+        "version": "5",
+        "sequence": "5",
+        "snapshot_time": "2026-10-06 23:00:11",
+        "generation_end": "2026-10-06 23:00:18.009033948",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-W8u0Ke09RoektmKENJLpEw/index.html",
+        "source_user_message_id": "158195",
+        "assistant_message_id": "158196",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "dca65e3b2e2542759879a92d65e22437",
+        "version": "6",
+        "sequence": "6",
+        "snapshot_time": "2026-10-06 23:05:48",
+        "generation_end": "2026-10-06 23:05:55.618377586",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-QC6pFfG9SGidso94x4ndSg/index.html",
+        "source_user_message_id": "158199",
+        "assistant_message_id": "158200",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-W8u0Ke09RoektmKENJLpEw/package.zip",
+      "fileName": "恐龙化石拼图 — 连词成句大冒险",
+      "rules": [
+        "P01"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "文字与布局",
+      "title": "挖掘坑两排布局",
+      "acceptance": "挖掘坑分两排且全部可见；不减少坑位、词语和游戏步骤。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q158199",
+        "status": "success",
+        "conversationId": "a228ff2e19564b1d9b57b3c062822dd7",
+        "generationMessageId": 39920,
+        "finishedAt": "2026-10-27T06:14:09.710937+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-K4Y1lUk8Sbq0WEnRRSxNLA/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-K4Y1lUk8Sbq0WEnRRSxNLA/package.zip",
+        "fileName": "恐龙化石拼图 — 连词成句大冒险",
+        "snapshotId": "0d2fb39f2016462c8571347c8bf7f8e9",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "3d7ccc1bd4464271adef9f218c9096ce",
+        "sourceSnapshotId": "42605b7ea8d641b5a043bc0ce8d81dbd",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "第一关已改善",
+          "text": "原版第一关坑位横向超出画布；本次点击开始后，10个坑位按6+4两排完整显示。关卡词语未删减。",
+          "scope": "1280×720同尺寸前后截图及开始操作。",
+          "tone": "good"
+        },
+        {
+          "label": "仍需看后续关卡",
+          "text": "实现采用自动换行；本次确认第一关两排，后续9、6、12个词的关卡及完整拖拽通关尚未实测。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        },
+        {
+          "label": "额外改动",
+          "text": "另增加3处结算期间禁止操作的保护，并删除wormhole.png。需确认这些变化是否必要，不能仅凭文件变化判定改坏。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q158199",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 5441
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q158199",
+        "environment": "test",
+        "htmlSha256": "ab1e0c8e6e1aa53b4958f5b615a3a635febc3406b19a14dea2a5d316b04df45e",
+        "fileCount": 18,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 0,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "css/style.css",
+          "js/main.js"
+        ],
+        "added": [],
+        "removed": [
+          "images/wormhole.png"
+        ]
+      },
+      "sourceEvidence": [],
+      "screenshots": [
+        {
+          "label": "修改前原版 · 1280×720",
+          "url": "assets/badcase-20261027/Q158199-before.jpg"
+        },
+        {
+          "label": "本次测试修改后 · 1280×720",
+          "url": "assets/badcase-20261027/Q158199-after.jpg"
+        }
+      ]
+    },
+    {
+      "id": "Q158083",
+      "queryId": "158083",
+      "query": "选择框的单词稍稍小一点，在方框内",
+      "originalConversationId": "fecae8a417b84a79a6a533b3db9a2b4a",
+      "before": {
+        "snapshot_id": "c9e7fc2911264bc292565a5617b5a284",
+        "version": "1",
+        "sequence": "1",
+        "snapshot_time": "2026-10-06 15:53:08",
+        "generation_end": "2026-10-06 15:53:13.289535518",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-IN61hm5NRTORDCYU7tnMHA/index.html",
+        "source_user_message_id": "128285",
+        "assistant_message_id": "128286",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "8cfd2ef602e14910b3185a7865ee7a9c",
+        "version": "2",
+        "sequence": "2",
+        "snapshot_time": "2026-10-06 15:56:30",
+        "generation_end": "2026-10-06 15:56:35.759992636",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-b_wpmPzhSGiLlVyGpYjKUw/index.html",
+        "source_user_message_id": "158083",
+        "assistant_message_id": "158084",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-IN61hm5NRTORDCYU7tnMHA/package.zip",
+      "fileName": "Listen and Choose",
+      "rules": [
+        "P01"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "文字与布局",
+      "title": "长单词选项显示",
+      "acceptance": "cinema、train station、playground、swimming pool都在选项框内；双人玩法与音频对应保留。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q158083",
+        "status": "success",
+        "conversationId": "198d5e1dd0f84fd09874fa49007afcae",
+        "generationMessageId": 39918,
+        "finishedAt": "2026-10-27T06:12:04.878817+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-JRtET_LvTmOSoyzaeYvW7A/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-JRtET_LvTmOSoyzaeYvW7A/package.zip",
+        "fileName": "Listen and Choose",
+        "snapshotId": "a939cafa08f34254b7537e410f5ae4b9",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "fbcb54227746469fba369cd248c7ac5a",
+        "sourceSnapshotId": "c9e7fc2911264bc292565a5617b5a284",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "范围控制",
+          "text": "仅把选项字号64改为42，JS、图片和音频未变。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": "good"
+        },
+        {
+          "label": "首屏已改善",
+          "text": "同尺寸截图中，原版playground超出框线；本次四个词在双方选项框内完整显示。",
+          "scope": "1280×720真实前后截图；随机选项次序不同，双人判分和音频对应仍待验证。",
+          "tone": "good"
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q158083",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 3469
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q158083",
+        "environment": "test",
+        "htmlSha256": "12f9266f5cc0bc3fe93f8da8f9b3a23f228f10923d551ca39174f6096a138fa7",
+        "fileCount": 17,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 4,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "css/style.css"
+        ],
+        "added": [],
+        "removed": []
+      },
+      "sourceEvidence": [],
+      "screenshots": [
+        {
+          "label": "修改前原版 · 1280×720",
+          "url": "assets/badcase-20261027/Q158083-before.jpg"
+        },
+        {
+          "label": "本次测试修改后 · 1280×720",
+          "url": "assets/badcase-20261027/Q158083-after.jpg"
+        }
+      ]
+    },
+    {
+      "id": "Q95982",
+      "queryId": "95982",
+      "query": "还是没有语音呢，检查一下是怎么回事，仔细排查原因",
+      "originalConversationId": "667f1dba956245bc9d6b8fa26cedd87f",
+      "before": {
+        "snapshot_id": "424aba5f4ff14c208e63d4645572bfd5",
+        "version": "6",
+        "sequence": "6",
+        "snapshot_time": "2026-09-23 17:52:32",
+        "generation_end": "2026-09-23 17:52:38.912377092",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-5agx6AAiSL2Hlink6tUW4g/index.html",
+        "source_user_message_id": "95974",
+        "assistant_message_id": "95975",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "e0e5cb9cb25c4fe094f3dc24b70d8158",
+        "version": "7",
+        "sequence": "7",
+        "snapshot_time": "2026-09-23 17:55:54",
+        "generation_end": "2026-09-23 17:56:02.373492290",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-p9UEFBeqQbK6T-vBdI60dw/index.html",
+        "source_user_message_id": "95982",
+        "assistant_message_id": "95983",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-5agx6AAiSL2Hlink6tUW4g/package.zip",
+      "fileName": "Let's match! 句子贪吃蛇",
+      "rules": [
+        "P03",
+        "A02"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "音频能力",
+      "title": "播放资源缺失",
+      "acceptance": "原有朗读入口能找到有效语音资源；播放失败能结束等待并重试，不能用提示图标冒充语音。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q95982",
+        "status": "success",
+        "conversationId": "294cba69c41642bc97ffd2675d4809ca",
+        "generationMessageId": 39919,
+        "finishedAt": "2026-10-27T06:14:12.675289+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-5sO6bPDVQQSRtSwdC7lK4w/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-5sO6bPDVQQSRtSwdC7lK4w/package.zip",
+        "fileName": "Let's match! 句子贪吃蛇",
+        "snapshotId": "2b8f799584e4484fa69edd3735f51e82",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "f4658b628840469e94ce3ffa8bbdb995",
+        "sourceSnapshotId": "424aba5f4ff14c208e63d4645572bfd5",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "资源缺失已补齐",
+          "text": "本次新增26个MP3，26/26通过线上HTTP 200、包内文件一致性和音频解码检查。",
+          "scope": "资源访问与解码已核验；未实际听音，不等于播放内容、音量和时机正确。",
+          "tone": "good"
+        },
+        {
+          "label": "播放处理",
+          "text": "新增首次触摸/点击解锁音频的处理。实际按钮播放、播放失败后重试仍需验证。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q95982",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 5298
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_on.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 8244
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_classroom.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 9588
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_zoo.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 9012
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_monkey.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 9588
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_in.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 8244
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_doll.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 8244
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_the.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 9204
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_20_chairs.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 13044
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_are.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 7284
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/sentence_6.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 19572
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_is.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 9972
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_a_pen.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 8244
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/sentence_4.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 21876
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/sentence_5.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 17076
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/sentence_1.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 18804
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_there.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 9204
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/sentence_2.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 20148
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/sentence_3.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 15540
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_my.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 8244
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_schoolbag.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 10932
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_house.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 9972
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_a.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 7476
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_5_rooms.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 11700
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_desk.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 9204
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_book.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 8244
+        },
+        {
+          "caseId": "Q95982",
+          "path": "audio/word_bed.mp3",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 7476
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q95982",
+        "environment": "test",
+        "htmlSha256": "8e2bc1a2e133f2e137478124e72a15e2416531c5334c9e60063937693cdafa1c",
+        "fileCount": 36,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 26,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "js/audio.js"
+        ],
+        "added": [
+          "audio/sentence_1.mp3",
+          "audio/sentence_2.mp3",
+          "audio/sentence_3.mp3",
+          "audio/sentence_4.mp3",
+          "audio/sentence_5.mp3",
+          "audio/sentence_6.mp3",
+          "audio/word_20_chairs.mp3",
+          "audio/word_5_rooms.mp3",
+          "audio/word_a.mp3",
+          "audio/word_a_pen.mp3",
+          "audio/word_are.mp3",
+          "audio/word_bed.mp3",
+          "audio/word_book.mp3",
+          "audio/word_classroom.mp3",
+          "audio/word_desk.mp3",
+          "audio/word_doll.mp3",
+          "audio/word_house.mp3",
+          "audio/word_in.mp3",
+          "audio/word_is.mp3",
+          "audio/word_monkey.mp3",
+          "audio/word_my.mp3",
+          "audio/word_on.mp3",
+          "audio/word_schoolbag.mp3",
+          "audio/word_the.mp3",
+          "audio/word_there.mp3",
+          "audio/word_zoo.mp3"
+        ],
+        "removed": []
+      },
+      "sourceEvidence": []
+    },
+    {
+      "id": "Q123617",
+      "queryId": "123617",
+      "query": "无法开始？？？？注意我说的不需要录音指的是不需要录入学生的语音，其他课文有音频，到挖空处音频暂停，学生说出后老师会点击空白处，触发对应挖空单词的弹出，随后未挖空的音频继续",
+      "originalConversationId": "2b4500651f564a898b4fff7bf2f5794f",
+      "before": {
+        "snapshot_id": "23bd3157ef1e4b28a78d8293fc0e7dbf",
+        "version": "1",
+        "sequence": "1",
+        "snapshot_time": "2026-09-20 14:44:46",
+        "generation_end": "2026-09-20 14:44:51.610790987",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/20-azca1A3ITHC0le3oScRoRg/index.html",
+        "source_user_message_id": "123611",
+        "assistant_message_id": "123612",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "8a08d05350fa4eecb04548e3acaee59b",
+        "version": "2",
+        "sequence": "2",
+        "snapshot_time": "2026-09-20 14:49:46",
+        "generation_end": "2026-09-20 14:49:52.121231106",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/20-J3YCuMNmRs-Zx1jAc0qWFA/index.html",
+        "source_user_message_id": "123617",
+        "assistant_message_id": "123618",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/20-azca1A3ITHC0le3oScRoRg/package.zip",
+      "fileName": "Dialogue Challenge",
+      "rules": [
+        "P03",
+        "A01"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "音频能力",
+      "title": "去录音但保留课文播放",
+      "acceptance": "不采集学生声音；课文播放到挖空处暂停，老师点击空白揭词后继续，开始入口可用。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q123617",
+        "status": "success",
+        "conversationId": "908efb633d5147d99bf513fe6528bece",
+        "generationMessageId": 39928,
+        "finishedAt": "2026-10-27T06:16:22.151236+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-OrQ_A-3zRdKxiu9-e8uaYg/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-OrQ_A-3zRdKxiu9-e8uaYg/package.zip",
+        "fileName": "Dialogue Challenge",
+        "snapshotId": "2627c95ee7834b4d8822cd6c13da4afa",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "330793fb4a694605baf1940c49d71d53",
+        "sourceSnapshotId": "23bd3157ef1e4b28a78d8293fc0e7dbf",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "部分落实",
+          "text": "录音和评测代码已去掉，课文音频及手动播放入口保留。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": "good"
+        },
+        {
+          "label": "关键需求未实现",
+          "text": "仍直接播放整段音频，没有挖空位置的自动暂停；点击空白仅显示单词，没有续播调用。因此不能判为整条修好。",
+          "scope": "实际入口js/main.js第139–175行；源码可确认行为缺口。",
+          "tone": "bad"
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q123617",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 4886
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q123617",
+        "environment": "test",
+        "htmlSha256": "66aed171730227831484fada4707977c36012866099f98b15470cdc3459d58fb",
+        "fileCount": 14,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 6,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "css/style.css",
+          "index.html",
+          "js/main.js"
+        ],
+        "added": [],
+        "removed": []
+      },
+      "sourceEvidence": [
+        {
+          "file": "js/main.js",
+          "start": 139,
+          "end": 175,
+          "text": "139:         // Replace blank word with span\n140:         var textHtml = current.text.replace(\n141:             current.blank, \n142:             '<span class=\"blank-word\" id=\"current-blank\">' + current.blank + '</span>'\n143:         );\n144:         bubbleWrapper.innerHTML = textHtml;\n145: \n146:         // Bind blank click\n147:         var blankEl = document.getElementById('current-blank');\n148:         if (blankEl) {\n149:             blankEl.addEventListener('pointerdown', function() {\n150:                 if (!this.classList.contains('revealed')) {\n151:                     this.classList.add('revealed');\n152:                     state.metrics.hint_count++;\n153:                 }\n154:             });\n155:         }\n156: \n157:         // Setup Audio\n158:         state.currentAudioUrl = current.audio;\n159:         state.audioPlayer.src = state.currentAudioUrl;\n160:         \n161:         // Show Controls\n162:         btns.play.style.display = 'flex';\n163:         btns.next.style.display = 'flex';\n164:     }\n165: \n166:     // --- Audio Playback ---\n167:     function toggleAudio() {\n168:         if (!state.currentAudioUrl) return;\n169:         \n170:         if (state.audioPlayer.paused) {\n171:             state.metrics.replay_count++;\n172:             state.audioPlayer.play().catch(function(e){ console.log(\"Audio play failed\", e); });\n173:         } else {\n174:             state.audioPlayer.pause();\n175:         }"
+        }
+      ]
+    },
+    {
+      "id": "Q98684",
+      "queryId": "98684",
+      "query": "把以上单词出现顺序换一下，其他不变",
+      "originalConversationId": "61b48b8999a14dbbaa4c8487b7e77024",
+      "before": {
+        "snapshot_id": "544c3ce086bc4c3fb8ace0b4fd5a6335",
+        "version": "5",
+        "sequence": "5",
+        "snapshot_time": "2026-10-07 12:27:08",
+        "generation_end": "2026-10-07 12:27:10.607869770",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/07-J-BZNv_ORHGRduNn0vuqcA/index.html",
+        "source_user_message_id": "128426",
+        "assistant_message_id": "128427",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "084837bd0db343d5aac89a9e1de488b8",
+        "version": "6",
+        "sequence": "6",
+        "snapshot_time": "2026-10-07 12:33:54",
+        "generation_end": "2026-10-07 12:33:57.253490463",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/07-Y5Z0dIOyTY6aSiS0SsPWtA/index.html",
+        "source_user_message_id": "98684",
+        "assistant_message_id": "98685",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/07-J-BZNv_ORHGRduNn0vuqcA/package.zip",
+      "fileName": "单复数打地鼠",
+      "rules": [
+        "M01",
+        "M02"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "修改边界",
+      "title": "只换词序，其他不变",
+      "acceptance": "词语集合、题量、素材和交互保持；只改变呈现顺序，不顺带重写其他逻辑。",
+      "sampleType": "保护样本",
+      "result": {
+        "id": "Q98684",
+        "status": "success",
+        "conversationId": "fc002fb3479844989a22a7442d4b892c",
+        "generationMessageId": 39934,
+        "finishedAt": "2026-10-27T06:17:09.978220+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-cAL9aEsWSde61E0s1Wso9A/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-cAL9aEsWSde61E0s1Wso9A/package.zip",
+        "fileName": "单复数打地鼠",
+        "snapshotId": "7208ce2b3c204c34bf56b1498e047ec0",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "77c5fcb716bd4500993115830a224750",
+        "sourceSnapshotId": "544c3ce086bc4c3fb8ace0b4fd5a6335",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "范围控制符合要求",
+          "text": "仅js/game.js中的10组单词顺序反转，单词内容及单复数/错误选项组合保留；其他文件不变。",
+          "scope": "源码差异核验；这是“其他保持不变”的保护样本，不证明历史上曾经误改。",
+          "tone": "good"
+        },
+        {
+          "label": "待验证",
+          "text": "需实际完成一轮，检查出现顺序、判分与结束流程。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q98684",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 14052
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q98684",
+        "environment": "test",
+        "htmlSha256": "f96f7e58d8cf8b7eae4ba59738abf8855bab72d9a3f54ced464fac00ed9a7ba6",
+        "fileCount": 58,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 48,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "index.html",
+          "js/game.js"
+        ],
+        "added": [],
+        "removed": []
+      },
+      "sourceEvidence": []
+    },
+    {
+      "id": "Q121923",
+      "queryId": "121923",
+      "query": "不是这样的，只是改变图画上的对话。左边小精灵说小星星好闪，右边小星星说：小星星真漂亮",
+      "originalConversationId": "3551516ba42e43bdb12d369295548a5b",
+      "before": {
+        "snapshot_id": "3ec4fe2c9fa6413da2910f7ece97ea5d",
+        "version": "7",
+        "sequence": "7",
+        "snapshot_time": "2026-09-16 18:31:27",
+        "generation_end": "2026-09-16 18:31:33.238039450",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/16-E0k_wDv0RmSsmTVbMfpAJw/index.html",
+        "source_user_message_id": "150745",
+        "assistant_message_id": "150746",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "043a3e6809e944f6b29a841dafd99964",
+        "version": "8",
+        "sequence": "8",
+        "snapshot_time": "2026-09-17 15:29:31",
+        "generation_end": "2026-09-17 15:29:36.556355118",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/17-PVPiF7sjQNyIVLVRzIRr1g/index.html",
+        "source_user_message_id": "121923",
+        "assistant_message_id": "121924",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/16-E0k_wDv0RmSsmTVbMfpAJw/package.zip",
+      "fileName": "星光分宝大对决",
+      "rules": [
+        "M01"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "修改边界",
+      "title": "仅替换两句对话",
+      "acceptance": "只替换指定人物的对话；保留图片、布局、教学规则和其他文本。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q121923",
+        "status": "success",
+        "conversationId": "5fa04edbbe3445e58d4c2e2b4b782bc9",
+        "generationMessageId": 39936,
+        "finishedAt": "2026-10-27T06:16:01.957880+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-oL4tXUpPQwOFwBkUf18REA/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-oL4tXUpPQwOFwBkUf18REA/package.zip",
+        "fileName": "星光分宝大对决",
+        "snapshotId": "a21337ba70a943faa3a36f0d5ecf65cb",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "3e5ed82a6fec455d982ac2665a033720",
+        "sourceSnapshotId": "3ec4fe2c9fa6413da2910f7ece97ea5d",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "不能计为文案修复收益",
+          "text": "本次选定的修改前HTML已经包含“小星星好闪”“小星星真漂亮”，不把它计为本轮新增修复。",
+          "scope": "基线源码核验；历史快照按修改前最近完成版本回溯，不具备用户当时所选版本日志。",
+          "tone": ""
+        },
+        {
+          "label": "本次实际变化",
+          "text": "仅替换左右精灵两份音频；HTML、脚本、图片不变。两句语音是否正确需听音确认。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q121923",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 5994
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q121923",
+        "environment": "test",
+        "htmlSha256": "baa4179e43462cb00cd75ca181411b6262294245ad98e4a06499bd72bf73f2e3",
+        "fileCount": 18,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 7,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "audio/elf_talk_left.mp3",
+          "audio/elf_talk_right.mp3"
+        ],
+        "added": [],
+        "removed": []
+      },
+      "sourceEvidence": []
+    },
+    {
+      "id": "Q155757",
+      "queryId": "155757",
+      "query": "修正唐僧、沙僧、猪八戒的人物形象，就用我给的图片人物样子，不要做任何修改，且删去音频提示，另外最后游戏通关后，显示“恭喜集齐取经队伍，顺利通关“",
+      "originalConversationId": "0b1969ce57f04b56bb0f53a9f59ee2fd",
+      "before": {
+        "snapshot_id": "cc70aeb0a00549368263ca1ec1663a39",
+        "version": "4",
+        "sequence": "4",
+        "snapshot_time": "2026-09-23 21:14:01",
+        "generation_end": "2026-09-23 21:14:05.872605007",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-a83l_D-ARgGR-xmsxv6n7Q/index.html",
+        "source_user_message_id": "96065",
+        "assistant_message_id": "96066",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "e8f210b4d38d45b7abb6d106f24099af",
+        "version": "5",
+        "sequence": "5",
+        "snapshot_time": "2026-09-23 21:23:09",
+        "generation_end": "2026-09-23 21:23:13.230014287",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-3Vl_7PQVSlq-hc5bVPD5mA/index.html",
+        "source_user_message_id": "155757",
+        "assistant_message_id": "155758",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-a83l_D-ARgGR-xmsxv6n7Q/package.zip",
+      "fileName": "四大名著知识问答",
+      "rules": [
+        "M01"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [
+        {
+          "index": 1,
+          "imageUrl": "https://oss-xlss.xdf.cn/ig-kpm/attachment/images/2026-09/23-1a1fc15b25004a189c21fd3bdfa230ea.jpg",
+          "fileName": "360截图20260923211121520.jpg",
+          "mimeType": "image/jpeg",
+          "intent": "image_as_asset"
+        }
+      ],
+      "category": "修改边界",
+      "title": "参考图与结算文案",
+      "acceptance": "复用原附件人物形象；移除音频提示；结算显示指定祝贺文案，保留五道题及判分。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q155757",
+        "status": "success",
+        "conversationId": "05dd51ef1023455d81600ba60378cedd",
+        "generationMessageId": 39940,
+        "finishedAt": "2026-10-27T06:20:25.324140+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-w7f3-ZxFRnGtDSXQt8J7zw/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-w7f3-ZxFRnGtDSXQt8J7zw/package.zip",
+        "fileName": "四大名著知识问答",
+        "snapshotId": "739e3c64baef41bfa3ccf78fc758c739",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "8ab134c6102e49bc8a4b2c02bc42ec74",
+        "sourceSnapshotId": "cc70aeb0a00549368263ca1ec1663a39",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "已落实部分",
+          "text": "祝贺文案已改为“恭喜集齐取经队伍，顺利通关”；新人物图与用户原附件解码后尺寸、像素完全一致。",
+          "scope": "图片像素与HTML核验；人物在课件内的裁切和位置仍待操作查看。",
+          "tone": "good"
+        },
+        {
+          "label": "去音频未落实",
+          "text": "历史修改版首题没有播放按钮，本次测试版实际重新出现。HTML删除按钮后，加载的js/main.js又动态创建了5个；新增的js/index.js未被HTML加载。",
+          "scope": "实际页面与左右对比截图 + js/main.js第137–163行；不是仅凭源码推断。",
+          "tone": "bad"
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q155757",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 6815
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q155757",
+        "environment": "test",
+        "htmlSha256": "732319df79754dab4b54fa8b0fb13d7a29c34a452f9feb0402609a0ec3f4d51e",
+        "fileCount": 17,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 5,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "css/style.css",
+          "index.html",
+          "js/main.js"
+        ],
+        "added": [
+          "images/characters.jpg",
+          "js/index.js"
+        ],
+        "removed": [
+          "images/bajie.png",
+          "images/shaseng.png",
+          "images/tangseng.png"
+        ]
+      },
+      "sourceEvidence": [
+        {
+          "file": "js/main.js",
+          "start": 137,
+          "end": 163,
+          "text": "137:     for (var i = 1; i <= totalLevels; i++) {\n138:         var audioBtn = document.getElementById('audio-q' + i);\n139:         \n140:         // 修复：HTML中缺失 audio-q1 到 audio-q5 元素，动态创建并插入到题干中\n141:         if (!audioBtn) {\n142:             var qContainer = document.querySelector('#q' + i + ' .question-text');\n143:             if (qContainer) {\n144:                 audioBtn = document.createElement('div');\n145:                 audioBtn.id = 'audio-q' + i;\n146:                 audioBtn.innerHTML = '🔊'; // 使用 emoji 作为播放图标\n147:                 audioBtn.style.cursor = 'pointer';\n148:                 audioBtn.style.fontSize = '48px';\n149:                 audioBtn.style.marginLeft = '20px';\n150:                 audioBtn.style.display = 'inline-block';\n151:                 audioBtn.style.userSelect = 'none';\n152:                 qContainer.appendChild(audioBtn);\n153:             }\n154:         }\n155: \n156:         if (audioBtn) {\n157:             (function(level) {\n158:                 audioBtn.addEventListener('pointerdown', function(e) {\n159:                     playClickSound();\n160:                     playVoice(level);\n161:                 });\n162:             })(i);\n163:         }"
+        }
+      ],
+      "screenshots": [
+        {
+          "label": "左：历史修改后；右：本次测试。右侧重新出现播放按钮。",
+          "url": "assets/badcase-20261027/Q155757-comparison.jpg"
+        }
+      ]
+    },
+    {
+      "id": "Q128385",
+      "queryId": "128385",
+      "query": "发音的单词不要重复，我给你的单词都要轮到一次burglar，torch，bump，someone，kitchen，night，nonesense，noise，listen",
+      "originalConversationId": "1da4244cd8b949c0927dc45ad45ec513",
+      "before": {
+        "snapshot_id": "aba73701c8504a07bd2c0db65b7f28b9",
+        "version": "4",
+        "sequence": "4",
+        "snapshot_time": "2026-10-06 23:08:22",
+        "generation_end": "2026-10-06 23:08:26.300788335",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-E8OrZnyGS_GTySs3Cp3rzw/index.html",
+        "source_user_message_id": "98631",
+        "assistant_message_id": "98632",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "3cacc7d4f23a4bda80990c1796d9879f",
+        "version": "5",
+        "sequence": "5",
+        "snapshot_time": "2026-10-06 23:14:12",
+        "generation_end": "2026-10-06 23:14:18.020742047",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-kHmr1XO_TAmhsRmgn-D4NA/index.html",
+        "source_user_message_id": "128385",
+        "assistant_message_id": "128386",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/06-E8OrZnyGS_GTySs3Cp3rzw/package.zip",
+      "fileName": "Sight Words Fishing Game",
+      "rules": [
+        "P04",
+        "A03"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "内容与答案",
+      "title": "单词全覆盖、不重复",
+      "acceptance": "按原文的9个词逐项播放且每轮不重复；保留原拼写，不擅自替换题目内容。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q128385",
+        "status": "blocked",
+        "conversationId": "10d4f83c99c043f296103086842f7f18",
+        "generationMessageId": 39944,
+        "finishedAt": "2026-10-27T06:16:36.439895+00:00",
+        "error": "播放单词诉求被识别为录音/口语评测，已停在能力确认，未代选录音。",
+        "blockerType": "unexpected_voice_service_confirmation"
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "63519cd6d1c14fc29105ea6c51ad3bb1",
+        "sourceSnapshotId": "aba73701c8504a07bd2c0db65b7f28b9",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "流程阻塞",
+          "text": "“播放9个单词且不重复”的请求被识别成学生录音/英语口语评测，返回录音能力确认，没有返回修改后的HTML。",
+          "scope": "接口实测；会话10d4f83c99c043f296103086842f7f18，助手消息39944。未代选、未改写原Query。",
+          "tone": "bad"
+        },
+        {
+          "label": "定位边界",
+          "text": "这次只复制原课件并提交原修改语句，没有迁移完整历史对话。该结果证明当前测试路径存在误判，不能直接断言原线上会话必然同样误判。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        }
+      ],
+      "httpChecks": [],
+      "originalQueryUnchanged": true,
+      "sourceEvidence": []
+    },
+    {
+      "id": "Q95768",
+      "queryId": "95768",
+      "query": "题目不对，明明有的也可以用when提问的",
+      "originalConversationId": "a238ddad80e64566a7ac88fcf9f763c7",
+      "before": {
+        "snapshot_id": "c318a8799c4e4644b668ade1f0960687",
+        "version": "1",
+        "sequence": "1",
+        "snapshot_time": "2026-09-23 16:03:09",
+        "generation_end": "2026-09-23 16:03:13.018070714",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-ECKeDHS9T9uXs4g3SMymQA/index.html",
+        "source_user_message_id": "155493",
+        "assistant_message_id": "155494",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "04af48281acd4b849184eaa4dddb6ade",
+        "version": "2",
+        "sequence": "2",
+        "snapshot_time": "2026-09-23 16:06:12",
+        "generation_end": "2026-09-23 16:06:17.680477376",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-2yNrKawERTW3V2SkFxZdeA/index.html",
+        "source_user_message_id": "95768",
+        "assistant_message_id": "95769",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-ECKeDHS9T9uXs4g3SMymQA/package.zip",
+      "fileName": "What time vs When",
+      "rules": [
+        "P04",
+        "A03"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "内容与答案",
+      "title": "When合理答案误判",
+      "acceptance": "不将语义合理的When答案判错；题目不能同时存在两个合理答案却只接受一个。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q95768",
+        "status": "success",
+        "conversationId": "520f5f6e9ab5457d9b4658306315642b",
+        "generationMessageId": 39948,
+        "finishedAt": "2026-10-27T06:25:56.969564+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-_yFcTcD5TliJ-2gekeSeUQ/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-_yFcTcD5TliJ-2gekeSeUQ/package.zip",
+        "fileName": "What time vs When",
+        "snapshotId": "9f4256c401794cb1baf3a33257be39b1",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "9c70df894b7d4f4fa7af380f6ccc37f9",
+        "sourceSnapshotId": "c318a8799c4e4644b668ade1f0960687",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "采用了改题方案",
+          "text": "把“do you get up?”、“do you go to bed?”改成“is it?”、“is it now?”，并替换对应音频。通过改题避开原歧义，而不是保留原题并兼容合理答案。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        },
+        {
+          "label": "需要产品判断",
+          "text": "请对比题目是否仍符合原教学意图；不能把“题目已改”直接算作原题判分修复。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": "bad"
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q95768",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 3160
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q95768",
+        "environment": "test",
+        "htmlSha256": "030c90013b4bdceef4cf0ed7776e1c7a52ad35ec4552700c65c1df57260b37d6",
+        "fileCount": 16,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 5,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "audio/q1.mp3",
+          "audio/q3.mp3",
+          "js/main.js"
+        ],
+        "added": [],
+        "removed": []
+      },
+      "sourceEvidence": []
+    },
+    {
+      "id": "Q154837",
+      "queryId": "154837",
+      "query": "我is going to和is doing怎么不见了，这两个不用加图片，就写中文就行了",
+      "originalConversationId": "495f14e4c4324cba83cce60c94d58366",
+      "before": {
+        "snapshot_id": "f9e40f1063804e8c969bc5dd2edba53c",
+        "version": "3",
+        "sequence": "3",
+        "snapshot_time": "2026-09-23 09:46:53",
+        "generation_end": "2026-09-23 09:46:59.474178062",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-kr4tFd_dS3arPuDRrLJq6Q/index.html",
+        "source_user_message_id": "154835",
+        "assistant_message_id": "154836",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "43b45d75ac514baabab1384422cc3249",
+        "version": "4",
+        "sequence": "4",
+        "snapshot_time": "2026-09-23 09:54:59",
+        "generation_end": "2026-09-23 09:55:06.306321459",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-XXl5V5U1TSms0kwu9xPcRA/index.html",
+        "source_user_message_id": "154837",
+        "assistant_message_id": "154838",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/23-kr4tFd_dS3arPuDRrLJq6Q/package.zip",
+      "fileName": "单词保卫战",
+      "rules": [
+        "P04"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "内容与答案",
+      "title": "多波次内容保护样本",
+      "acceptance": "原版is going to、is doing在第2波，不能只看首屏断言遗漏；本轮按要求保留内容并显示中文、不加图片。",
+      "sampleType": "保护样本",
+      "result": {
+        "id": "Q154837",
+        "status": "success",
+        "conversationId": "ca397bb5b01a4e0394e0e5ddf3401155",
+        "generationMessageId": 39952,
+        "finishedAt": "2026-10-27T06:22:59.965374+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-9DNb1t7IRZSTc-Y3qxfo0w/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-9DNb1t7IRZSTc-Y3qxfo0w/package.zip",
+        "fileName": "单词保卫战",
+        "snapshotId": "64c1a80f74ae4961a18a812be49df73c",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "dd589fdf89ed4bcd9e5a1101f5d45957",
+        "sourceSnapshotId": "f9e40f1063804e8c969bc5dd2edba53c",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "保留内容并去图",
+          "text": "is going to、is doing在原版第二波中已经存在。本次保留词组及中文，去掉这两项图片；不计为找回遗漏词组。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": "good"
+        },
+        {
+          "label": "额外改动",
+          "text": "同时调整僵尸消失动画的选择器和播放状态；第二波完整展示及动画需要运行验证。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q154837",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 17268
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q154837",
+        "environment": "test",
+        "htmlSha256": "2ac012890c83dd0e7bba08ffeedba65476561ff638edf65ff930c84a1f8da37a",
+        "fileCount": 32,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 8,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "css/style.css",
+          "js/main.js"
+        ],
+        "added": [],
+        "removed": [
+          "images/seed_word7.png",
+          "images/seed_word8.png"
+        ]
+      },
+      "sourceEvidence": []
+    },
+    {
+      "id": "Q128074",
+      "queryId": "128074",
+      "query": "当前版本先拖拽算符时会出现拖拽中途脱手卡住的情况，优化代码",
+      "originalConversationId": "90a5f6a59bb5458e86547945f9fc9ce3",
+      "before": {
+        "snapshot_id": "7ab07ac51cf2405ca51a045aa69332f6",
+        "version": "4",
+        "sequence": "4",
+        "snapshot_time": "2026-10-05 15:57:26",
+        "generation_end": "2026-10-05 15:57:32.011308137",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/05-CelUf3TjSUmCXwQI_734lg/index.html",
+        "source_user_message_id": "157861",
+        "assistant_message_id": "157862",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "e8bed9dc78344739bb18c501f00ef049",
+        "version": "6",
+        "sequence": "6",
+        "snapshot_time": "2026-10-05 16:08:32",
+        "generation_end": "2026-10-05 16:08:38.645781812",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/05-WuPLm_KwTaWvcLAR2ZctTg/index.html",
+        "source_user_message_id": "128074",
+        "assistant_message_id": "128075",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/05-CelUf3TjSUmCXwQI_734lg/package.zip",
+      "fileName": "混合运算计算顺序PK游戏",
+      "rules": [
+        "A04"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "交互可用性",
+      "title": "算符拖拽中断",
+      "acceptance": "取消或脱手后恢复可操作；算符数量、小括号、出题与答题的原规则不变。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q128074",
+        "status": "success",
+        "conversationId": "060409b0ccb444a1bc8a62129f2ff25b",
+        "generationMessageId": 39964,
+        "finishedAt": "2026-10-27T06:25:52.014667+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-ww7QjOFxRJ-RBFXZRRLH1A/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-ww7QjOFxRJ-RBFXZRRLH1A/package.zip",
+        "fileName": "混合运算计算顺序PK游戏",
+        "snapshotId": "077541d5de85452687edb0500525095f",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "017607ba8f2648b9ba6ea6285aabe811",
+        "sourceSnapshotId": "7ab07ac51cf2405ca51a045aa69332f6",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "拖拽保护已补",
+          "text": "增加重复拖拽保护，以及指针捕获/释放的异常处理。尚未重现拖出画布、取消和再拖的完整操作。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        },
+        {
+          "label": "修改范围扩大",
+          "text": "额外把判分由算符ID比较改为算符值比较。用户要求解决拖拽卡住，此处判分变化需单独评审，尚不能判定是否产生回归。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": "bad"
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q128074",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 5480
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q128074",
+        "environment": "test",
+        "htmlSha256": "d81b6dee4671d9f5fa87189f4a4360bc2381e4a6d469b2581350796639002a9a",
+        "fileCount": 11,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 0,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "js/main.js"
+        ],
+        "added": [],
+        "removed": []
+      },
+      "sourceEvidence": []
+    },
+    {
+      "id": "Q127670",
+      "queryId": "127670",
+      "query": "为什么点击开始游戏不动？",
+      "originalConversationId": "20fecebf5b3a4258915734a1b507664d",
+      "before": {
+        "snapshot_id": "0dbcad01f2db4a5a9b848988b0391127",
+        "version": "4",
+        "sequence": "4",
+        "snapshot_time": "2026-09-30 18:09:59",
+        "generation_end": "2026-09-30 18:10:04.878192491",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/30-hEyJKn0_TvafnkWc7uUzmQ/index.html",
+        "source_user_message_id": "127666",
+        "assistant_message_id": "127667",
+        "source_initialization_snapshot": "False"
+      },
+      "historicalAfter": {
+        "snapshot_id": "b4ab6856e9e84b3581c84f05a826578f",
+        "version": "5",
+        "sequence": "5",
+        "snapshot_time": "2026-09-30 18:14:32",
+        "generation_end": "2026-09-30 18:14:37.683790109",
+        "file_url": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/30-MD7XSPiYRD-Ngl5H6AWruA/index.html",
+        "source_user_message_id": "127670",
+        "assistant_message_id": "127671",
+        "source_initialization_snapshot": "False"
+      },
+      "zipUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-09/30-hEyJKn0_TvafnkWc7uUzmQ/package.zip",
+      "fileName": "批注题游戏 - 邮局分拣",
+      "rules": [
+        "A04"
+      ],
+      "executionScope": "same-source-modification",
+      "contextNote": "Only source courseware plus the original modification query; no full original conversation replay.",
+      "uploadedImages": [],
+      "category": "交互可用性",
+      "title": "开始按钮被隐藏层挡住",
+      "acceptance": "开始游戏可点击进入；隐藏弹层及其子元素不拦截点击，结束与重玩也可继续。",
+      "sampleType": "历史问题案例",
+      "result": {
+        "id": "Q127670",
+        "status": "success",
+        "conversationId": "25ed54d01fe345f1a8cbc64b01e5ec92",
+        "generationMessageId": 39968,
+        "finishedAt": "2026-10-27T06:26:24.536882+00:00",
+        "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-OBBRpdt5SY6qQsj74eeJcg/index.html",
+        "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-OBBRpdt5SY6qQsj74eeJcg/package.zip",
+        "fileName": "批注题游戏 - 邮局分拣",
+        "snapshotId": "0853dba1d5be4a2bbb3403ff9cd79322",
+        "generateMode": "smart",
+        "originalQueryUnchanged": true,
+        "cloneSourceVerified": true
+      },
+      "cloneIntegrity": {
+        "changedFiles": [
+          "index.html"
+        ],
+        "onlySdkHtmlDifference": true,
+        "cloneSnapshotId": "88aeaacf61754f72abba1b963f7a182e",
+        "sourceSnapshotId": "0dbcad01f2db4a5a9b848988b0391127",
+        "clonePushStatus": 0
+      },
+      "observations": [
+        {
+          "label": "原问题仍可复现",
+          "text": "本次实际点击“开始游戏”后仍停在规则弹窗，进度0/0。只读命中检查确认按钮中心实际命中透明结算层的“完成”按钮，opacity为0、pointer-events为auto。",
+          "scope": "本次原生浏览器点击 + elementFromPoint只读核验 + 点击后截图。",
+          "tone": "bad"
+        },
+        {
+          "label": "未针对根因修改",
+          "text": "主要把按钮事件由pointerup改为pointerdown并增加touch-action:none；隐藏父层与可点击子按钮的组合仍在，没有解决本次复现的遮挡问题。",
+          "scope": "源码核验；完整交互待验证",
+          "tone": ""
+        }
+      ],
+      "httpChecks": [
+        {
+          "caseId": "Q127670",
+          "path": "index.html",
+          "httpStatus": 200,
+          "matchesPackage": true,
+          "bytes": 5727
+        }
+      ],
+      "originalQueryUnchanged": true,
+      "checks": {
+        "caseId": "Q127670",
+        "environment": "test",
+        "htmlSha256": "cd8f100ab86d5812d09d0491ca4003b74f609fbc3ed709e5bf66326256568edd",
+        "fileCount": 12,
+        "syntaxErrors": [],
+        "missingLiteralReferences": [],
+        "audioDecodeErrors": [],
+        "audioFiles": 0,
+        "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配"
+      },
+      "fileDiff": {
+        "changed": [
+          "css/style.css",
+          "js/main.js"
+        ],
+        "added": [],
+        "removed": []
+      },
+      "sourceEvidence": [
+        {
+          "file": "css/style.css",
+          "start": 270,
+          "end": 273,
+          "text": "270: .modal.hidden {\n271:     opacity: 0;\n272:     pointer-events: none;\n273: }"
+        },
+        {
+          "file": "css/style.css",
+          "start": 359,
+          "end": 373,
+          "text": "359: /* 按钮样式 */\n360: .btn {\n361:     background-color: #4caf50;\n362:     color: white;\n363:     border: 4px solid #388e3c;\n364:     border-radius: 40px;\n365:     padding: 15px 60px;\n366:     font-size: 40px;\n367:     cursor: pointer;\n368:     outline: none;\n369:     box-shadow: 0 8px 15px rgba(0,0,0,0.2);\n370:     transition: transform 0.1s ease, background-color 0.2s ease;\n371:     pointer-events: auto;\n372:     touch-action: none;\n373: }"
+        }
+      ],
+      "screenshots": [
+        {
+          "label": "本次点击“开始游戏”后：仍停在规则弹窗，进度0/0。",
+          "url": "assets/badcase-20261027/Q127670-after-click.jpg"
+        }
+      ]
+    }
+  ],
+  "boundary": "本轮为13条原始修改请求的定向复测：复制历史修改前课件，在测试环境原样提交Query及当次附件，每条只测一次。未迁移完整历史对话；线上采用历史结果对照，非同期A/B。它可检查修改链路，不能据此估算整体提升比例或首次生成收益。点击、拖拽、实际听音未完成的项目均标为待验证。",
+  "successCount": 12,
+  "blockedCount": 1,
+  "failureCount": 0,
+  "pendingCount": 0,
+  "summary": [
+    {
+      "title": "有明确改善证据",
+      "text": "算式、长单词显示及第一关两排坑位改善；26个缺失音频补齐；单词排序只改目标数据。",
+      "cases": [
+        "Q98670",
+        "Q158083",
+        "Q158199",
+        "Q95982",
+        "Q98684"
+      ]
+    },
+    {
+      "title": "关键需求仍有缺口",
+      "text": "挖空暂停/续播未实现；播放按钮被补回；开始按钮仍被遮挡；播放请求误入录音确认。",
+      "cases": [
+        "Q123617",
+        "Q155757",
+        "Q127670",
+        "Q128385"
+      ]
+    },
+    {
+      "title": "还需评审修改范围",
+      "text": "通过改题避开判分歧义；修拖拽时同时改了判分。是否接受，需要看原教学目标。",
+      "cases": [
+        "Q95768",
+        "Q128074"
+      ]
+    },
+    {
+      "title": "不能计入修复收益",
+      "text": "两句气泡文案、两个时态词组在选定原版中已存在；完整运行通过率本轮未统计。",
+      "cases": [
+        "Q121923",
+        "Q154837"
+      ]
+    }
+  ],
+  "nextSteps": [
+    "优先检查修改开发→审查→修复的最终产物：按用户要求验收实际HTML加载的脚本，避免“删掉又补回”。",
+    "先定位播放请求为何进入录音评测确认；不能仅凭“发音”二字开启录音。",
+    "针对原始故障修复并保留判分等无关逻辑；隐藏弹层、拖拽取消和音频续播需补实际操作验收。"
+  ],
+  "updatedAt": "2026-10-27T06:26:24.548907+00:00"
+}
