@@ -2080,6 +2080,16 @@
             const runStats = getGenerationExperimentRunStats(cases, filteredCases);
             return `
                 <div class="space-y-5">
+                    ${generationExperimentData.currentRun ? `
+                        <section class="border border-blue-200 bg-blue-50 rounded-lg px-5 py-4">
+                            <div class="flex flex-wrap justify-between items-center gap-2">
+                                <h3 class="font-black text-blue-900">${escapeHtml(generationExperimentData.currentRun.label)}</h3>
+                                <span class="text-xs font-bold text-blue-800">线上历史对照 · 首次生成回归</span>
+                            </div>
+                            <p class="mt-2 text-sm text-slate-700">${escapeHtml(generationExperimentData.currentRun.note)}</p>
+                            <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(generationExperimentData.currentRun.boundary)}</p>
+                            <div class="mt-3 text-xs font-bold text-blue-900">本轮生成：成功 ${generationExperimentData.currentRun.successCount} / 28 · 失败 ${generationExperimentData.currentRun.failureCount} · 待完成 ${generationExperimentData.currentRun.pendingCount}</div>
+                        </section>` : ''}
                     ${renderGenerationExperimentFilters(cases, runStats)}
                     <div class="space-y-6">
                         ${filteredCases.length
@@ -2337,11 +2347,12 @@
                     <div class="px-4 py-3 border-b ${isBaseline ? 'bg-slate-50 border-slate-200' : 'bg-blue-50/60 border-blue-100'} flex flex-row items-start justify-between gap-2">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                                <span class="text-xs font-black border rounded-full px-2 py-1 whitespace-nowrap shrink-0 ${badgeClass}">${escapeHtml(isBaseline ? '线上现状' : variant.label)}</span>
+                                <span class="text-xs font-black border rounded-full px-2 py-1 whitespace-nowrap shrink-0 ${badgeClass}">${escapeHtml(isBaseline ? (generationExperimentData.currentRun?.comparisonType === 'historical' ? '线上历史对照' : '线上现状') : variant.label)}</span>
                                 <span class="text-xs font-black text-slate-500 whitespace-nowrap shrink-0">${escapeHtml(variant.label)}</span>
                                 <span class="text-sm font-black text-slate-800 truncate">${escapeHtml(resultName)}</span>
                             </div>
                             ${variant.conversationId ? `<div class="text-xs text-slate-500 mt-1 font-mono truncate">${escapeHtml(variant.conversationId)}</div>` : ''}
+                            ${variant.generationMessageId || variant.snapshotId ? `<details class="mt-2 text-xs text-slate-500"><summary class="cursor-pointer">开发排查信息</summary><div class="mt-1 space-y-1 break-all"><div>会话 ID：${escapeHtml(variant.conversationId || '未记录')}</div><div>生成消息 ID：${escapeHtml(String(variant.generationMessageId || '历史记录未提供'))}</div><div>HTML 版本（snapshotId）：${escapeHtml(variant.snapshotId || '未返回')}</div>${variant.htmlSha256 ? `<div>HTML SHA256：${escapeHtml(variant.htmlSha256)}</div>` : ''}<div>生成时间：${escapeHtml(variant.finishedAt || '未记录')}</div></div></details>` : ''}
                         </div>
                         <div class="flex flex-wrap items-center justify-end gap-2 shrink-0 max-w-[58%]">
                             ${isBaseline ? renderGenerationExperimentProductionVersionControls(item, variant) : renderGenerationExperimentVersionControls(item, variant)}
@@ -5963,7 +5974,7 @@ ${feedbackArray.join('\n')}
         }
 
         // ================= 启动逻辑 =================
-        try { applySidebarState(); renderGuide(); updateUserProfileUI(); switchView('teacher'); } catch (e) {}
+        try { applySidebarState(); renderGuide(); updateUserProfileUI(); switchView(location.hash === '#generation-regression' ? 'self-generation' : 'teacher'); } catch (e) {}
         checkSession();
 
     </script>
