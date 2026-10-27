@@ -1,0 +1,487 @@
+{
+  "date": "2026-10-27",
+  "source": "本会话用户确认",
+  "scope": "基础风格19例封面全部通过；教学内容待验证改为用户通过、原失败保留。未扩大为音频、交互或质感全部通过。",
+  "cases": [
+    {
+      "caseId": "S01",
+      "configuration": "粘土质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pass",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pass"
+      },
+      "interaction": "pass"
+    },
+    {
+      "caseId": "S02",
+      "configuration": "果冻软糖质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pending",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S03",
+      "configuration": "童话绘本质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pending",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S04",
+      "configuration": "毛毡布艺质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pending",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S05",
+      "configuration": "水彩绘本质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pending",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S06",
+      "configuration": "厚涂奶油绘本质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pending",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S07",
+      "configuration": "磨砂哑光质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pending",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S08",
+      "configuration": "纸艺层叠质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "fail",
+      "previousMeasuredChecks": {
+        "texture": "fail",
+        "cover": "pending",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S09",
+      "configuration": "3D童话立体质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pending",
+        "coverDesign": "na",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S10",
+      "configuration": "清晰逻辑风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S11",
+      "configuration": "海洋探索风",
+      "content": "fail",
+      "contentSource": "用户确认与既有失败一致",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "fail",
+        "interaction": "pass"
+      },
+      "interaction": "pass"
+    },
+    {
+      "caseId": "S12",
+      "configuration": "果园认知风",
+      "content": "fail",
+      "contentSource": "用户确认与既有失败一致",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "fail",
+        "interaction": "pass"
+      },
+      "interaction": "pass"
+    },
+    {
+      "caseId": "S13",
+      "configuration": "森林冒险风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S14",
+      "configuration": "糖果乐园风",
+      "content": "fail",
+      "contentSource": "用户确认与既有失败一致",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "fail",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S15",
+      "configuration": "软萌海底风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S16",
+      "configuration": "太空探索风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "fail",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S17",
+      "configuration": "积木教具风",
+      "content": "fail",
+      "contentSource": "用户确认与既有失败一致",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "fail",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S18",
+      "configuration": "英语启蒙风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "fail",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S19",
+      "configuration": "汉字启蒙风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "fail",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S20",
+      "configuration": "弹跳萌趣风",
+      "content": "fail",
+      "contentSource": "用户确认与既有失败一致",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "fail",
+        "coverDesign": "pass",
+        "content": "fail",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S21",
+      "configuration": "科技竞技风",
+      "content": "fail",
+      "contentSource": "用户确认与既有失败一致",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "fail",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S22",
+      "configuration": "奶雾童话风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S23",
+      "configuration": "低多边形童趣风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "fail",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S24",
+      "configuration": "极简扁平童趣风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S25",
+      "configuration": "电话接线风",
+      "content": "fail",
+      "contentSource": "用户确认与既有失败一致",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "fail",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S26",
+      "configuration": "海图指挥台风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S27",
+      "configuration": "汉字白板风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S28",
+      "configuration": "糖果任务板风",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "pass",
+      "texture": "na",
+      "previousMeasuredChecks": {
+        "texture": "na",
+        "cover": "pass",
+        "coverDesign": "pass",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S29",
+      "configuration": "森林冒险风 + 粘土质感",
+      "content": "pass",
+      "contentSource": "用户实测确认原待验证项通过",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pass",
+        "coverDesign": "fail",
+        "content": "pending",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    },
+    {
+      "caseId": "S30",
+      "configuration": "果园认知风 + 毛毡布艺质感",
+      "content": "fail",
+      "contentSource": "用户确认与既有失败一致",
+      "baseCover": "not_in_this_confirmation",
+      "texture": "pending",
+      "previousMeasuredChecks": {
+        "texture": "pending",
+        "cover": "pass",
+        "coverDesign": "fail",
+        "content": "fail",
+        "interaction": "pending"
+      },
+      "interaction": "pending"
+    }
+  ]
+}
