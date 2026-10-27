@@ -4,7 +4,7 @@
   "testSetVersion": "1.2",
   "manualTestSetId": "manual-recording-baseline-20260813-v1.1",
   "manualTestSetVersion": "1.1",
-  "generatedAt": "2026-10-27T03:53:55.935363+00:00",
+  "generatedAt": "2026-10-27T04:16:30.166194+00:00",
   "source": "Fixed 28-case Box test and production generation",
   "runPolicy": {
     "environment": "https://box.test.xdf.cn",
@@ -267,7 +267,8 @@
             "visualStatus": "首屏已观察",
             "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
             "visualNote": "首屏太阳插图、3张大选项卡、汉字和自带拼音完整可见；背景未见汉字答案。尚未完成四关、重玩和音频听感实测。",
-            "screenshot": "T01-test-start.png",
+            "screenshot": "T01-test-start.jpg",
+            "screenshotUrl": "assets/regression-20261027/T01-test-start.jpg",
             "httpResourceCount": 19,
             "httpFailureCount": 0
           }
@@ -2790,19 +2791,19 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "a6d1ae521bdc433bb410bda0a51dbdd5",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-ggcP7lVASUSHwnmG4rpstA/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-ggcP7lVASUSHwnmG4rpstA/package.zip",
+          "fileName": "九九乘法棋盘点击游戏",
+          "snapshotId": "cf8254f503b84f19a4ed220d567f76d1",
+          "finishedAt": "2026-10-27T03:57:24.677999+00:00",
+          "startedAt": "2026-10-27T03:52:39.124995+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T11_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个三年级九九乘法棋盘点击游戏，根据算式找到正确的积。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
@@ -2816,7 +2817,20 @@
             39802
           ],
           "generationMessageId": 39802,
-          "firstSubmittedAt": "2026-10-27T03:52:47.299489+00:00"
+          "firstSubmittedAt": "2026-10-27T03:52:47.299489+00:00",
+          "htmlSha256": "2d967cd2a82868f83a392597c61e6c951265c0371b90bfb4d9487d74fbb22227",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 11,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 23,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -3031,19 +3045,19 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "fdea213171fc41b48cd97c827ebb7acc",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-sY2iTPk3SCW3-BzNf4idFQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-sY2iTPk3SCW3-BzNf4idFQ/package.zip",
+          "fileName": "Body Parts Vocabulary",
+          "snapshotId": "be3b2c1ed797495792493a6505b6ebfc",
+          "finishedAt": "2026-10-27T03:57:39.415717+00:00",
+          "startedAt": "2026-10-27T03:53:26.393277+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T12_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "人教版三年级英语，做一个身体部位单词看图选词课件，支持点击播放单词发音。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
@@ -3057,7 +3071,20 @@
             39809
           ],
           "generationMessageId": 39809,
-          "firstSubmittedAt": "2026-10-27T03:53:35.363775+00:00"
+          "firstSubmittedAt": "2026-10-27T03:53:35.363775+00:00",
+          "htmlSha256": "906fbe278d229d015d4d044526fa1f953e2c864a55264edf5400254618d093d8",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 10,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 27,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -3272,19 +3299,19 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "cab999d9f54f43468061875fae87f213",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-Ksw03YYEQ4ajsFaH-VhidQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-Ksw03YYEQ4ajsFaH-VhidQ/package.zip",
+          "fileName": "四年级成语迷宫游戏",
+          "snapshotId": "0329298d7c014a479236df6d7a9a28e1",
+          "finishedAt": "2026-10-27T04:00:18.549593+00:00",
+          "startedAt": "2026-10-27T03:53:56.024236+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T13_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个四年级成语迷宫游戏，学生帮助角色走到正确成语出口。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
@@ -3298,7 +3325,49 @@
             39814
           ],
           "generationMessageId": 39814,
-          "firstSubmittedAt": "2026-10-27T03:54:05.645617+00:00"
+          "firstSubmittedAt": "2026-10-27T03:54:05.645617+00:00",
+          "htmlSha256": "8da66c34edf8a2795274f7ca22cf01ac83b0cd8812ffbe9008aa00ae8d0977e2",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "发现问题",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewStatus": "资源缺失与答案设置问题已确认",
+            "resourceIssues": [
+              {
+                "relativePath": "images/btn_play.png",
+                "httpStatus": 404,
+                "referenceFile": "js/game.js",
+                "referenceLine": 445
+              }
+            ],
+            "sourceFindings": [
+              {
+                "promptRule": "资源完整性",
+                "file": "js/game.js",
+                "line": 445,
+                "finding": "暂停分支将按钮图片切换为images/btn_play.png，但素材包没有该文件，在线请求确认返回404。初始页面可能正常，问题出现在切换暂停状态后。",
+                "verification": "源码分支与HTTP核验已确认；按钮交互仍待运行验证",
+                "evidenceLabel": "已确认资源缺失"
+              },
+              {
+                "promptRule": "教学答案准确性",
+                "file": "js/levelData.js",
+                "line": 46,
+                "finding": "第二关“__苗助长”把“揠”设为正确、“拔”设为错误；game.js第249行按isCorrect判定。词典收录“拔苗助长”为有效说法，这一干扰项不能直接判错，应换成明确错误的选项。",
+                "verification": "已核对题目数据、判定分支和教育部词典；尚未通过实际走迷宫复现",
+                "evidenceLabel": "已确认答案设置问题",
+                "sourceUrl": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=152313&la=0&powerMode=0",
+                "sourceLabel": "词典依据"
+              }
+            ],
+            "httpResourceCount": 21,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -3513,26 +3582,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "c7f1ede1e0e3424eaa92a073b9c5177a",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-X4hx9sCXTVq2uCA0FOhlJQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-X4hx9sCXTVq2uCA0FOhlJQ/package.zip",
+          "fileName": "分数大小比较",
+          "snapshotId": "71da5493bd8f456a99173be938dacd6f",
+          "finishedAt": "2026-10-27T04:01:52.839047+00:00",
+          "startedAt": "2026-10-27T03:57:24.767737+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T14_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个四年级分数大小比较滑杆课件，拖动滑杆观察并选择更大的分数。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39816,
+            39818,
+            39824
+          ],
+          "generationMessageId": 39824,
+          "firstSubmittedAt": "2026-10-27T03:57:32.920585+00:00",
+          "htmlSha256": "561f1b28f10b3e4bc32d38f3523de70ebdb088a472ef4441ffc7c65cbb7fc9cb",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 9,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -3747,26 +3836,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "24f44d39d4e241948305179b7ba17579",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-JpnpjMBdSPWbzYuRtrh5BQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-JpnpjMBdSPWbzYuRtrh5BQ/package.zip",
+          "fileName": "English Sentence Sorting",
+          "snapshotId": "4ef9cf1045f74d62ac7471edc7d31b65",
+          "finishedAt": "2026-10-27T04:02:35.380217+00:00",
+          "startedAt": "2026-10-27T03:57:39.487136+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T15_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个四年级英语句子排序课件，把日常问候语的单词拖成正确句子。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39820,
+            39822,
+            39826
+          ],
+          "generationMessageId": 39826,
+          "firstSubmittedAt": "2026-10-27T03:57:47.429858+00:00",
+          "htmlSha256": "09a8a914fb5b9b2a769a0396c51be82859ad4ad370bf03b064147adc2840d7f1",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 23,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 35,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -3981,26 +4090,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "d90e1baf0098466582531153d4450945",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-KESCEFmHT2S9Ki9nDOK0hw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-KESCEFmHT2S9Ki9nDOK0hw/package.zip",
+          "fileName": "草船借箭 - 拖拽排序",
+          "snapshotId": "0d06110709c24ea4be83a5618ed8d500",
+          "finishedAt": "2026-10-27T04:05:36.145982+00:00",
+          "startedAt": "2026-10-27T04:00:18.686139+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T16_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个五年级阅读课件，把文章的起因、经过、结果卡片拖拽排序。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39828,
+            39830,
+            39832
+          ],
+          "generationMessageId": 39832,
+          "firstSubmittedAt": "2026-10-27T04:00:25.755327+00:00",
+          "htmlSha256": "e5fe95c51cd72ba4d890ee12b7d6331b80f33b08d8d41ea12078cb61e35f24e6",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 9,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -4215,26 +4344,58 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "36cccfc2416d438bbb644fa828ea0430",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-6KmRITpmROCWLEuwQD0I2g/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-6KmRITpmROCWLEuwQD0I2g/package.zip",
+          "fileName": "五年级数独",
+          "snapshotId": "60eb420c7fc24c909f285357e755b42d",
+          "finishedAt": "2026-10-27T04:07:04.581916+00:00",
+          "startedAt": "2026-10-27T04:01:52.937762+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T17_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个五年级数独课件，支持填数、候选数笔记和擦除。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39834,
+            39836,
+            39838
+          ],
+          "generationMessageId": 39838,
+          "firstSubmittedAt": "2026-10-27T04:02:00.842784+00:00",
+          "htmlSha256": "1f9244f2af79909a8745c432e4489eb306f583584aab74544d75b46d43c19830",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewStatus": "题目数据核验通过，操作待验证",
+            "sourceFindings": [
+              {
+                "promptRule": "数独题目正确性",
+                "file": "js/main.js",
+                "line": 16,
+                "finding": "两版采用相同的30个已知数题目。独立求解核验均有且仅有一个解，题目数据保持正确；填数、笔记、擦除与完成反馈仍待操作验证。",
+                "verification": "独立求解数据核验；未进行UI实测",
+                "evidenceLabel": "题目数据核验通过",
+                "kind": "pass"
+              }
+            ],
+            "httpResourceCount": 7,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -4449,26 +4610,58 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "13383e324f554ac9b307c57647c8d9cd",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-7-mZ8kRQTa6EhFEVT84S9g/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-7-mZ8kRQTa6EhFEVT84S9g/package.zip",
+          "fileName": "Match the questions and answers",
+          "snapshotId": "67d209fac7b84383bce4bc82787c0d8e",
+          "finishedAt": "2026-10-27T04:07:27.914408+00:00",
+          "startedAt": "2026-10-27T04:02:35.484863+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T18_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "苏教版五年级双语故事表演，做一个问路对话的问句与答句连线课件，问句和答句都可以点击播放。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39840,
+            39842,
+            39844
+          ],
+          "generationMessageId": 39844,
+          "firstSubmittedAt": "2026-10-27T04:02:44.133686+00:00",
+          "htmlSha256": "1a6efb06c9e315c2c4b3864761703ced7f285a4704b29e22571cb12ba91cfbf0",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 8,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewStatus": "音频互斥有源码改善，听感待验证",
+            "sourceFindings": [
+              {
+                "promptRule": "A02",
+                "file": "js/main.js",
+                "line": 112,
+                "finding": "历史版第89–100行分别缓存并播放多条音频，切换问答时没有暂停其他音频；本轮playVoice先暂停并归零currentAudio，再播放新音频。代码层面增加了防止问答朗读重叠的处理，实际听感仍待复测。",
+                "verification": "已对照两版源码；未完成连续切换播放实测",
+                "evidenceLabel": "源码改善迹象",
+                "kind": "improvement"
+              }
+            ],
+            "httpResourceCount": 15,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -4683,26 +4876,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "f762ffd66ab0437b93df687755052700",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-8KKH0QgyQg6hGy6kzSoRxQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-8KKH0QgyQg6hGy6kzSoRxQ/package.zip",
+          "fileName": "论点与论据配对棋盘",
+          "snapshotId": "8c4dbd611613457db2e1736e2356420a",
+          "finishedAt": "2026-10-27T04:10:00.181135+00:00",
+          "startedAt": "2026-10-27T04:05:36.262296+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T19_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个六年级语文论点与论据配对棋盘，点击选择能够支持论点的论据。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39846,
+            39848,
+            39850
+          ],
+          "generationMessageId": 39850,
+          "firstSubmittedAt": "2026-10-27T04:05:44.226115+00:00",
+          "htmlSha256": "3271cbb89d46afa16369e8d97ade06d854656574eec51b8122edb114a67e1d5c",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 13,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -4917,26 +5130,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "e94f80925d904290aa7a81ed20e8b2e7",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-Dd22OqdcQrW1HbW2mj5B4A/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-Dd22OqdcQrW1HbW2mj5B4A/package.zip",
+          "fileName": "长方体和正方体观察",
+          "snapshotId": "f4ad6dd3ab1e41f89c5bbd1114c5258a",
+          "finishedAt": "2026-10-27T04:13:00.063653+00:00",
+          "startedAt": "2026-10-27T04:07:04.676608+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T20_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个六年级长方体和正方体观察课件，可以拖动旋转、缩放和重置视角。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39852,
+            39854,
+            39860
+          ],
+          "generationMessageId": 39860,
+          "firstSubmittedAt": "2026-10-27T04:07:14.243821+00:00",
+          "htmlSha256": "30d8b849313f6dfd336ef4527df78ad3c785e748d8c93bacee398844ca77ebae",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 4,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 12,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -5151,26 +5384,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "b746cf2606de41bbbc4565e961a601d0",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-cMBLuuxqQZmbxbyYkftHMA/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-cMBLuuxqQZmbxbyYkftHMA/package.zip",
+          "fileName": "Dialogue Completion",
+          "snapshotId": "924a8177e653491187f1c8eff8f44a45",
+          "finishedAt": "2026-10-27T04:12:10.080578+00:00",
+          "startedAt": "2026-10-27T04:07:28.023702+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T21_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个六年级英语对话补全课件，学生点击播放并听完情境对话后，选择合适的答句完成对话。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39856,
+            39858,
+            39862
+          ],
+          "generationMessageId": 39862,
+          "firstSubmittedAt": "2026-10-27T04:07:37.548386+00:00",
+          "htmlSha256": "a83aa81f4fdd68c4a78fcc6c56210e63c47c754810843a0c79b6f30cd2321c3a",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 10,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 22,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -5385,26 +5638,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "e6c1c39789064ae686ede6b33479610b",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-g9f110QmSg6Ja951AoAMOw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-g9f110QmSg6Ja951AoAMOw/package.zip",
+          "fileName": "比较长短",
+          "snapshotId": "7922775cefc2486abd61a930a05363b1",
+          "finishedAt": "2026-10-27T04:14:28.416246+00:00",
+          "startedAt": "2026-10-27T04:10:00.293223+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T22_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个比较物体长短的拖拽互动课件。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39864,
+            39866,
+            39868
+          ],
+          "generationMessageId": 39868,
+          "firstSubmittedAt": "2026-10-27T04:10:08.327935+00:00",
+          "htmlSha256": "02969ba560e4435e0bbe60c7ecd8b142c6670b9bca412bd34087fa2a62147fac",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 21,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -5619,26 +5892,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "2a94cb8d5e8c4887bafdd38ebaf268ef",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-P8dNXX6rRiixKTd0SEWy6Q/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-P8dNXX6rRiixKTd0SEWy6Q/package.zip",
+          "fileName": "Animal Word Game",
+          "snapshotId": "55d0ef3d94af48118e62f80b484773b1",
+          "finishedAt": "2026-10-27T04:16:30.147360+00:00",
+          "startedAt": "2026-10-27T04:12:10.169079+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T23_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个动物英语单词听音选图游戏。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39870,
+            39872,
+            39874
+          ],
+          "generationMessageId": 39874,
+          "firstSubmittedAt": "2026-10-27T04:12:18.639450+00:00",
+          "htmlSha256": "99cb6a61001f3e4b9389b4ad2a72d0dc38c35393168976843b5dd54d35427f8a",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 5,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 19,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -5872,7 +6165,14 @@
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39876,
+            39878,
+            39880
+          ],
+          "generationMessageId": 39880,
+          "firstSubmittedAt": "2026-10-27T04:13:08.671843+00:00"
         }
       ]
     },
@@ -6106,7 +6406,14 @@
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39882,
+            39884,
+            39886
+          ],
+          "generationMessageId": 39886,
+          "firstSubmittedAt": "2026-10-27T04:14:40.086860+00:00"
         }
       ]
     },
@@ -6340,7 +6647,14 @@
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39888,
+            39890,
+            39892
+          ],
+          "generationMessageId": 39892,
+          "firstSubmittedAt": "2026-10-27T04:16:38.296899+00:00"
         }
       ]
     },
@@ -6917,16 +7231,18 @@
     "id": "box-test-20261027-v1",
     "label": "10月27日 V1测试",
     "generateMode": "smart",
-    "updatedAt": "2026-10-27T03:53:55.935363+00:00",
-    "successCount": 10,
+    "updatedAt": "2026-10-27T04:16:30.166194+00:00",
+    "successCount": 23,
     "failureCount": 0,
-    "pendingCount": 18,
+    "pendingCount": 5,
     "automaticCaseCount": 28,
     "manualCaseCount": 2,
     "comparisonType": "historical",
     "note": "线上采用网站已有历史结果；固定集原文不变，标准模式（smart），只生成首版，不自动迭代。2条录音/口语用例待手动生成。",
     "boundary": "本轮验证首次生成；不覆盖生成后的修改链路。历史对照不能单独证明提示词的因果收益，未完成实测的课件不计作质量通过。",
     "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
+    "findingsNote": "已确认：T13暂停图标资源缺失、第二关将有效成语判错。优先复测：T02取消拖拽是否触发判定；T03切组是否停止旧音频。源码改善迹象：T18新增切换语音时暂停旧音频的处理，实际听感待验证。详见对应用例的本轮检查记录。",
+    "basicCheckNote": "已检查 23 份课件包：JS语法通过 23 份；音频文件共 127 个，解码异常 0 份；含待核实或缺失资源路径 1 份。",
     "verificationNote": "包内检查仅覆盖JS语法、明确写出的资源路径和音频可解码。点击、拖拽、完成重玩、音频听感未完成实测的，统一保留待验证；不计算效果提升率。",
     "historicalBaselineNote": "历史对照的28个HTML均可访问；T08分针图片、T19标题背景图片在本次复核时返回404。可能涉及历史资源存储，不直接计作提示词改进收益。"
   }
