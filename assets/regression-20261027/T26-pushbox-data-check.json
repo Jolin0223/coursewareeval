@@ -1,0 +1,201 @@
+{
+  "scope": "源码地图必要条件检查。忽略其他箱子与锁定限制仍不可达即可证明该关无解；可达不等于整关可解。不是浏览器实测。",
+  "sourceSha256": "ee8ad1f37e1353b2869cf6c6acb00d7436bbbe54422e8038bbd1387bc8b74254",
+  "results": [
+    {
+      "level": 1,
+      "boxNumber": 24,
+      "start": [
+        3,
+        2
+      ],
+      "goal": [
+        6,
+        2
+      ],
+      "reachableWithOtherBoxesRemoved": true,
+      "visitedStates": 69,
+      "reachableBoxCells": null
+    },
+    {
+      "level": 1,
+      "boxNumber": 15,
+      "start": [
+        4,
+        4
+      ],
+      "goal": [
+        6,
+        4
+      ],
+      "reachableWithOtherBoxesRemoved": true,
+      "visitedStates": 44,
+      "reachableBoxCells": null
+    },
+    {
+      "level": 2,
+      "boxNumber": 32,
+      "start": [
+        3,
+        2
+      ],
+      "goal": [
+        7,
+        1
+      ],
+      "reachableWithOtherBoxesRemoved": true,
+      "visitedStates": 195,
+      "reachableBoxCells": null
+    },
+    {
+      "level": 2,
+      "boxNumber": 18,
+      "start": [
+        3,
+        5
+      ],
+      "goal": [
+        7,
+        5
+      ],
+      "reachableWithOtherBoxesRemoved": true,
+      "visitedStates": 41,
+      "reachableBoxCells": null
+    },
+    {
+      "level": 3,
+      "boxNumber": 24,
+      "start": [
+        2,
+        3
+      ],
+      "goal": [
+        8,
+        1
+      ],
+      "reachableWithOtherBoxesRemoved": false,
+      "visitedStates": 210,
+      "reachableBoxCells": [
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          6,
+          3
+        ]
+      ]
+    },
+    {
+      "level": 3,
+      "boxNumber": 45,
+      "start": [
+        3,
+        5
+      ],
+      "goal": [
+        8,
+        3
+      ],
+      "reachableWithOtherBoxesRemoved": false,
+      "visitedStates": 549,
+      "reachableBoxCells": [
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          6
+        ]
+      ]
+    },
+    {
+      "level": 3,
+      "boxNumber": 12,
+      "start": [
+        6,
+        6
+      ],
+      "goal": [
+        8,
+        6
+      ],
+      "reachableWithOtherBoxesRemoved": true,
+      "visitedStates": 39,
+      "reachableBoxCells": null
+    }
+  ]
+}

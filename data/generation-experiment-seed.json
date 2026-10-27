@@ -4,7 +4,7 @@
   "testSetVersion": "1.2",
   "manualTestSetId": "manual-recording-baseline-20260813-v1.1",
   "manualTestSetVersion": "1.1",
-  "generatedAt": "2026-10-27T04:16:30.166194+00:00",
+  "generatedAt": "2026-10-27T04:26:25.548910+00:00",
   "source": "Fixed 28-case Box test and production generation",
   "runPolicy": {
     "environment": "https://box.test.xdf.cn",
@@ -533,6 +533,7 @@
                 "verification": "源码检查，尚未运行复现"
               }
             ],
+            "retestSteps": "开始拖动卡片，在与目标重叠时触发pointercancel或lostpointercapture；检查卡片是否复位，且不计作答、不触发正确或错误反馈。",
             "httpResourceCount": 17,
             "httpFailureCount": 0
           }
@@ -796,6 +797,7 @@
                 "verification": "源码检查，尚未运行复现"
               }
             ],
+            "retestSteps": "点击单词发音，在声音结束前点击Next或Retry；检查旧音频是否立即停止，再点击新卡片确认只播放新单词。",
             "httpResourceCount": 30,
             "httpFailureCount": 0
           }
@@ -3365,6 +3367,7 @@
                 "sourceLabel": "词典依据"
               }
             ],
+            "retestSteps": "进入游戏后点击暂停，检查按钮图标；再到第二关选择“拔”出口，检查是否把“拔苗助长”判为错误。",
             "httpResourceCount": 21,
             "httpFailureCount": 0
           }
@@ -4393,6 +4396,7 @@
                 "kind": "pass"
               }
             ],
+            "retestSteps": "选择空格，依次验证填数、候选数笔记和擦除；填完正确答案后检查完成反馈，并验证重置。",
             "httpResourceCount": 7,
             "httpFailureCount": 0
           }
@@ -4659,6 +4663,7 @@
                 "kind": "improvement"
               }
             ],
+            "retestSteps": "连续点击不同问句和答句的播放按钮；检查前一条语音是否停止、是否只播放最后一次选择的语音。",
             "httpResourceCount": 15,
             "httpFailureCount": 0
           }
@@ -6146,19 +6151,19 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "4571530406d44c4fa7663f2f88d6f0f3",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-aln5W1LlQT2QtOP5gnxhTQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-aln5W1LlQT2QtOP5gnxhTQ/package.zip",
+          "fileName": "七巧板拼图",
+          "snapshotId": "ad3352d4e2bc48888a6ff8dd1077b5bd",
+          "finishedAt": "2026-10-27T04:19:22.975179+00:00",
+          "startedAt": "2026-10-27T04:13:00.170706+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T24_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个四年级七巧板拼图课件，把七块图形拼成指定图案并支持旋转。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
@@ -6172,7 +6177,20 @@
             39880
           ],
           "generationMessageId": 39880,
-          "firstSubmittedAt": "2026-10-27T04:13:08.671843+00:00"
+          "firstSubmittedAt": "2026-10-27T04:13:08.671843+00:00",
+          "htmlSha256": "a07c03770afca4ef0fa8fe1257afb8c8f0b2ae57ae5597af0eaad10fbc602ad1",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 13,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -6387,19 +6405,19 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "b55c5094bde743c49817386529c1578e",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-fxktWJ9PTYSOeTlkkXMUiw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-fxktWJ9PTYSOeTlkkXMUiw/package.zip",
+          "fileName": "拼音字母描摹",
+          "snapshotId": "90957f1baaaf40ca931fbf0aafe29420",
+          "finishedAt": "2026-10-27T04:19:56.191305+00:00",
+          "startedAt": "2026-10-27T04:14:28.506254+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T25_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个一年级拼音字母描摹课件，学生沿正确笔顺描写声母。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
@@ -6413,7 +6431,20 @@
             39886
           ],
           "generationMessageId": 39886,
-          "firstSubmittedAt": "2026-10-27T04:14:40.086860+00:00"
+          "firstSubmittedAt": "2026-10-27T04:14:40.086860+00:00",
+          "htmlSha256": "5f27228c37d907a043993dc5ca4719ed48b8e789e0b9b7d5fe33c8c65b6e676b",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 5,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 23,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -6628,19 +6659,19 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "61acf2332eca4bf4b531ef58caee8f60",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-jUYXwyn3QFGco5Gmpso38Q/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-jUYXwyn3QFGco5Gmpso38Q/package.zip",
+          "fileName": "推箱子数学闯关",
+          "snapshotId": "0172a862ba1444e7a1d95d3a9a1c0bfb",
+          "finishedAt": "2026-10-27T04:22:18.993025+00:00",
+          "startedAt": "2026-10-27T04:16:30.230637+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T26_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个四年级推箱子数学闯关课件，把数字箱子推到对应算式结果的位置。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
@@ -6654,7 +6685,34 @@
             39892
           ],
           "generationMessageId": 39892,
-          "firstSubmittedAt": "2026-10-27T04:16:38.296899+00:00"
+          "firstSubmittedAt": "2026-10-27T04:16:38.296899+00:00",
+          "htmlSha256": "ac10238b048f4be86fdd66822d0b7f773e7775114845e7685cea7552ad2c5244",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewStatus": "第三关无解已由地图与移动规则确认",
+            "retestSteps": "进入第3关，检查数字24与45箱子的可移动区域及对应目标；修复地图后运行可解性校验，再验证从第1关到最终完成的全流程。",
+            "sourceFindings": [
+              {
+                "promptRule": "关卡可完成性",
+                "file": "js/levels.js",
+                "line": 46,
+                "finding": "第3关的数字24与45箱子无法推到对应目标。按源码的四方向推箱规则独立搜索，即使移除其他箱子与锁定限制仍不可达；24箱只能在原有水平通道内移动。因此该关无法正常完成，应先修正地图并校验可解性。",
+                "verification": "已核对地图、tryMove和自动寻路逻辑，并独立搜索可达状态；尚未通过浏览器逐步推箱复现。",
+                "evidenceLabel": "已确认第三关无解",
+                "sourceUrl": "assets/regression-20261027/T26-pushbox-data-check.json",
+                "sourceLabel": "查看地图核验数据"
+              }
+            ],
+            "httpResourceCount": 14,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -6869,26 +6927,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "c30b5559423c473f86eaf82cd46b342e",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-NpETdq1zTX6WLfyhxV7tqA/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-NpETdq1zTX6WLfyhxV7tqA/package.zip",
+          "fileName": "Word Wheel Game",
+          "snapshotId": "64e51351bc0746398def2097e77d9cc6",
+          "finishedAt": "2026-10-27T04:26:25.529435+00:00",
+          "startedAt": "2026-10-27T04:19:23.061525+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T27_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个五年级英语单词与释义配对转盘游戏。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39894,
+            39896,
+            39899
+          ],
+          "generationMessageId": 39899,
+          "firstSubmittedAt": "2026-10-27T04:19:32.759176+00:00",
+          "htmlSha256": "6afc78a79fd09168d7ea4d58dfb4fd40a199bb9a80661ce8b537b1e2282a521e",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 13,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 22,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -7103,26 +7181,46 @@
           "evaluated": false
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "1c3b486bce8643d0bf9dfd686d175cbf",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-oP_gAhI2T02-q7oQj0dz3A/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/27-oP_gAhI2T02-q7oQj0dz3A/package.zip",
+          "fileName": "三年级乘法跑酷游戏",
+          "snapshotId": "887ea98437554e46b9896ad578fb2bde",
+          "finishedAt": "2026-10-27T04:25:32.848219+00:00",
+          "startedAt": "2026-10-27T04:19:56.285696+00:00",
           "error": "",
           "id": "box-test-20261027-v1",
           "label": "10月27日 V1测试",
           "group": "固定测试集",
           "taskId": "fixed_T28_box-test-20261027-v1",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个三年级乘法跑酷游戏，学生按住蓄力跳跃，碰到正确答案得分。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
           "generationMethod": "box-pipeline-generate-only",
           "generateMode": "smart",
           "published": false,
-          "evaluated": false
+          "evaluated": false,
+          "messageIds": [
+            39900,
+            39902,
+            39904
+          ],
+          "generationMessageId": 39904,
+          "firstSubmittedAt": "2026-10-27T04:20:07.300094+00:00",
+          "htmlSha256": "7235e03d5b1f612b02d8aa35655646835747c7f6e442bd1763e95a10d48f32b0",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 10,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "httpResourceCount": 22,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -7231,18 +7329,18 @@
     "id": "box-test-20261027-v1",
     "label": "10月27日 V1测试",
     "generateMode": "smart",
-    "updatedAt": "2026-10-27T04:16:30.166194+00:00",
-    "successCount": 23,
+    "updatedAt": "2026-10-27T04:26:25.548910+00:00",
+    "successCount": 28,
     "failureCount": 0,
-    "pendingCount": 5,
+    "pendingCount": 0,
     "automaticCaseCount": 28,
     "manualCaseCount": 2,
     "comparisonType": "historical",
     "note": "线上采用网站已有历史结果；固定集原文不变，标准模式（smart），只生成首版，不自动迭代。2条录音/口语用例待手动生成。",
     "boundary": "本轮验证首次生成；不覆盖生成后的修改链路。历史对照不能单独证明提示词的因果收益，未完成实测的课件不计作质量通过。",
     "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
-    "findingsNote": "已确认：T13暂停图标资源缺失、第二关将有效成语判错。优先复测：T02取消拖拽是否触发判定；T03切组是否停止旧音频。源码改善迹象：T18新增切换语音时暂停旧音频的处理，实际听感待验证。详见对应用例的本轮检查记录。",
-    "basicCheckNote": "已检查 23 份课件包：JS语法通过 23 份；音频文件共 127 个，解码异常 0 份；含待核实或缺失资源路径 1 份。",
+    "findingsNote": "已确认：T13暂停图标资源缺失、第二关将有效成语判错；T26推箱子第三关地图无解。优先复测：T02取消拖拽是否触发判定；T03切组是否停止旧音频。源码改善迹象：T18新增切换语音时暂停旧音频的处理，实际听感待验证。详见对应用例的本轮检查记录。",
+    "basicCheckNote": "已检查 28 份课件包：JS语法通过 28 份；音频文件共 155 个，解码异常 0 份；含待核实或缺失资源路径 1 份。",
     "verificationNote": "包内检查仅覆盖JS语法、明确写出的资源路径和音频可解码。点击、拖拽、完成重玩、音频听感未完成实测的，统一保留待验证；不计算效果提升率。",
     "historicalBaselineNote": "历史对照的28个HTML均可访问；T08分针图片、T19标题背景图片在本次复核时返回404。可能涉及历史资源存储，不直接计作提示词改进收益。"
   }
