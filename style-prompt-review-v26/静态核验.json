@@ -1,0 +1,16 @@
+{
+  "baseStyles": 19,
+  "unchangedSections": [
+    "0 原课件保留",
+    "2 完整封面",
+    "5至8 色彩、层级、音效和禁止项"
+  ],
+  "changedSections": [
+    "1 按钮材质只作CSS视觉参考",
+    "3 排除功能按钮生图",
+    "4 标准CSS按钮与SVG规范"
+  ],
+  "texturesChanged": 0,
+  "boxGenerated": false,
+  "demo": "手工CSS样式；声音图标切换与重置反馈已浏览器检查"
+}
