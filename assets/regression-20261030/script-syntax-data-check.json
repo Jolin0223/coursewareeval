@@ -1,0 +1,16 @@
+{
+  "caseId": "T23",
+  "scope": "Downloaded and online main.js are identical and both truncated; static syntax evidence, not browser interaction.",
+  "conversationId": "3b623b40f8ef44e89cec1e82d2ce3935",
+  "conversationUrl": "https://box.test.xdf.cn/kpm/3b623b40f8ef44e89cec1e82d2ce3935",
+  "generationMessageId": 40352,
+  "snapshotId": "3f6ada6a2a994a52a9d713acd8a2224a",
+  "htmlPreview": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/30-1xmGNFO9RV2_EQDt1Vne6A/index.html",
+  "file": "js/main.js",
+  "line": 17,
+  "syntaxError": "SyntaxError: Unexpected end of input",
+  "localSha256": "2a6f716b818630ecbe9674ca78632b370c8e9b488b489a35538e6e555ee9eeb6",
+  "onlineSha256": "2a6f716b818630ecbe9674ca78632b370c8e9b488b489a35538e6e555ee9eeb6",
+  "matches": true,
+  "byteCount": 5478
+}

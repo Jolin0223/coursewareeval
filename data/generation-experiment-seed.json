@@ -4,7 +4,7 @@
   "testSetVersion": "1.2",
   "manualTestSetId": "manual-recording-baseline-20260813-v1.1",
   "manualTestSetVersion": "1.1",
-  "generatedAt": "2026-10-30T04:16:49.506619+00:00",
+  "generatedAt": "2026-10-30T04:22:58.783063+00:00",
   "source": "Fixed 28-case Box test and production generation",
   "runPolicy": {
     "environment": "https://box.test.xdf.cn",
@@ -4644,12 +4644,24 @@
             "audioFileCount": 5,
             "interaction": "待验证",
             "audioListening": "待验证",
-            "visualStatus": "待验证",
+            "visualStatus": "待浏览器核验",
             "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "visualNote": "5道句子重组的预设英文句序可成立；How do you do中的两个do按单词文本判定，不要求区分两个相同词卡。答对后由Next手动切题。",
+            "sourceFindings": [
+              {
+                "kind": "pass",
+                "evidenceLabel": "源码改善迹象",
+                "promptRule": "重复词与切题",
+                "finding": "相同单词卡可以互换位置；答对后显示Next，保留当前正确句子。实际拖拽、取消操作及音频匹配仍待人工核验。",
+                "file": "js/main.js",
+                "line": 137
+              }
+            ],
+            "retestSteps": "",
             "httpResourceCount": 14,
             "httpFailureCount": 0,
-            "reviewNote": "AI源码初审进行中；实际画面、试听和完整操作待验证。",
-            "aiSourceReviewStatus": "pending"
+            "reviewNote": "Codex已直接复核知识与关键交互逻辑；已复核问题见本条记录。实际画面、试听和完整操作待验证，不据此给出总体通过分。",
+            "aiSourceReviewStatus": "codex-source-reviewed"
           }
         }
       ]
@@ -7102,14 +7114,16 @@
                 "promptRule": "主流程不可运行",
                 "finding": "完整课件包中的main.js仅17行且字符串未闭合；这是确定的脚本语法错误。应排查生成/修复/打包为何仍交付了被截断的脚本，本轮保留原始首版。",
                 "file": "js/main.js",
-                "line": 17
+                "line": 17,
+                "sourceUrl": "/assets/regression-20261030/script-syntax-data-check.json",
+                "sourceLabel": "查看独立数据核验"
               }
             ],
             "retestSteps": "打开课件检查能否进入游戏并播放动物单词；开发先核对当前HTML版本的main.js是否完整。",
             "httpResourceCount": 7,
             "httpFailureCount": 0,
-            "reviewNote": "AI源码初审进行中；实际画面、试听和完整操作待验证。",
-            "aiSourceReviewStatus": "pending"
+            "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
+            "aiSourceReviewStatus": "completed"
           }
         }
       ]
@@ -7420,8 +7434,8 @@
             "retestSteps": "核对三角形是否直角，以及按目标位置拼合后是否重叠/留缝；详见几何核验文件。",
             "httpResourceCount": 9,
             "httpFailureCount": 0,
-            "reviewNote": "AI源码初审进行中；实际画面、试听和完整操作待验证。",
-            "aiSourceReviewStatus": "pending"
+            "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
+            "aiSourceReviewStatus": "completed"
           }
         }
       ]
@@ -8342,8 +8356,8 @@
             "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
             "httpResourceCount": 21,
             "httpFailureCount": 0,
-            "reviewNote": "AI源码初审进行中；实际画面、试听和完整操作待验证。",
-            "aiSourceReviewStatus": "pending"
+            "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
+            "aiSourceReviewStatus": "completed"
           }
         }
       ]
@@ -8652,8 +8666,8 @@
             "retestSteps": "连续答对后记录新题干和下一批台阶数值，确认判分依据与当前题一致；检查长按取消不触发跳跃。",
             "httpResourceCount": 10,
             "httpFailureCount": 0,
-            "reviewNote": "AI源码初审进行中；实际画面、试听和完整操作待验证。",
-            "aiSourceReviewStatus": "pending"
+            "reviewNote": "Codex已直接复核知识与关键交互逻辑；已复核问题见本条记录。实际画面、试听和完整操作待验证，不据此给出总体通过分。",
+            "aiSourceReviewStatus": "codex-source-reviewed"
           }
         }
       ]
@@ -8763,7 +8777,7 @@
     "id": "prompt-20261030-latest",
     "label": "10月30日 最新提示词测试",
     "generateMode": "smart",
-    "updatedAt": "2026-10-30T04:16:49.506619+00:00",
+    "updatedAt": "2026-10-30T04:22:58.783063+00:00",
     "successCount": 28,
     "failureCount": 0,
     "pendingCount": 0,
@@ -8774,9 +8788,10 @@
     "boundary": "本轮验证首次生成；不覆盖生成后的修改链路。历史对照不能单独证明提示词的因果收益，未完成实测的课件不计作质量通过。",
     "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
     "findingsNote": "确定问题：T23主脚本截断、语法检查失败。独立数据核验确认：T06描摹可被1px短线误判通过、T24七巧板形状不符合标准、T26推箱子第三关无解。源码另发现部分封面在按下时进入、T05取消拖拽仍判答、T16成功遮罩盖住完成按钮。T02已有点击/拖拽双操作与取消复位，T04答对后停留。实际触控、画面和听感仍待人工评审。",
-    "basicCheckNote": "已检查 28 份课件包：JS语法通过 27 份；音频文件共 116 个，解码异常 0 份；含待核实或缺失资源路径 0 份。 AI源码初审已完成 23/28 份（未作浏览器全流程验收）。",
+    "basicCheckNote": "已检查 28 份课件包：JS语法通过 27 份；音频文件共 116 个，解码异常 0 份；含待核实或缺失资源路径 0 份。 AI源码初审/复核已完成 28/28 份，其中2份由Codex直接复核；未作浏览器全流程验收。",
     "verificationNote": "包内检查仅覆盖JS语法、明确写出的资源路径和音频可解码。点击、拖拽、完成重玩、音频听感未完成实测的，统一保留待验证；不计算效果提升率。",
     "historicalBaselineNote": "对照沿用网站已有线上历史结果，本轮未重新生成线上课件。",
-    "sourceReviewedCount": 23
+    "sourceReviewedCount": 28,
+    "coverPolicyNote": "封面分布（HTML结构核对）：16条有独立封面、12条直接进入内容，并非每条都强制生成封面；包含T23脚本异常的封面结构，不能等同于16条可用封面。"
   }
 }
