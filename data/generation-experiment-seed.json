@@ -8276,10 +8276,28 @@
             "interaction": "待验证",
             "audioListening": "待验证",
             "visualStatus": "待验证",
-            "reviewNote": "AI源码初审进行中；画面、操作与听感待验证。",
-            "aiSourceReviewStatus": "pending",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
             "httpResourceCount": 9,
-            "httpFailureCount": 0
+            "httpFailureCount": 0,
+            "sourceFindings": [
+              {
+                "kind": "issue",
+                "evidenceLabel": "源码复核",
+                "promptRule": "封面任意位置进入",
+                "finding": "进入事件仅绑定400×160的开始按钮热区，未绑定整张封面；并在pointerdown立即撤下封面，未按完整点击结束后进入。SDK开始调用也早于进入教学。实际触控待验证。",
+                "file": "js/main.js",
+                "line": 110
+              },
+              {
+                "kind": "issue",
+                "evidenceLabel": "源码与几何复核",
+                "promptRule": "正确操作判定",
+                "finding": "七巧板吸附和点击匹配强制同ID，同形同尺寸的两个大三角或两个小三角不能互换；正方形旋转90度后几何重合，也被角度全等条件拒绝。",
+                "file": "js/main.js",
+                "line": 310
+              }
+            ]
           }
         }
       ],
@@ -10037,10 +10055,10 @@
     "comparisonType": "production-latest",
     "note": "本轮使用线上最新提示词，按固定28条原始需求、标准模式（smart）生成首版。线上栏默认显示最新结果；下拉可切回0813线上版本。测试环境历史结果另行保留。",
     "boundary": "保留全部历史课件、版本ID及评分关联；不自动修复或迭代。2条录音/口语用例仍待手动生成。",
-    "verificationNote": "AI源码初审完成 27/28；画面、触控、听感和完整通关尚未完成实测。浏览器采集异常未作为课件失败证据。人工评分独立填写，不用源码分数替代整体评分。",
+    "verificationNote": "AI源码初审完成 28/28；画面、触控、听感和完整通关尚未完成实测。浏览器采集异常未作为课件失败证据。人工评分独立填写，不用源码分数替代整体评分。",
     "basicCheckNote": "已检查 28/28 份课件包；JS语法发现问题 0 份，明确资源路径待核实 0 份。 已探测 28 份课件的 413 个在线文件，访问异常 0 个。",
-    "sourceReviewedCount": 27,
-    "findingsNote": "重点问题：T05数轴刻度缺少横坐标设置，实屏优先复核；T06的C/c描摹路径只生成90度短弧；T17第2套数独多解却按固定答案判定。独立求解确认T26两关推箱子均有解。其余AI建议未经复核不计为确定缺陷。"
+    "sourceReviewedCount": 28,
+    "findingsNote": "重点问题：T05数轴刻度缺少横坐标设置，实屏优先复核；T06的C/c描摹路径只生成90度短弧；T17第2套数独多解却按固定答案判定。T24封面仅局部热区可进入，七巧板同形互换与对称角度被拒绝。独立求解确认T26两关推箱子均有解。其余AI建议未经复核不计为确定缺陷。"
   },
   "runHistory": [
     {
