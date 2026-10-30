@@ -1,0 +1,21 @@
+{
+  "caseId": "T06",
+  "type": "source-data-verification",
+  "notBrowserTest": true,
+  "function": "genArc",
+  "parameters": {
+    "cx": 600,
+    "cy": 270,
+    "radius": 108,
+    "startDegrees": 45,
+    "endDegrees": 315,
+    "counterclockwise": true
+  },
+  "actualSweepDegrees": -90,
+  "xRange": [
+    676.3675323681472,
+    707.9694138268579
+  ],
+  "finding": "C路径只画圆心右侧90度短弧，未形成包含左侧笔画的C形；小写c使用相同角度参数。",
+  "source": "js/main.js:63-78;110;113"
+}

@@ -1,0 +1,20 @@
+{
+  "caseId": "T26",
+  "scope": "按地图、数字目标和到位锁定规则进行独立BFS，不替代浏览器操作",
+  "results": [
+    {
+      "level": 1,
+      "solvable": true,
+      "shortestSteps": 24,
+      "visitedStates": 1121,
+      "completeSearch": true
+    },
+    {
+      "level": 2,
+      "solvable": true,
+      "shortestSteps": 29,
+      "visitedStates": 34036,
+      "completeSearch": true
+    }
+  ]
+}

@@ -4,7 +4,7 @@
   "testSetVersion": "1.2",
   "manualTestSetId": "manual-recording-baseline-20260813-v1.1",
   "manualTestSetVersion": "1.1",
-  "generatedAt": "2026-10-30T04:22:58.783063+00:00",
+  "generatedAt": "2026-10-30T05:43:20.848957+00:00",
   "source": "Fixed 28-case Box test and production generation",
   "runPolicy": {
     "environment": "https://box.test.xdf.cn",
@@ -105,6 +105,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "f582f9ffb6e445b899f899e647e8ad7f",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-Z0b7yAlEQ5WV9_lAnS8goA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-Z0b7yAlEQ5WV9_lAnS8goA/package.zip",
+          "fileName": "看图识字",
+          "snapshotId": "d8048fa0fe214f35a5bb5f29488aef38",
+          "startedAt": "2026-10-30T05:11:45.669828+00:00",
+          "finishedAt": "2026-10-30T05:15:59.094703+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T01_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个幼儿园看图识字点选游戏，认识日、月、山、水。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110669,
+            140122,
+            140124
+          ],
+          "generationMessageId": 140124,
+          "htmlSha256": "6871583793fd5b8c3d9f917d38a70f9e30901204ec2414da7b0067175ae9e487",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 13,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -418,6 +461,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "2fd46994b6014aa991f472389744bb98",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-YcDtB-hFQsmxwuOfLgymhA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-YcDtB-hFQsmxwuOfLgymhA/package.zip",
+          "fileName": "海底寻宝",
+          "snapshotId": "822d8574d81841518675fcb835ffc518",
+          "startedAt": "2026-10-30T05:15:59.209040+00:00",
+          "finishedAt": "2026-10-30T05:21:16.134957+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T02_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个海底寻宝主题的幼儿园5以内数量与数字配对游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110677,
+            110689,
+            170540
+          ],
+          "generationMessageId": 110689,
+          "htmlSha256": "33f63adff0599906e31ef97de68d47eb72a93bd5acc068c797c0e17679187f02",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 3,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 18,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -747,6 +833,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "c36241f4a25041fd954f94f862a9edd2",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-FKTCShctSKCb42wENv30hg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-FKTCShctSKCb42wENv30hg/package.zip",
+          "fileName": "Animal Cards",
+          "snapshotId": "49ca5052930843cab4e4e333121f4c7f",
+          "startedAt": "2026-10-30T05:15:59.209314+00:00",
+          "finishedAt": "2026-10-30T05:19:51.237303+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T03_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个幼儿园动物英语单词翻翻卡，翻开后可以点击播放单词发音。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110683,
+            110687,
+            140137
+          ],
+          "generationMessageId": 110687,
+          "htmlSha256": "1d9f1d8a5306451eeaa29d230339a07b0151bdd286b1e804a10f178a5d82c638",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 4,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 19,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -1075,6 +1204,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "bad4cd8d207042028742aed562f55dd7",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-Ginau_6-Tv-cWz4Jr-IuNA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-Ginau_6-Tv-cWz4Jr-IuNA/package.zip",
+          "fileName": "听音选声母 - 云朵乐园",
+          "snapshotId": "1cd7b393be5c4062910178997055198a",
+          "startedAt": "2026-10-30T05:15:59.209101+00:00",
+          "finishedAt": "2026-10-30T05:20:17.487426+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T04_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个云朵乐园主题的一年级拼音听音选声母课件，学生点击播放后选择听到的声母。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110676,
+            110685,
+            140133
+          ],
+          "generationMessageId": 110685,
+          "htmlSha256": "1dded6ab82e12cf43ef35369e30314dfc12c8ff6f8cb45ab6c4377a4e8b54d89",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 5,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 19,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -1385,6 +1557,59 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "5a208eadf81d462d8d154cf4bcb5572f",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30--IiWhn-STZ68vdp5NrB_rw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30--IiWhn-STZ68vdp5NrB_rw/package.zip",
+          "fileName": "数轴小车",
+          "snapshotId": "96bc090ff96e421581aad3734a3acbee",
+          "startedAt": "2026-10-30T05:15:59.209035+00:00",
+          "finishedAt": "2026-10-30T05:21:38.410710+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T05_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个一年级数轴小车游戏，学生左右滑动小车找到正确数字。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110674,
+            110679,
+            140139
+          ],
+          "generationMessageId": 140139,
+          "htmlSha256": "228043e47d9207f1d8b91ab8f8d6a3377b054327ba41863730ec913798f47692",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 5,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "sourceFindings": [
+              {
+                "kind": "issue",
+                "evidenceLabel": "源码复核",
+                "promptRule": "数轴显示与点击定位",
+                "finding": "21个.tick绝对定位元素均未设置横坐标，脚本也未初始化刻度位置，存在刻度与点选热区重叠风险；需优先实屏复核。",
+                "file": "css/style.css",
+                "line": 133
+              }
+            ],
+            "httpResourceCount": 17,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -1703,6 +1928,61 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "dceb74713a9844398dd09955b64235e0",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-nwr5A8ZNTxSpw1bWlgR6RA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-nwr5A8ZNTxSpw1bWlgR6RA/package.zip",
+          "fileName": "Letter Writing",
+          "snapshotId": "125fbfab8ee74ff3ab0a5c2641b2116e",
+          "startedAt": "2026-10-30T05:15:59.209513+00:00",
+          "finishedAt": "2026-10-30T05:20:52.188053+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T06_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个一年级英语字母A到D的四线三格书写练习。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110681,
+            110691,
+            140136
+          ],
+          "generationMessageId": 110691,
+          "htmlSha256": "8977ff60b4db28d4a4d71ca1b4865725a8ef300d6ea17edbb4fbcfab760422e3",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 4,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "sourceFindings": [
+              {
+                "kind": "issue",
+                "evidenceLabel": "独立几何核验",
+                "promptRule": "知识准确性",
+                "finding": "大写C与小写c的圆弧函数实际只生成右侧90度短弧，未形成C形；描摹模板需优先核验。",
+                "file": "js/main.js",
+                "line": 110,
+                "sourceUrl": "/assets/regression-production-20261030/letter-c-data-check.json",
+                "sourceLabel": "查看圆弧数据核验"
+              }
+            ],
+            "httpResourceCount": 14,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -2015,6 +2295,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "45a01f7b825644dcb6b122cfe3280331",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-g_xphVTQRd6yri-imQiqig/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-g_xphVTQRd6yri-imQiqig/package.zip",
+          "fileName": "偏旁部首连连看",
+          "snapshotId": "5f0d47dd773d46b68ff77b4e69208907",
+          "startedAt": "2026-10-30T05:15:59.209179+00:00",
+          "finishedAt": "2026-10-30T05:20:36.235496+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T07_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个二年级汉字与偏旁部首连线游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            140135,
+            140141,
+            170538
+          ],
+          "generationMessageId": 140141,
+          "htmlSha256": "263ae26f959e064e56e927e68b30b9810a2ca15acf625aabe672c681f30a3aa5",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 10,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -2313,6 +2636,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "3b92fe8dce964639818bd64a30dd50e6",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-b04x49oGS6C2BQe2IDseMw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-b04x49oGS6C2BQe2IDseMw/package.zip",
+          "fileName": "拨时钟大挑战",
+          "snapshotId": "e2d80d2303894951a8ee62f6bd30eb46",
+          "startedAt": "2026-10-30T05:19:51.405655+00:00",
+          "finishedAt": "2026-10-30T05:25:22.236788+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T08_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个二年级认识整点和半点的拨时钟游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110695,
+            140143,
+            140147
+          ],
+          "generationMessageId": 140147,
+          "htmlSha256": "b63feb750bf371336a84efb2534b06b171fed4f0fedd259c259e614c7878ab33",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 10,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 22,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -2611,6 +2977,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "996f64b9d5af4c7599b542387a9fbd03",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-O9r5JDAhTg2nIFTy8iEf7Q/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-O9r5JDAhTg2nIFTy8iEf7Q/package.zip",
+          "fileName": "单词分类投篮游戏",
+          "snapshotId": "bb98bd7266f24976b6a41cb307f73c66",
+          "startedAt": "2026-10-30T05:20:17.590656+00:00",
+          "finishedAt": "2026-10-30T05:24:50.169280+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T09_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个二年级英语单词分类投篮游戏，把动物和食物单词放进对应篮筐。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110699,
+            140145,
+            170542
+          ],
+          "generationMessageId": 110699,
+          "htmlSha256": "658f5d03c16b89594ac2bd0bb9c3554e820c40d276391ec21dcea6ecb5376130",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 10,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 19,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -2909,6 +3318,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "2609a14cab0c45a183f791bad489d1ae",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-gvS47g7gTwK8OKSnNB_B5Q/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-gvS47g7gTwK8OKSnNB_B5Q/package.zip",
+          "fileName": "《绝句》诗句排序",
+          "snapshotId": "b768cf5ec00b42cda724c9eee8bb6341",
+          "startedAt": "2026-10-30T05:20:36.337929+00:00",
+          "finishedAt": "2026-10-30T05:25:00.498517+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T10_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个三年级古诗句拖拽排序课件，内容是《绝句》。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110701,
+            140149,
+            170544
+          ],
+          "generationMessageId": 110701,
+          "htmlSha256": "022f01e1cb44f3af36764f2df42a9724509659d796333d40ddc1bbdd437661cd",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 4,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -3207,6 +3659,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "4658011f5da8498eb8a5f73b65fa91ce",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-JHdYVyE_SpCITwfCEuRpVw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-JHdYVyE_SpCITwfCEuRpVw/package.zip",
+          "fileName": "九九乘法棋盘",
+          "snapshotId": "fdf9617bf3e843d98b946adbb7cb17d3",
+          "startedAt": "2026-10-30T05:20:52.296393+00:00",
+          "finishedAt": "2026-10-30T05:26:05.582574+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T11_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个三年级九九乘法棋盘点击游戏，根据算式找到正确的积。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110697,
+            110707,
+            140151
+          ],
+          "generationMessageId": 110707,
+          "htmlSha256": "c5e85ab2c9a587e87d089cef151c2c2c514d829744ef3458882949d733b2e449",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 10,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 20,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -3505,6 +4000,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "e5c1f3d57af549e4b9bc96dc06c9fff2",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-Hqj-DFzuSKCy5eDWO4TjRw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-Hqj-DFzuSKCy5eDWO4TjRw/package.zip",
+          "fileName": "Body Parts",
+          "snapshotId": "e4e58a77928742af9e45442903cbd994",
+          "startedAt": "2026-10-30T05:21:16.234243+00:00",
+          "finishedAt": "2026-10-30T05:26:14.125500+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T12_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "人教版三年级英语，做一个身体部位单词看图选词课件，支持点击播放单词发音。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110703,
+            170546,
+            170548
+          ],
+          "generationMessageId": 170548,
+          "htmlSha256": "8e18d5e13f6af9139629531d9863a431c22967a20a5469f7909b1195001b916b",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 9,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 27,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -3803,6 +4341,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "c6b27b3e55cf4e55bb04755155cc71eb",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-N2UNj-40STOiUpxl_TECIA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-N2UNj-40STOiUpxl_TECIA/package.zip",
+          "fileName": "成语迷宫大冒险",
+          "snapshotId": "a247aff029974187a73b036e305aa26c",
+          "startedAt": "2026-10-30T05:21:38.511660+00:00",
+          "finishedAt": "2026-10-30T05:27:49.012905+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T13_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个四年级成语迷宫游戏，学生帮助角色走到正确成语出口。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110705,
+            140153,
+            140155
+          ],
+          "generationMessageId": 140155,
+          "htmlSha256": "d5545a9fb553a4c274245b8f7fa964db186322f16ff5c50be1d0e99e486f3ca5",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 16,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -4145,6 +4726,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "3267809e73584e738a2d14e421ce3868",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-C8WVgvcsStOPrBzRosR5Qg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-C8WVgvcsStOPrBzRosR5Qg/package.zip",
+          "fileName": "分数大小比较",
+          "snapshotId": "a06408118c694628bc3c24b8631538b7",
+          "startedAt": "2026-10-30T05:24:50.278453+00:00",
+          "finishedAt": "2026-10-30T05:29:59.173314+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T14_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个四年级分数大小比较滑杆课件，拖动滑杆观察并选择更大的分数。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110709,
+            110711,
+            170551
+          ],
+          "generationMessageId": 110711,
+          "htmlSha256": "1314f955f91fba949f832e5dab3236e3cc57e59fec1c95b09f187e40e70e764a",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 10,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -4443,6 +5067,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "2ef71583dc294b44b72dd6724bb21430",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-yLcPVHGySyy_CHuNKnFotA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-yLcPVHGySyy_CHuNKnFotA/package.zip",
+          "fileName": "Sentence Sorting",
+          "snapshotId": "779d0bba96464430959202bbc5613dbe",
+          "startedAt": "2026-10-30T05:25:00.614125+00:00",
+          "finishedAt": "2026-10-30T05:30:34.603541+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T15_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个四年级英语句子排序课件，把日常问候语的单词拖成正确句子。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            170552,
+            170554,
+            170558
+          ],
+          "generationMessageId": 170558,
+          "htmlSha256": "1196943d4d4be59e0f31f721f249c510c10577b826a8197c8bb029f1a69f2292",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 5,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 13,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -4753,6 +5420,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "a75ed5f40662470cafc842144e4f71f3",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-ApG9Ug9yQ9qS7srss05lsA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-ApG9Ug9yQ9qS7srss05lsA/package.zip",
+          "fileName": "梳理文章脉络",
+          "snapshotId": "045b93cff0bf42e289401894e64dff1c",
+          "startedAt": "2026-10-30T05:25:22.336217+00:00",
+          "finishedAt": "2026-10-30T05:30:14.559524+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T16_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个五年级阅读课件，把文章的起因、经过、结果卡片拖拽排序。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110713,
+            140157,
+            170556
+          ],
+          "generationMessageId": 110713,
+          "htmlSha256": "ced3bce3e0794865c947e08875de5edbd2fbbc73d673120d460fbc28371d4386",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 6,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -5063,6 +5773,61 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "078992d9b16846178862279e448bf45a",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-0p3bCl3_QUGZ36-US7bUgg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-0p3bCl3_QUGZ36-US7bUgg/package.zip",
+          "fileName": "五年级数独课件",
+          "snapshotId": "16475fb78e4045b68e4f58544b9f0ef5",
+          "startedAt": "2026-10-30T05:26:05.690975+00:00",
+          "finishedAt": "2026-10-30T05:31:42.072075+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T17_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个五年级数独课件，支持填数、候选数笔记和擦除。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            140159,
+            140161,
+            170560
+          ],
+          "generationMessageId": 140161,
+          "htmlSha256": "945499558f530e3af9e049aad91bf885936facf16cbb6fc4803a40ef5591efd8",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "sourceFindings": [
+              {
+                "kind": "issue",
+                "evidenceLabel": "独立求解核验",
+                "promptRule": "正确答案判断",
+                "finding": "第2套数独至少有2个合法解，但校验只与固定答案逐格比较，存在将其他合法解判错的情况。模型所称“答案行列冲突”不成立。",
+                "file": "js/main.js",
+                "line": 224,
+                "sourceUrl": "/assets/regression-production-20261030/sudoku-data-check.json",
+                "sourceLabel": "查看两套合法解"
+              }
+            ],
+            "httpResourceCount": 8,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -5388,6 +6153,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "2164bc850e3248fe9a8ff23f29c8fd90",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-dLszXRnNRwCgAqIGDJJ26w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-dLszXRnNRwCgAqIGDJJ26w/package.zip",
+          "fileName": "Asking the Way",
+          "snapshotId": "785828c3b00e4b3e86ce99fd42921cc9",
+          "startedAt": "2026-10-30T05:26:14.229397+00:00",
+          "finishedAt": "2026-10-30T05:31:35.973293+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T18_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "苏教版五年级双语故事表演，做一个问路对话的问句与答句连线课件，问句和答句都可以点击播放。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110715,
+            140163,
+            170562
+          ],
+          "generationMessageId": 140163,
+          "htmlSha256": "2216deddd4cb3255c902df49dc9f03d11347a5c163e5eefb7f1910f097adf71f",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 8,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 15,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -5711,6 +6519,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "975e8440df8e440497af67a51dc20233",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-tya0Mnb3RqW_ldpkp8uL8w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-tya0Mnb3RqW_ldpkp8uL8w/package.zip",
+          "fileName": "论点论据大配对",
+          "snapshotId": "b37a977f947a46d98617ae641fe8e63f",
+          "startedAt": "2026-10-30T05:27:49.118830+00:00",
+          "finishedAt": "2026-10-30T05:32:53.602040+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T19_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个六年级语文论点与论据配对棋盘，点击选择能够支持论点的论据。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110717,
+            140165,
+            170564
+          ],
+          "generationMessageId": 170564,
+          "htmlSha256": "69a2ae592a986e0fdc49c8cb412f91bc155bc0312241f9de10c6b249e18dbb72",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 13,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -6009,6 +6860,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "9c1b33fc758d49688bf4ae423b3924fe",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-2NEcoFPmRpCqDdtlgPvDZw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-2NEcoFPmRpCqDdtlgPvDZw/package.zip",
+          "fileName": "长方体和正方体观察",
+          "snapshotId": "c215d908d64a4a6fb77be5fd75376b87",
+          "startedAt": "2026-10-30T05:29:59.276885+00:00",
+          "finishedAt": "2026-10-30T05:37:48.889619+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T20_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个六年级长方体和正方体观察课件，可以拖动旋转、缩放和重置视角。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            140167,
+            140169,
+            170572
+          ],
+          "generationMessageId": 170572,
+          "htmlSha256": "85b0b6fe45056d73f356f1e750c734574fc8e9c561641a885078cb2d85a0ca9f",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 10,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -6307,6 +7201,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "437f6d9870274007bd1425d9601fe492",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-pIgYW6ayTka6jZaKflP4LA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-pIgYW6ayTka6jZaKflP4LA/package.zip",
+          "fileName": "Listen and Choose",
+          "snapshotId": "652d1f7d5b2448ce8511a5c46bf5812f",
+          "startedAt": "2026-10-30T05:30:14.663958+00:00",
+          "finishedAt": "2026-10-30T05:36:00.783811+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T21_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个六年级英语对话补全课件，学生点击播放并听完情境对话后，选择合适的答句完成对话。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            140171,
+            170566,
+            170574
+          ],
+          "generationMessageId": 170574,
+          "htmlSha256": "366c1ce40c1fcf002fac6539654191baa3b79c7443c2ef778e82911f5264bf7c",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 5,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 19,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -6605,6 +7542,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "dff93998ffd34b6e8fdfb3741bcd8eb1",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-ghIYtlV9TiqnptqZUzOpMw/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-ghIYtlV9TiqnptqZUzOpMw/package.zip",
+          "fileName": "比较长短",
+          "snapshotId": "b3e70faf06a841f6a46842f55ad3f448",
+          "startedAt": "2026-10-30T05:30:34.708241+00:00",
+          "finishedAt": "2026-10-30T05:35:06.635013+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T22_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个比较物体长短的拖拽互动课件。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            140173,
+            170568,
+            170570
+          ],
+          "generationMessageId": 140173,
+          "htmlSha256": "99137a74b4584c585089a46ccf90c0212c2b235c08405605fde1c7d77d03f3f2",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 15,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -6903,6 +7883,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "ac50131b73c04574b94e67135f2a0402",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-v5fjuP9iRzi3feLJ0eNXLQ/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-v5fjuP9iRzi3feLJ0eNXLQ/package.zip",
+          "fileName": "Animal Words",
+          "snapshotId": "98b5a89097b44a80bfed9e91f4f927af",
+          "startedAt": "2026-10-30T05:31:36.090342+00:00",
+          "finishedAt": "2026-10-30T05:36:38.535061+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T23_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个动物英语单词听音选图游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            140175,
+            170577,
+            170582
+          ],
+          "generationMessageId": 170582,
+          "htmlSha256": "f4a6e3e493b7ede9c1bf29e891775f829f97ab83f7092ac1ce2a06f5abe14f7a",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 5,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 18,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -7215,6 +8238,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "ab5731d224ed44aa92b6effa9007f9ab",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-SYJ5uwLnQ_Ctg33MbWxQ5w/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-SYJ5uwLnQ_Ctg33MbWxQ5w/package.zip",
+          "fileName": "趣味七巧板",
+          "snapshotId": "e18ccf551477487ba9e0c3ad9c5afbc7",
+          "startedAt": "2026-10-30T05:31:42.175946+00:00",
+          "finishedAt": "2026-10-30T05:37:44.670816+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T24_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个四年级七巧板拼图课件，把七块图形拼成指定图案并支持旋转。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            140177,
+            170578,
+            170580
+          ],
+          "generationMessageId": 140177,
+          "htmlSha256": "1ff799eb96d3f858415298855d3d4a5bf0f95ea0447c57ebc49c10d35085f694",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "AI源码初审进行中；画面、操作与听感待验证。",
+            "aiSourceReviewStatus": "pending",
+            "httpResourceCount": 9,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -7527,6 +8593,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "61b927cff24840b484d232624ee0d988",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-bAv5bzaYRjmQrtLGTI1BaA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-bAv5bzaYRjmQrtLGTI1BaA/package.zip",
+          "fileName": "拼音字母描摹",
+          "snapshotId": "96ca022258154d3ea63c3d4caf1d2437",
+          "startedAt": "2026-10-30T05:32:53.708067+00:00",
+          "finishedAt": "2026-10-30T05:37:43.596824+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T25_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个一年级拼音字母描摹课件，学生沿正确笔顺描写声母。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110718,
+            170584,
+            170588
+          ],
+          "generationMessageId": 170588,
+          "htmlSha256": "e6cc70acf8c3c48f785390a6bea678115bdd80272888da98eb77d1b4ad44e975",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 12,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -7825,6 +8934,60 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "b7f5bf7b7be843789342f5406cc6b818",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-ZAE7QsSMToyQ4Lb4DiFspg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-ZAE7QsSMToyQ4Lb4DiFspg/package.zip",
+          "fileName": "数学推箱子",
+          "snapshotId": "103fdcd06dca47e1b83a4c3456d2f280",
+          "startedAt": "2026-10-30T05:35:06.739794+00:00",
+          "finishedAt": "2026-10-30T05:40:24.200058+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T26_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个四年级推箱子数学闯关课件，把数字箱子推到对应算式结果的位置。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110720,
+            140180
+          ],
+          "generationMessageId": 110720,
+          "htmlSha256": "895587d6043733fbf7fbea9749633d912dce604939d53521717c2976e3223276",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 3,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "sourceFindings": [
+              {
+                "kind": "pass",
+                "evidenceLabel": "独立地图求解",
+                "promptRule": "关卡可完成性",
+                "finding": "2关地图按箱子到正确目标后锁定的规则均可解；最短路线分别24步、29步。实际按钮与触控仍待实测。",
+                "file": "js/main.js",
+                "line": 8,
+                "sourceUrl": "/assets/regression-production-20261030/pushbox-data-check.json",
+                "sourceLabel": "查看求解结果"
+              }
+            ],
+            "httpResourceCount": 19,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -8151,6 +9314,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "265da758c2604734a7101279e3bf998a",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-qC-YFAOSRn2XKICNpzMWQA/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-qC-YFAOSRn2XKICNpzMWQA/package.zip",
+          "fileName": "Word Wheel Game",
+          "snapshotId": "8cd5d44321284bbdb76eecd18b791d59",
+          "startedAt": "2026-10-30T05:36:00.886640+00:00",
+          "finishedAt": "2026-10-30T05:40:58.307076+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T27_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个五年级英语单词与释义配对转盘游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            140182,
+            140184,
+            170592
+          ],
+          "generationMessageId": 170592,
+          "htmlSha256": "b28846a5ba3390b47cf277b8a62069bd4c5bf055467bf11182b411c2050f8092",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 5,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 13,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -8449,6 +9655,49 @@
           "generationMethod": "box-pipeline-generate-only",
           "published": false,
           "evaluated": false
+        },
+        {
+          "conversationId": "52fc45ffa05b439d80400015769c0f48",
+          "fileUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-lL_GHBMtR7i0fv-u7XjcAg/index.html",
+          "pushUrl": "https://oss-xlss.xdf.cn/ig-kpm/multiple/2026-10/30-lL_GHBMtR7i0fv-u7XjcAg/package.zip",
+          "fileName": "乘法大跑酷",
+          "snapshotId": "f95189d881444aa8923e2d9fd4a0e7d3",
+          "startedAt": "2026-10-30T05:36:38.646502+00:00",
+          "finishedAt": "2026-10-30T05:43:20.839444+00:00",
+          "error": "",
+          "id": "box-production-20261030-latest",
+          "label": "10月30日 线上最新版",
+          "group": "固定测试集",
+          "taskId": "fixed_T28_box-production-20261030-latest",
+          "status": "success",
+          "prompt": "做一个三年级乘法跑酷游戏，学生按住蓄力跳跃，碰到正确答案得分。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.xdf.cn",
+          "generateMode": "smart",
+          "generationMethod": "box-pipeline-generate-only",
+          "published": false,
+          "evaluated": false,
+          "messageIds": [
+            110722,
+            110724,
+            170590
+          ],
+          "generationMessageId": 110724,
+          "htmlSha256": "5fa99123d3bd82c6bac371d96e4e8289839897139ead0a3f4746ba20bffa852b",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "reviewNote": "知识、教学、代码三项AI源码初审已完成，问题需结合独立复核；无真实画面与操作证据，不给出总体通过分。",
+            "aiSourceReviewStatus": "completed",
+            "httpResourceCount": 15,
+            "httpFailureCount": 0
+          }
         }
       ],
       "versions": [
@@ -8774,24 +10023,46 @@
     }
   ],
   "currentRun": {
-    "id": "prompt-20261030-latest",
-    "label": "10月30日 最新提示词测试",
+    "id": "box-production-20261030-latest",
+    "label": "10月30日 线上最新版",
+    "environment": "https://box.xdf.cn",
     "generateMode": "smart",
-    "updatedAt": "2026-10-30T04:22:58.783063+00:00",
+    "updatedAt": "2026-10-30T05:43:20.848957+00:00",
     "successCount": 28,
     "failureCount": 0,
     "pendingCount": 0,
+    "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
     "automaticCaseCount": 28,
     "manualCaseCount": 2,
-    "comparisonType": "historical",
-    "note": "线上采用网站已有历史结果；固定集原文不变，标准模式（smart），只生成首版，不自动迭代。2条录音/口语用例待手动生成。",
-    "boundary": "本轮验证首次生成；不覆盖生成后的修改链路。历史对照不能单独证明提示词的因果收益，未完成实测的课件不计作质量通过。",
-    "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
-    "findingsNote": "确定问题：T23主脚本截断、语法检查失败。独立数据核验确认：T06描摹可被1px短线误判通过、T24七巧板形状不符合标准、T26推箱子第三关无解。源码另发现部分封面在按下时进入、T05取消拖拽仍判答、T16成功遮罩盖住完成按钮。T02已有点击/拖拽双操作与取消复位，T04答对后停留。实际触控、画面和听感仍待人工评审。",
-    "basicCheckNote": "已检查 28 份课件包：JS语法通过 27 份；音频文件共 116 个，解码异常 0 份；含待核实或缺失资源路径 0 份。 AI源码初审/复核已完成 28/28 份，其中2份由Codex直接复核；未作浏览器全流程验收。",
-    "verificationNote": "包内检查仅覆盖JS语法、明确写出的资源路径和音频可解码。点击、拖拽、完成重玩、音频听感未完成实测的，统一保留待验证；不计算效果提升率。",
-    "historicalBaselineNote": "对照沿用网站已有线上历史结果，本轮未重新生成线上课件。",
-    "sourceReviewedCount": 28,
-    "coverPolicyNote": "封面分布（HTML结构核对）：16条有独立封面、12条直接进入内容，并非每条都强制生成封面；包含T23脚本异常的封面结构，不能等同于16条可用封面。"
-  }
+    "comparisonType": "production-latest",
+    "note": "本轮使用线上最新提示词，按固定28条原始需求、标准模式（smart）生成首版。线上栏默认显示最新结果；下拉可切回0813线上版本。测试环境历史结果另行保留。",
+    "boundary": "保留全部历史课件、版本ID及评分关联；不自动修复或迭代。2条录音/口语用例仍待手动生成。",
+    "verificationNote": "AI源码初审完成 27/28；画面、触控、听感和完整通关尚未完成实测。浏览器采集异常未作为课件失败证据。人工评分独立填写，不用源码分数替代整体评分。",
+    "basicCheckNote": "已检查 28/28 份课件包；JS语法发现问题 0 份，明确资源路径待核实 0 份。 已探测 28 份课件的 413 个在线文件，访问异常 0 个。",
+    "sourceReviewedCount": 27,
+    "findingsNote": "重点问题：T05数轴刻度缺少横坐标设置，实屏优先复核；T06的C/c描摹路径只生成90度短弧；T17第2套数独多解却按固定答案判定。独立求解确认T26两关推箱子均有解。其余AI建议未经复核不计为确定缺陷。"
+  },
+  "runHistory": [
+    {
+      "id": "prompt-20261030-latest",
+      "label": "10月30日 最新提示词测试",
+      "generateMode": "smart",
+      "updatedAt": "2026-10-30T04:22:58.783063+00:00",
+      "successCount": 28,
+      "failureCount": 0,
+      "pendingCount": 0,
+      "automaticCaseCount": 28,
+      "manualCaseCount": 2,
+      "comparisonType": "historical",
+      "note": "线上采用网站已有历史结果；固定集原文不变，标准模式（smart），只生成首版，不自动迭代。2条录音/口语用例待手动生成。",
+      "boundary": "本轮验证首次生成；不覆盖生成后的修改链路。历史对照不能单独证明提示词的因果收益，未完成实测的课件不计作质量通过。",
+      "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
+      "findingsNote": "确定问题：T23主脚本截断、语法检查失败。独立数据核验确认：T06描摹可被1px短线误判通过、T24七巧板形状不符合标准、T26推箱子第三关无解。源码另发现部分封面在按下时进入、T05取消拖拽仍判答、T16成功遮罩盖住完成按钮。T02已有点击/拖拽双操作与取消复位，T04答对后停留。实际触控、画面和听感仍待人工评审。",
+      "basicCheckNote": "已检查 28 份课件包：JS语法通过 27 份；音频文件共 116 个，解码异常 0 份；含待核实或缺失资源路径 0 份。 AI源码初审/复核已完成 28/28 份，其中2份由Codex直接复核；未作浏览器全流程验收。",
+      "verificationNote": "包内检查仅覆盖JS语法、明确写出的资源路径和音频可解码。点击、拖拽、完成重玩、音频听感未完成实测的，统一保留待验证；不计算效果提升率。",
+      "historicalBaselineNote": "对照沿用网站已有线上历史结果，本轮未重新生成线上课件。",
+      "sourceReviewedCount": 28,
+      "coverPolicyNote": "封面分布（HTML结构核对）：16条有独立封面、12条直接进入内容，并非每条都强制生成封面；包含T23脚本异常的封面结构，不能等同于16条可用封面。"
+    }
+  ]
 }

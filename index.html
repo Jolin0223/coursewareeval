@@ -2087,7 +2087,7 @@
                         <section class="border border-blue-200 bg-blue-50 rounded-lg px-5 py-4">
                             <div class="flex flex-wrap justify-between items-center gap-2">
                                 <h3 class="font-black text-blue-900">${escapeHtml(generationExperimentData.currentRun.label)}</h3>
-                                <span class="text-xs font-bold text-blue-800">线上历史对照 · 首次生成回归</span>
+                                <span class="text-xs font-bold text-blue-800">${generationExperimentData.currentRun.comparisonType === 'production-latest' ? '线上最新版 · 首次生成回归' : '线上历史对照 · 首次生成回归'}</span>
                             </div>
                             <p class="mt-2 text-sm text-slate-700">${escapeHtml(generationExperimentData.currentRun.note)}</p>
                             <p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(generationExperimentData.currentRun.boundary)}</p>
@@ -2264,7 +2264,7 @@
             const selectId = `generation-production-version-${item.id}`;
             const value = variant?.id || '';
             return `
-                <div class="ce-custom-select relative w-[126px] shrink-0">
+                <div class="ce-custom-select relative w-[180px] shrink-0">
                     <button type="button" onclick="toggleCustomSelect(${escapeAttr(jsString(selectId))}, event)" class="w-full h-8 border border-slate-300 rounded-lg px-2.5 bg-white text-xs font-black text-slate-700 outline-none hover:border-slate-400 focus:ring-2 focus:ring-slate-400 flex items-center justify-between gap-2">
                         <span class="truncate">${escapeHtml(variant?.label || '选择线上版本')}</span>
                         <i id="${escapeAttr(selectId)}-icon" class="fa-solid fa-chevron-down text-slate-400 text-[10px] transition-transform"></i>
