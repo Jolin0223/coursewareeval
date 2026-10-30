@@ -4,7 +4,7 @@
   "testSetVersion": "1.2",
   "manualTestSetId": "manual-recording-baseline-20260813-v1.1",
   "manualTestSetVersion": "1.1",
-  "generatedAt": "2026-10-30T04:15:29.999665+00:00",
+  "generatedAt": "2026-10-30T04:16:49.506619+00:00",
   "source": "Fixed 28-case Box test and production generation",
   "runPolicy": {
     "environment": "https://box.test.xdf.cn",
@@ -7057,19 +7057,19 @@
           }
         },
         {
-          "conversationId": "",
-          "fileUrl": "",
-          "pushUrl": "",
-          "fileName": "",
-          "snapshotId": "",
-          "finishedAt": "",
-          "startedAt": "",
+          "conversationId": "3b623b40f8ef44e89cec1e82d2ce3935",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/30-1xmGNFO9RV2_EQDt1Vne6A/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-10/30-1xmGNFO9RV2_EQDt1Vne6A/package.zip",
+          "fileName": "Animal Words",
+          "snapshotId": "3f6ada6a2a994a52a9d713acd8a2224a",
+          "finishedAt": "2026-10-30T04:15:55.947990+00:00",
+          "startedAt": "2026-10-30T03:55:38.737708+00:00",
           "error": "",
           "id": "prompt-20261030-latest",
           "label": "10月30日 最新提示词测试",
           "group": "固定测试集",
           "taskId": "fixed_T23_prompt-20261030-latest",
-          "status": "pending",
+          "status": "success",
           "prompt": "做一个动物英语单词听音选图游戏。",
           "promptType": "raw-user-requirement",
           "environment": "https://box.test.xdf.cn",
@@ -7083,7 +7083,34 @@
             40352
           ],
           "generationMessageId": 40352,
-          "firstSubmittedAt": "2026-10-30T03:55:50.352869+00:00"
+          "firstSubmittedAt": "2026-10-30T03:55:50.352869+00:00",
+          "htmlSha256": "2d6383935f4adf019aed2fde3936c662cb2980faf5cae5f259c45e24b430ed21",
+          "verification": {
+            "scriptSyntax": "发现问题",
+            "literalResourceReferences": "通过",
+            "audioDecode": "无音频文件",
+            "audioFileCount": 0,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待浏览器核验",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "visualNote": "主脚本在第17行的内嵌音频字符串中直接截断。Node语法检查返回Unexpected end of input，后续游戏逻辑不能执行。",
+            "sourceFindings": [
+              {
+                "kind": "issue",
+                "evidenceLabel": "源码复核",
+                "promptRule": "主流程不可运行",
+                "finding": "完整课件包中的main.js仅17行且字符串未闭合；这是确定的脚本语法错误。应排查生成/修复/打包为何仍交付了被截断的脚本，本轮保留原始首版。",
+                "file": "js/main.js",
+                "line": 17
+              }
+            ],
+            "retestSteps": "打开课件检查能否进入游戏并播放动物单词；开发先核对当前HTML版本的main.js是否完整。",
+            "httpResourceCount": 7,
+            "httpFailureCount": 0,
+            "reviewNote": "AI源码初审进行中；实际画面、试听和完整操作待验证。",
+            "aiSourceReviewStatus": "pending"
+          }
         }
       ]
     },
@@ -8736,18 +8763,18 @@
     "id": "prompt-20261030-latest",
     "label": "10月30日 最新提示词测试",
     "generateMode": "smart",
-    "updatedAt": "2026-10-30T04:15:29.999665+00:00",
-    "successCount": 27,
+    "updatedAt": "2026-10-30T04:16:49.506619+00:00",
+    "successCount": 28,
     "failureCount": 0,
-    "pendingCount": 1,
+    "pendingCount": 0,
     "automaticCaseCount": 28,
     "manualCaseCount": 2,
     "comparisonType": "historical",
     "note": "线上采用网站已有历史结果；固定集原文不变，标准模式（smart），只生成首版，不自动迭代。2条录音/口语用例待手动生成。",
     "boundary": "本轮验证首次生成；不覆盖生成后的修改链路。历史对照不能单独证明提示词的因果收益，未完成实测的课件不计作质量通过。",
     "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
-    "findingsNote": "独立数据核验确认：T06描摹可被1px短线误判通过、T24七巧板形状不符合标准、T26推箱子第三关无解。源码另发现部分封面在按下时进入、T05取消拖拽仍判答、T16成功遮罩盖住完成按钮。T02已有点击/拖拽双操作与取消复位，T04答对后停留。实际触控、画面和听感仍待人工评审。",
-    "basicCheckNote": "已检查 27 份课件包：JS语法通过 27 份；音频文件共 116 个，解码异常 0 份；含待核实或缺失资源路径 0 份。 AI源码初审已完成 23/28 份（未作浏览器全流程验收）。",
+    "findingsNote": "确定问题：T23主脚本截断、语法检查失败。独立数据核验确认：T06描摹可被1px短线误判通过、T24七巧板形状不符合标准、T26推箱子第三关无解。源码另发现部分封面在按下时进入、T05取消拖拽仍判答、T16成功遮罩盖住完成按钮。T02已有点击/拖拽双操作与取消复位，T04答对后停留。实际触控、画面和听感仍待人工评审。",
+    "basicCheckNote": "已检查 28 份课件包：JS语法通过 27 份；音频文件共 116 个，解码异常 0 份；含待核实或缺失资源路径 0 份。 AI源码初审已完成 23/28 份（未作浏览器全流程验收）。",
     "verificationNote": "包内检查仅覆盖JS语法、明确写出的资源路径和音频可解码。点击、拖拽、完成重玩、音频听感未完成实测的，统一保留待验证；不计算效果提升率。",
     "historicalBaselineNote": "对照沿用网站已有线上历史结果，本轮未重新生成线上课件。",
     "sourceReviewedCount": 23
