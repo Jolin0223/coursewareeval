@@ -1,0 +1,17 @@
+{
+  "scope": "源码地图可达性，不替代浏览器移动实测",
+  "results": [
+    {
+      "level": 1,
+      "question": "形容非常高兴的样子",
+      "answer": "心花怒放",
+      "correctExitReachable": true
+    },
+    {
+      "level": 2,
+      "question": "比喻做事之前已经有通盘的考虑",
+      "answer": "胸有成竹",
+      "correctExitReachable": true
+    }
+  ]
+}

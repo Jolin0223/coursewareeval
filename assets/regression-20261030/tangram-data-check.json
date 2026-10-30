@@ -1,0 +1,78 @@
+{
+  "scope": "直接按生成源码顶点计算形状角度和面积，不是浏览器截图或实际拼接测试。",
+  "file": "趣味七巧板/js/data.js",
+  "shapes": [
+    {
+      "id": "large-tri-1",
+      "angles": [
+        53.13,
+        63.43,
+        63.43
+      ],
+      "area": 20000.0,
+      "is45_45_90Triangle": false
+    },
+    {
+      "id": "large-tri-2",
+      "angles": [
+        53.13,
+        63.43,
+        63.43
+      ],
+      "area": 20000.0,
+      "is45_45_90Triangle": false
+    },
+    {
+      "id": "medium-tri",
+      "angles": [
+        45.0,
+        45.0,
+        90.0
+      ],
+      "area": 9996.980000000001,
+      "is45_45_90Triangle": true
+    },
+    {
+      "id": "small-tri-1",
+      "angles": [
+        53.13,
+        63.43,
+        63.43
+      ],
+      "area": 5000.0,
+      "is45_45_90Triangle": false
+    },
+    {
+      "id": "small-tri-2",
+      "angles": [
+        53.13,
+        63.43,
+        63.43
+      ],
+      "area": 5000.0,
+      "is45_45_90Triangle": false
+    },
+    {
+      "id": "square",
+      "angles": [
+        90.0,
+        90.0,
+        90.0,
+        90.0
+      ],
+      "area": 9996.980000000001,
+      "is45_45_90Triangle": null
+    },
+    {
+      "id": "parallelogram",
+      "angles": [
+        135.0,
+        45.0,
+        135.0,
+        45.0
+      ],
+      "area": 20000.0,
+      "is45_45_90Triangle": null
+    }
+  ]
+}

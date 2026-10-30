@@ -1,0 +1,7 @@
+{
+  "caseId": "T17",
+  "solutionCountCappedAt2": 1,
+  "solutionValid": true,
+  "givenMatchesSolution": true,
+  "scope": "仅数独题目数据可解性和答案检查；填数、笔记、擦除等交互待实测"
+}

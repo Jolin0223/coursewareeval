@@ -1,0 +1,21 @@
+{
+  "scope": "依据实际源码判定条件计算输入反例，不是浏览器触控实测",
+  "caseId": "T06",
+  "stroke": "小写c",
+  "userStroke": [
+    [
+      930,
+      270
+    ],
+    [
+      931,
+      270
+    ]
+  ],
+  "userLengthPx": 1,
+  "startDistancePx": 0.0,
+  "endDistancePx": 60.00833275471,
+  "maxDistanceToExpectedPx": 1.0,
+  "acceptedByCurrentConditions": true,
+  "expectedPathLengthPx": 293.1370849898477
+}

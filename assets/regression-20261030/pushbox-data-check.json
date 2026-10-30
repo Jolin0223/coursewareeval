@@ -1,0 +1,27 @@
+{
+  "scope": "独立搜索完整箱子布局，遵循正确入位后锁定的源码规则。仅验证关卡数据可解，不替代浏览器按键实测。",
+  "sourceSha256": "56530b124bf31d667b560f338d18130ed2aec8d2e4473b1a26acfbba9e3c3296",
+  "results": [
+    {
+      "level": 1,
+      "solvable": true,
+      "exhaustive": true,
+      "stateCount": 91,
+      "movementSequence": "上右右下左上左下下上右下"
+    },
+    {
+      "level": 2,
+      "solvable": true,
+      "exhaustive": true,
+      "stateCount": 4407,
+      "movementSequence": "上右右下左上左下下上右右下右下左上上左左下右上右下"
+    },
+    {
+      "level": 3,
+      "solvable": false,
+      "exhaustive": true,
+      "stateCount": 1,
+      "movementSequence": null
+    }
+  ]
+}
