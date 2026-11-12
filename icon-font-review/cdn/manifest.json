@@ -1,0 +1,104 @@
+{
+  "version": "2.1.0-css",
+  "visualBaseline": "Jolin approved V2",
+  "candidateURL": "https://iteachcdn.xdf.cn/mmcw/icon.css",
+  "status": "待开发上传；2026-11-12 HTTP 404",
+  "icons": [
+    {
+      "id": "play",
+      "class": "cb-icon-play",
+      "zh": "播放",
+      "en": "Play"
+    },
+    {
+      "id": "pause",
+      "class": "cb-icon-pause",
+      "zh": "暂停",
+      "en": "Pause"
+    },
+    {
+      "id": "autoplay",
+      "class": "cb-icon-autoplay",
+      "zh": "自动播放",
+      "en": "Auto play"
+    },
+    {
+      "id": "sound",
+      "class": "cb-icon-sound",
+      "zh": "声音开启",
+      "en": "Sound on"
+    },
+    {
+      "id": "mute",
+      "class": "cb-icon-mute",
+      "zh": "已静音",
+      "en": "Muted"
+    },
+    {
+      "id": "show",
+      "class": "cb-icon-show",
+      "zh": "内容可见",
+      "en": "Visible"
+    },
+    {
+      "id": "hide",
+      "class": "cb-icon-hide",
+      "zh": "内容隐藏",
+      "en": "Hidden"
+    },
+    {
+      "id": "menu",
+      "class": "cb-icon-menu",
+      "zh": "场景目录",
+      "en": "Scenes"
+    },
+    {
+      "id": "outline",
+      "class": "cb-icon-outline",
+      "zh": "展开大纲",
+      "en": "Outline"
+    },
+    {
+      "id": "back",
+      "class": "cb-icon-back",
+      "zh": "返回",
+      "en": "Back"
+    },
+    {
+      "id": "home",
+      "class": "cb-icon-home",
+      "zh": "首页",
+      "en": "Home"
+    },
+    {
+      "id": "close",
+      "class": "cb-icon-close",
+      "zh": "关闭",
+      "en": "Close"
+    },
+    {
+      "id": "retry",
+      "class": "cb-icon-retry",
+      "zh": "重试",
+      "en": "Retry"
+    },
+    {
+      "id": "next",
+      "class": "cb-icon-next",
+      "zh": "下一步",
+      "en": "Next"
+    },
+    {
+      "id": "submit",
+      "class": "cb-icon-submit",
+      "zh": "提交",
+      "en": "Submit"
+    },
+    {
+      "id": "done",
+      "class": "cb-icon-done",
+      "zh": "完成",
+      "en": "Done"
+    }
+  ]
+}
