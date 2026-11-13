@@ -1,8 +1,8 @@
 {
   "version": "2.1.1-css",
   "visualBaseline": "Jolin approved V2",
-  "candidateURL": "https://iteachcdn.xdf.cn/mmcw/icon.css",
-  "status": "待开发上传；2026-11-13 HTTP 404",
+  "candidateURL": "https://oss-xlss.xdf.cn/ig-kpm/resources/standard-icon.css",
+  "status": "2026-11-13 已核验 HTTP 200；内容与本包 icon.css 一致",
   "icons": [
     {
       "id": "play",

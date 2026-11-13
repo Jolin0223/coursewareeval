@@ -169,7 +169,7 @@ Design all child elements with **pixel values** relative to the 1920×1080 canva
   - 指定人教版或人教手写体：`Italic Adjust`；同时指定四线三格：`Italic JX Four Four Adjust`。
   - 指定苏教版或苏教手写体：`shuangyu-SU`（常规）；同时指定四线三格：`shuangyu-SU-line`。
   - 指定cake印刷体或cake系列：`EnglishCake`（常规）；同时指定四线三格：`EnglishCake4Line`。
-  - 字体系列与四线三格同时出现时优先选择对应系列四线字体；仅指定四线三格而未指定系列时，沿用`Italic JX Four Four Adjust`。字体名称必须与`https://iteachcdn.xdf.cn/mmcw/font/fontVar.css`的font-family一致，不使用不存在的`English cake`别名。
+  - 字体系列与四线三格同时出现时优先选择对应系列四线字体；仅指定四线三格而未指定系列时，沿用`Italic JX Four Four Adjust`。直接使用上列精确font-family名称，保留大小写、空格与连字符；无需读取远程CSS推断名称。将选定字体名称及字体样式表引用 `<link rel="stylesheet" href="https://iteachcdn.xdf.cn/mmcw/font/fontVar.css">` 写入相关代码任务。
   - 中文字体或阿拉伯数字（仅限必要场景）：`方正准圆简体`（常规） / `方正粗圆简体`（加粗），需要拼音注音的文字除外。
 2. 非英语游戏
 默认字体：`方正准圆简体`（常规） / `方正粗圆简体`（加粗），需要拼音注音的文字除外。
@@ -177,7 +177,7 @@ Design all child elements with **pixel values** relative to the 1920×1080 canva
 凡需要为汉字显示拼音注音时，HTML中只输出汉字原文，并对该段汉字整体使用`方正楷体拼音字库01`，由字体自身同时呈现拼音和汉字，不得单独生成或渲染拼音文本。严禁使用独立拼音、拼音数组、JS拼音转换、伪元素或手动空格实现拼音；不得将拼音和汉字拆成上下两层。注音文本应保留足够行高，避免字体自带拼音被裁切。未配置拼音的标题、按钮、说明和其他普通文字仍按对应学科的默认字体规则处理。
 
 ## 功能按钮组件与低幼视觉落地
-常用功能图标优先复用`https://iteachcdn.xdf.cn/mmcw/icon.css`内置图标，并按课件主题调整颜色。内置图标无法准确表达所需功能时，可沿用其饱满圆润、简洁清楚的风格生成SVG，不强行套用语义不符的图标。用户明确要求图像式按钮，或精美课件主题确需特定美术质感时，可优先采用生图素材；“精美”不意味着所有图标都必须生图。
+常用功能图标优先复用`https://oss-xlss.xdf.cn/ig-kpm/resources/standard-icon.css`内置图标，并按课件主题调整颜色。该URL是浏览器加载的样式表，不是供模型查阅的文档。内置16个图标（名称→类名）：播放→`cb-icon-play`；暂停→`cb-icon-pause`；自动播放→`cb-icon-autoplay`；声音开启→`cb-icon-sound`；已静音→`cb-icon-mute`；内容可见→`cb-icon-show`；内容隐藏→`cb-icon-hide`；场景目录→`cb-icon-menu`；展开大纲→`cb-icon-outline`；返回→`cb-icon-back`；首页→`cb-icon-home`；关闭→`cb-icon-close`；重试→`cb-icon-retry`；下一步→`cb-icon-next`；提交→`cb-icon-submit`；完成→`cb-icon-done`。在相关HTML代码任务的taskDetails中明确加入 `<link rel="stylesheet" href="https://oss-xlss.xdf.cn/ig-kpm/resources/standard-icon.css">`，给出所选完整图标类名及调用结构，例如 `<div class="cb-theme"><button type="button" class="cb cb-text"><span>下一题</span><span class="cb-icon cb-icon-next" aria-hidden="true"></span></button></div>`；仅给本任务需要的图标，不要求下游读取URL或manifest.json查询用法。内置图标无法准确表达所需功能时，可沿用其饱满圆润、简洁清楚的风格生成SVG，不强行套用语义不符的图标。用户明确要求图像式按钮，或精美课件主题确需特定美术质感时，可优先采用生图素材；“精美”不意味着所有图标都必须生图。
 在现有taskDetails中写清每个必要图标的实现方式：复用时给出`cb-icon-*`类及主题；内置cream、ocean、forest仅为配色示例，不限制课件主题；按当前课件配色设置具体颜色，不通过编造data-theme名称获取配色。在现有taskDetails中列出`--cb-ink`、`--cb-bg`、`--cb-line`、`--cb-accent`、`--cb-selected`、`--cb-shadow`、`--cb-primary-shadow`的具体合法色值，写清按钮文字字体；新增SVG时说明语义与同套风格；生图时安排单图素材和必要状态，明确是否包含底座，并将以下素材规范写入对应图片prompt：生图图标须保持功能语义清楚、轮廓饱满、细节简洁，在实际显示尺寸下可辨认；同一课件的比例、配色、材质和光照保持一致。每张素材只包含一个居中的图标，使用透明背景，不附带文字、字母、表情、品牌、logo或水印；不把功能符号变成难以辨认的角色或场景插画。默认只生成图标主体，由HTML提供底座和交互；用户明确要求完整主题按钮造型时可连同底座生成，但HTML不得重复绘制底座，按钮文案仍由HTML呈现。提前配齐播放/暂停、有声/静音等必要状态素材；热区、真实事件、状态切换及无障碍名称由代码实现。封面整图艺术按钮沿用原封面规则。
 相关代码任务包含位置、热区、真实动作、状态对应关系、类名或素材引用，以及避免重复底座的接入要求，不假设下游自动获得本段上下文。通用教学插图、Logo仍按原素材规则处理；沿用现有输出协议。
 方案明确低幼风格时，将饱满轮廓、背景/内容/控件层级、适度轻拟物和操作区域安排落实到相关素材或布局任务；已有文字完整、学科字体和舞台缩放规范优先，不扩大无关装饰。
