@@ -1,0 +1,7 @@
+媒体运行硬契约（本节优先于历史模板中的媒体加载和归零规则）：
+1. 宿主将媒体 src 暂存到 data-vc-src，强制 preload=none，入场仅恢复当前场景地址；不能依赖预加载、load() 或 metadata 策略保证 readyState>=2。生成链使用 runtime.assets 中的 packageUrl；修改链按 index.html 相对位置引用工作区已有媒体。图片、poster、CSS url、脚本媒体地址及音视频均不得保留线上绝对媒体地址；不得用 base 改变相对路径基准。字体样式和学情 SDK 仍遵守各自受控外链规则。
+2. 视频和音频统一调用 VcCourseware.playMedia(media, context, restart)，返回原播放 Promise；restart 为是否明确要求从头重播的布尔值，默认 false。该调用必须在有效轻触释放 pointerup 或键盘激活的当前处理栈中同步发起，不先 await 归零、就绪或计时器。首次媒体及释放来源后重入起点已为0时直接播放，play() 自身触发加载。
+3. 重播已加载媒体由 playMedia 同步尝试归零后立即发起播放，不要求 readyState>=2；元数据就绪与首帧可见分开判断。归零失败或 play Promise 拒绝时保留封面、显示继续/重试入口，不吞掉异常、不把失败标为成功。不得保留稍后把新播放拉回开头的延迟归零回调。
+4. loadedmetadata、loadeddata、canplay、canplaythrough、ended、定时器和动画回调只处理状态或展示继续按钮，禁止直接或经公共函数、传入回调发起 play()/playMedia()。不得把新媒体的归零或加载就绪当作首次播放的前置条件。
+5. 只有教师工具请求且 context.isActive() 时，允许在 start(context) 同步尝试首镜头一次；拒绝则显示继续按钮。mixed 场景先进行 H5 时不保留 autoplay 请求到答题或定时器完成，后续镜头必须经当前可见按钮播放。普通入场的 H5 旁白也必须有有效用户激活入口及拒绝后的重试入口。
+6. play Promise 的成功和失败回调均检查 context.isActive()、当前媒体和播放批次；stop 清理事件、计时器及待处理回调。真正有可呈现视频帧才移除封面，不把归零、设置src或仅调用play当作画面已经显示。
