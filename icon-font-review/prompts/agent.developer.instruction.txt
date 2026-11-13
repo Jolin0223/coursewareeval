@@ -20,5 +20,5 @@
 生图素材用HTML按钮承载，确保透明图标可见、缩放不裁切主体，热区覆盖按钮。默认由HTML提供底座；素材已含完整按钮底座时仅移除该按钮重复的可见底座，保留热区、焦点和事件，不影响其他组件。可见文案由HTML按课件语言呈现。按真实状态切换成套素材，资源缺失或不合格时报告并按现有流程补齐，不用错误功能符号或虚假状态替代。
 图标素材与按钮文案分开处理：“图标不含文字”仅约束图标素材，不限制按钮显示文字。上一题、下一题、提交、重试、继续等操作默认使用“图标＋可见短文案”；上一题配向左箭头，下一题配向右箭头。声音、静音、关闭等含义明确的辅助控件可仅用图标。文字遵循课件语言规范，不用不可见的aria-label代替可见文案。用户明确指定时优先遵循；整图封面沿用原封面规则。仅规范实际需要的按钮，不因举例新增功能。
 导航按钮结构示例：`<button type="button" class="cb cb-text"><span class="cb-icon cb-icon-back" aria-hidden="true"></span><span>上一题</span></button><button type="button" class="cb cb-text cb-primary"><span>下一题</span><span class="cb-icon cb-icon-next" aria-hidden="true"></span></button>`。示例分别呈现“← 上一题”和“下一题 →”，文字按课件语言替换；绑定真实题目导航，上一题的左箭头不能误接为退出课件或返回首页。
-按钮可见文字按课件语言与指定字体设置font-family或继承已正确设置字体的父容器，不被通用组件字体覆盖。平台明确提供的`https://oss-xlss.xdf.cn/ig-kpm/resources/standard-icon.css`、`https://iteachcdn.xdf.cn/mmcw/font/fontVar.css`及对应打包本地资源属于允许复用的平台资源，不因第三方库/CDN来源限制而删除或替换。
-字体直接使用架构任务明确给出的font-family名称，并在相关HTML文件保留或加入 `<link rel="stylesheet" href="https://iteachcdn.xdf.cn/mmcw/font/fontVar.css">`；不自行读取远程CSS推断名称。当前文件不是HTML时按文件职责实现并说明引用依赖，不违反单文件输出要求。
+按钮可见文字按课件语言与指定字体设置font-family或继承已正确设置字体的父容器，不被通用组件字体覆盖。平台明确提供的`https://oss-xlss.xdf.cn/ig-kpm/resources/standard-icon.css`及对应打包本地资源属于允许复用的平台资源，不因第三方库/CDN来源限制而删除或替换。
+字体直接使用架构任务明确给出的font-family名称；沿用平台既有字体处理，不新增字体下载或外链加载逻辑，不猜测字体文件路径。

@@ -169,7 +169,7 @@ Design all child elements with **pixel values** relative to the 1920×1080 canva
   - 指定人教版或人教手写体：`Italic Adjust`；同时指定四线三格：`Italic JX Four Four Adjust`。
   - 指定苏教版或苏教手写体：`shuangyu-SU`（常规）；同时指定四线三格：`shuangyu-SU-line`。
   - 指定cake印刷体或cake系列：`EnglishCake`（常规）；同时指定四线三格：`EnglishCake4Line`。
-  - 字体系列与四线三格同时出现时优先选择对应系列四线字体；仅指定四线三格而未指定系列时，沿用`Italic JX Four Four Adjust`。直接使用上列精确font-family名称，保留大小写、空格与连字符；无需读取远程CSS推断名称。将选定字体名称及字体样式表引用 `<link rel="stylesheet" href="https://iteachcdn.xdf.cn/mmcw/font/fontVar.css">` 写入相关代码任务。
+  - 字体系列与四线三格同时出现时优先选择对应系列四线字体；仅指定四线三格而未指定系列时，沿用`Italic JX Four Four Adjust`。根据上列使用场景选择字体，在相关代码任务中写明精确font-family名称，保留大小写、空格与连字符；字体资源由平台现有程序统一处理。
   - 中文字体或阿拉伯数字（仅限必要场景）：`方正准圆简体`（常规） / `方正粗圆简体`（加粗），需要拼音注音的文字除外。
 2. 非英语游戏
 默认字体：`方正准圆简体`（常规） / `方正粗圆简体`（加粗），需要拼音注音的文字除外。
