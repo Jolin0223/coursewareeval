@@ -17,8 +17,48 @@
 
 人声使用已确认的speaker与真实音轨；角色默认清亮温暖的少儿音，旁白为成年教师音。旁白不驱动画面人物对口型，画内角色说话才对应其口型。声音身份、音色或口型不符须凭实际媒体证据定位到配音/视频，HTML不能靠叠播另一段音频伪装修好；无试听或视频证据时不臆断听感与同步。
 
-舞台：封面、视频与H5共用1920×1080逻辑坐标，按可用容器s=min(宽/1920,高/1080)等比居中；宿主已缩放时不再缩放。不要用宽高双100%加aspect-ratio替代计算。视频交付画幅为16:9，按实际成片核对；层内display:block、居中等比显示，清除非设计边距与基线空隙。教师工具不挤压舞台，舞台外余区用主题底色；不拉伸或裁掉教学内容消除黑边，源片内黑边交媒体流程处理。
-文字、图片、按钮和命中区共享同一变换。拖拽坐标须扣除内部定位容器偏移；取消或丢失捕获只清理/回滚，不结算，先清空拖动状态再释放捕获。
+大小屏自适应：
+整课只使用一个1920×1080逻辑画布#app，封面、视频及H5的课程内容均放在其中；宿主注入的固定教师工具仍由宿主管理，不搬入#app、不改其结构。画布只缩放一次，CSS不另设transform，不为各场景再建缩放入口。
+1. head包含：
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+```
+2. 页面与画布样式：
+```css
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+#app {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: center center;
+    visibility: hidden;
+    overflow: hidden;
+}
+```
+3. 在#app已存在后、body结束前执行一次以下布局IIFE；resize复用同一updateScale，不重复注册监听：
+```js
+(function () {
+    var app = document.getElementById('app');
+    function updateScale() {
+        var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        app.style.transform = 'translate(-50%, -50%) scale(' + s + ')';
+        app.style.visibility = 'visible';
+    }
+    window.addEventListener('resize', updateScale);
+    updateScale();
+})();
+```
+4. 内部元素的位置和尺寸以1920×1080逻辑画布的px值设计，不用vw/vh或基于视口百分比定位内部内容；html/body的100%和#app居中的50%属于外层适配。文字、图片、按钮及命中区同步缩放，拖拽坐标扣除内部定位容器的逻辑偏移。
+布局IIFE只调整画布transform和visibility，属于允许的页面布局初始化；不得启动场景、媒体、教学计时、录音或上报。场景根仍由宿主hidden控制，“顶层只注册场景”不禁止这个纯布局入口。
+视频交付画幅为16:9，按实际成片核对；视频层display:block、居中等比显示，清除非设计边距与基线空隙。教师工具不挤压画布，舞台外余区用主题底色；不拉伸或裁掉教学内容消除黑边，源片内黑边交媒体流程处理。拖拽取消或丢失捕获只清理/回滚，不结算，先清空拖动状态再释放捕获。
 
 字幕按教学任务确定：语文朗读/识字显示对应文本，故事听赏不默认铺全文；数学突出数量、条件与关系，少重复旁白；英语示范/跟读可显示原文，听辨作答隐藏泄露答案的转写，不默认加中文翻译。字词、算式、题干等核心教学文字不随可选字幕关闭。
 可切换字幕用独立层，不烧入视频；仅在已有真实文本、对应时间轴及接入能力时按媒体时间同步，通常1—2行，使用学科字体并避开题目、口型与操作区。不均分句子时长伪造同步；仅有文稿时可标为“讲解文本”。未启用字幕不构成缺陷，不向固定教师工具添加未支持的开关。
@@ -87,3 +127,5 @@ stop中暂停媒体、取消定时器和待处理回调、移除事件；异步�
 场景 start(context) 接收只读上下文：source 为 course 或 teacher-tools，autoplay 表示教师工具请求首镜头自动播放，isActive() 表示本次入场仍有效。start 重置本场教学状态与镜头索引。仅当 context.autoplay 且 context.isActive() 时，视频/mixed 场景自动调用本场首镜头播放流程一次，不等待第二次点击；纯 H5 直接初始化互动。教师请求只在入场同步尝试；mixed 场景先做 H5 时后续镜头改由继续按钮启动。自动播放与手动播放复用同一封面和错误处理流程，不同时启动多个镜头、不改为静音。play() 拒绝或媒体错误时保留封面和“继续播放”按钮，真正呈现画面才移除封面。异步回调核对 context.isActive()、媒体及播放批次，stop 清理事件和定时器。非教师工具入口仍由可见按钮播放，后续镜头沿用原教学流程，不因本规则自动连播。
 
 触屏交互统一优先使用 Pointer Events：点击/轻触、拖拽、滑动、长按都用 pointerdown、pointermove、pointerup、pointercancel，避免 click/onclick、mousedown/mousemove/mouseup、touchstart/touchmove/touchend 事件监听。使用 pointerId 和 isPrimary 区分手指与笔，轻触在同一指针抬起且未超移动阈值时触发；拖动使用指针捕获，并在 pointercancel、lostpointercapture、stop 时清理状态。纵向列表保留 touch-action:pan-y 和原生滚动，拖动区域才用 touch-action:none，滑动与取消不得误触按钮。长按计时器在移动超阈值、抬起、取消和离场时清理，触发长按后不再触发轻触。为按钮独立提供 Enter/空格键盘操作，防止按键重复及兼容事件重复执行；不为没有业务需求的控件额外添加长按或手势。
+
+修复涉及舞台或自适应时，按上述画布规范处理并核对viewport、固定尺寸、居中、初始隐藏、updateScale加载/resize和内部逻辑坐标；其他修复保持已有正确布局，不引入第二套缩放。
