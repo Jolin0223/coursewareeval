@@ -1,8 +1,8 @@
 {
-  "version": "2.1.1-css",
-  "visualBaseline": "Jolin approved V2",
+  "version": "2.1.2-css",
+  "visualBaseline": "V2 with speaker-and-cross mute icon",
   "candidateURL": "https://oss-xlss.xdf.cn/ig-kpm/resources/standard-icon.css",
-  "status": "2026-11-13 已核验 HTTP 200；内容与本包 icon.css 一致",
+  "status": "2026-11-13 静音图标修订；预览使用包内CSS，业务CDN待开发重新上传",
   "icons": [
     {
       "id": "play",
