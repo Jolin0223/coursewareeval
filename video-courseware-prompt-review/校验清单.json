@@ -1,0 +1,99 @@
+{
+  "revision": "2026-11-16-r9-effect-review",
+  "sourceName": "视频互动课件提示词与流程说明及完整示例(3).md",
+  "sourceSha256": "da7ee3e501f1a69330c0fdcf52aadc9abd780527f95ee358c2050e41ee2d0d94",
+  "normalizedLineEndings": "LF; fence boundary newline excluded",
+  "changed": [
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "R1"
+  ],
+  "M1verbatim": true,
+  "M1sha256": "054b2275d28d40ec6c0bac2621999a091a9a1f25d8eae0448cfbcb475745bfc1",
+  "fixedSuffixesVerbatim": true,
+  "checks": [
+    {
+      "id": "P1",
+      "changed": false,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 0,
+      "sha256": "d274fba99cfad980a85feace4fb71a85ab309eda08aaff079f4389f06450b21e"
+    },
+    {
+      "id": "P2",
+      "changed": false,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 0,
+      "sha256": "664d802ced4b219fcea2fbc7a28ef55e9f1e94db4fc95cef196b474cdc37ba72"
+    },
+    {
+      "id": "P3",
+      "changed": false,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 0,
+      "sha256": "c9d3f19e8f11116fc7240dc7479c0044b38d0ba00268fb4c828fcd50975a45ae"
+    },
+    {
+      "id": "P4",
+      "changed": true,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 683,
+      "sha256": "f2a2de23cd7b502c445eeeab722e5419fdac7ddee1a66274a74152c0a42d1371"
+    },
+    {
+      "id": "P5",
+      "changed": true,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 611,
+      "sha256": "30a5ad35e8a2e4188bd539dab9b72247c4fd7014cd62a9b5bbb5cea59a713eb2"
+    },
+    {
+      "id": "P6",
+      "changed": true,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 498,
+      "sha256": "96ec9822cfd2ffd5ef01e19eb96e998dde9bf3ccf5722d28ab95ae92b3d31ed0"
+    },
+    {
+      "id": "P7",
+      "changed": true,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 623,
+      "sha256": "739510a18e4345bbfcbe8518f479081a7a325a4bd470315a9c7e8c040c4b1fc5"
+    },
+    {
+      "id": "R1",
+      "changed": true,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 910,
+      "sha256": "fe64d6297b96d2f80d1082d863a9d2741f488c63019c9c51035e4274c043b7ce"
+    },
+    {
+      "id": "P8",
+      "changed": false,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 0,
+      "sha256": "2a7ec03e70268f9c260a41aa5dab3c58eb25f4c6ce3d0b539e244720beff8997"
+    },
+    {
+      "id": "M1",
+      "changed": false,
+      "baselineFullyPreserved": true,
+      "runtimeVariablesPreserved": true,
+      "addedCharacters": 0,
+      "sha256": "054b2275d28d40ec6c0bac2621999a091a9a1f25d8eae0448cfbcb475745bfc1"
+    }
+  ],
+  "scope": "静态文本与打包校验；不代表真实课件生成或播放已验收"
+}

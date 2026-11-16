@@ -1,0 +1,122 @@
+[
+  {
+    "number": 1,
+    "id": "VIT-036",
+    "title": "教师工具太小、缺少序号",
+    "boundary": "工程为主",
+    "action": "保留宿主工具协议；运行时扩大目录、自动编号，模型不另造工具。",
+    "stages": "P4 / P5 / P6 / P7 / R1 保留",
+    "url": "https://box.test.xdf.cn/kpm/5f387ef3e8fb4beba3e0b5ffc814f671",
+    "intermittent": false
+  },
+  {
+    "number": 2,
+    "id": "VIT-037",
+    "title": "进入课件黑页",
+    "boundary": "提示词＋工程排查",
+    "action": "补展示层底色、静帧及遮罩命中规则；首帧与资源失败按原媒体链排查。",
+    "stages": "P4 / P5 / P6 / P7 / R1",
+    "url": "https://box.test.xdf.cn/kpm/5f387ef3e8fb4beba3e0b5ffc814f671",
+    "intermittent": true
+  },
+  {
+    "number": 3,
+    "id": "VIT-038",
+    "title": "视频黑边",
+    "boundary": "提示词＋素材／布局",
+    "action": "满幅16:9参考图、对齐视频盒；源片黑边需重制，不靠拉伸裁切。",
+    "stages": "P4 / P5 / P6 / P7 / R1",
+    "url": "https://box.test.xdf.cn/kpm/5f387ef3e8fb4beba3e0b5ffc814f671",
+    "intermittent": false
+  },
+  {
+    "number": 4,
+    "id": "VIT-039",
+    "title": "按钮底座未包住图文",
+    "boundary": "提示词直接约束",
+    "action": "文字按钮不用圆形类；按最长文案扩宽，底座与热区覆盖全部内容。",
+    "stages": "P4 / P5 / P6 / P7 / R1",
+    "url": "https://box.test.xdf.cn/kpm/5f387ef3e8fb4beba3e0b5ffc814f671",
+    "intermittent": false
+  },
+  {
+    "number": 5,
+    "id": "VIT-040",
+    "title": "前景未抠图、棋盘底",
+    "boundary": "提示词＋素材生产",
+    "action": "逐图明确Alpha与禁画棋盘格；检查真实处理后产物及最终引用。",
+    "stages": "P4 / P5 / P6 / P7 / R1",
+    "url": "https://box.test.xdf.cn/kpm/5f387ef3e8fb4beba3e0b5ffc814f671",
+    "intermittent": true
+  },
+  {
+    "number": 6,
+    "id": "VIT-041",
+    "title": "旁白驱动角色口型",
+    "boundary": "提示词＋视频生产",
+    "action": "每镜头展开画外旁白与角色非说话动作；参考图、dub、音频绑定一致。",
+    "stages": "P4 / R1；P6证据审查、P7上游分流",
+    "url": "https://box.test.xdf.cn/kpm/5f387ef3e8fb4beba3e0b5ffc814f671",
+    "intermittent": true
+  },
+  {
+    "number": 7,
+    "id": "VIT-042",
+    "title": "封面额外开始按钮",
+    "boundary": "提示词直接约束",
+    "action": "只保留全幅透明入口，通用按钮样式不得绘出第二个按钮。",
+    "stages": "P4 / P5 / P6 / P7 / R1",
+    "url": "",
+    "intermittent": true
+  },
+  {
+    "number": 8,
+    "id": "VIT-043",
+    "title": "视频／H5缺少自然衔接",
+    "boundary": "工程契约冲突",
+    "action": "目标明确；当前M1禁止片尾播放，原样保留，等待运行时与检查器协同升级。",
+    "stages": "M1及播放条款锁定；工程联动单列",
+    "url": "https://box.test.xdf.cn/kpm/df418e66ec6142ab9fac4c4f93e7c17a",
+    "intermittent": false
+  },
+  {
+    "number": 9,
+    "id": "VIT-044",
+    "title": "Animal Friends黑屏且播放无响应",
+    "boundary": "先查运行证据",
+    "action": "保护已修复playMedia链；补遮罩展示约束，按本例日志定位，不猜根因。",
+    "stages": "P5 / P6 / P7 / R1；工程排查",
+    "url": "https://box.test.xdf.cn/kpm/493bfe3dfd614bcbbf89b4b7a0ebc4f8",
+    "intermittent": true
+  },
+  {
+    "number": 10,
+    "id": "VIT-045",
+    "title": "H5多余开始按钮",
+    "boundary": "提示词直接约束",
+    "action": "入场直接可操作；保留教学必要的提交、录音结束或主动计时入口。",
+    "stages": "P4 / P5 / P6 / P7 / R1",
+    "url": "https://box.test.xdf.cn/kpm/a8624a5f2ba9416e8817089d0902dac1",
+    "intermittent": true
+  },
+  {
+    "number": 11,
+    "id": "VIT-046",
+    "title": "小熊野餐饼干播放无响应",
+    "boundary": "先查运行证据",
+    "action": "单独复测本例；保留事件与播放修复，不把另一会话通过当本例解决。",
+    "stages": "P5 / P6 / P7 / R1；工程排查",
+    "url": "https://box.test.xdf.cn/kpm/9523b9e2f3234d3a915bfc42aedb6a5c",
+    "intermittent": true
+  },
+  {
+    "number": 12,
+    "id": "VIT-047",
+    "title": "11月16日新增生成失败",
+    "boundary": "待失败日志",
+    "action": "保留模板渲染、输出协议、检查与失败恢复；目前不能判断是否提示词引起。",
+    "stages": "所有开发修复锁定；不新增猜测性修补",
+    "url": "https://box.test.xdf.cn/kpm/e3f652cda2284a84b0dc1b278bfa8066",
+    "intermittent": true
+  }
+]
