@@ -1,9 +1,6 @@
 {
-  "revision": "2026-11-16-r10-h5-sync",
-  "sourceName": "视频互动课件提示词与流程说明及完整示例(3).md",
-  "sourceSha256": "da7ee3e501f1a69330c0fdcf52aadc9abd780527f95ee358c2050e41ee2d0d94",
-  "normalizedLineEndings": "LF; fence boundary newline excluded",
-  "changed": [
+  "revision": "2026-11-16-r11-brace-fix",
+  "changes": [
     "P4",
     "P5",
     "P6",
@@ -11,89 +8,78 @@
     "R1"
   ],
   "M1verbatim": true,
-  "M1sha256": "054b2275d28d40ec6c0bac2621999a091a9a1f25d8eae0448cfbcb475745bfc1",
   "fixedSuffixesVerbatim": true,
   "checks": [
     {
       "id": "P1",
-      "changed": false,
-      "r9FullyPreserved": true,
+      "replacements": 0,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 0,
       "sha256": "d274fba99cfad980a85feace4fb71a85ab309eda08aaff079f4389f06450b21e"
     },
     {
       "id": "P2",
-      "changed": false,
-      "r9FullyPreserved": true,
+      "replacements": 0,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 0,
       "sha256": "664d802ced4b219fcea2fbc7a28ef55e9f1e94db4fc95cef196b474cdc37ba72"
     },
     {
       "id": "P3",
-      "changed": false,
-      "r9FullyPreserved": true,
+      "replacements": 0,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 0,
       "sha256": "c9d3f19e8f11116fc7240dc7479c0044b38d0ba00268fb4c828fcd50975a45ae"
     },
     {
       "id": "P4",
-      "changed": true,
-      "r9FullyPreserved": true,
+      "replacements": 1,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 1047,
-      "sha256": "02716ab509e07498049618f02f4eddf9b5426c595ae167010b4fd427bfc99ba0"
+      "sha256": "933cea7051b6e3619458322b461d4ebd3d97060c253043b1c6a57e01f0bd0c92"
     },
     {
       "id": "P5",
-      "changed": true,
-      "r9FullyPreserved": true,
+      "replacements": 1,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 895,
-      "sha256": "6999c28854ae10887f1e92bae58751be2db37d3ba7c013c9aa7fd53246657164"
+      "sha256": "b269ac2b2057597f916ca2fda188dd8ca8dfa8a8cf8c75f971dd4f55d0d035ce"
     },
     {
       "id": "P6",
-      "changed": true,
-      "r9FullyPreserved": true,
+      "replacements": 1,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 1070,
-      "sha256": "298e8d0299c36f48b4e5f35b599b78c2a7dee354f480870df3d8b1f359a0ec35"
+      "sha256": "1bf140be303b844cbaee867f60228956c28d07a821daeb7c90729831ecf098a9"
     },
     {
       "id": "P7",
-      "changed": true,
-      "r9FullyPreserved": true,
+      "replacements": 1,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 1001,
-      "sha256": "63f732e4abad146259a7f67b5d323b9d0b40a931fb35272b62c3678340db1f6e"
+      "sha256": "7fcf4dac2a0d5c8349f631717e111126fcaec86b02e64609f2d5a6b9ddf81857"
     },
     {
       "id": "R1",
-      "changed": true,
-      "r9FullyPreserved": true,
+      "replacements": 1,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 1001,
-      "sha256": "650284781539629e982a354f65bda7e08690b8fbdda314b77e282a7c04607956"
+      "sha256": "6d47b016ff8d57ce35b2d5c90e13263e9bd0b3603f84df330b8a3010e3fdcc8c"
     },
     {
       "id": "P8",
-      "changed": false,
-      "r9FullyPreserved": true,
+      "replacements": 0,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 0,
       "sha256": "2a7ec03e70268f9c260a41aa5dab3c58eb25f4c6ce3d0b539e244720beff8997"
     },
     {
       "id": "M1",
-      "changed": false,
-      "r9FullyPreserved": true,
+      "replacements": 0,
+      "onlyExactReplacement": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 0,
       "sha256": "054b2275d28d40ec6c0bac2621999a091a9a1f25d8eae0448cfbcb475745bfc1"
     }
   ],
-  "scope": "静态文本与打包校验；不代表真实课件生成或播放已验收"
+  "scope": "静态精确替换与兼容性模拟；非实际后端模板或模型生成验收"
 }
