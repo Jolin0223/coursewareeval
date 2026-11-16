@@ -3,7 +3,7 @@ from pathlib import Path
 import json,shutil,difflib,hashlib,zipfile,argparse
 ap=argparse.ArgumentParser();ap.add_argument('assets',type=Path);ap.add_argument('package',type=Path);args=ap.parse_args();assets=args.assets.resolve();pkg=args.package.resolve();root=Path(__file__).resolve().parent.parent
 assert not pkg.exists();(pkg/'prompts').mkdir(parents=True)
-prev=json.loads((root/'button-layout-review/data.json').read_text());data={**prev,'title':'按钮自适应与Q版反馈图标 · 待确认','date':'2026-11-16','revision':'20261116-feedback-icons-v1','baseline':'改前：11月13日按钮留白与顺序版。改后：明确解除固定宽度，新增按需使用的Q版反馈与工具图标。','files':[],'changes':[],'cases':{},'evidence':{},'issues':[],'history':'评审候选已整理；尚未更新业务CDN或服务端提示词。历史HTML不会自动重生成；覆盖同URL的CSS会影响动态引用的历史课件。','excluded':'字体、封面、SDK、Retry/Try again与必要完成操作规则保留。无关课件不增判分、星级或工具。'}
+prev=json.loads((root/'button-layout-review/data.json').read_text());data={**prev,'title':'按钮自适应与Q版反馈图标 · 待确认','date':'2026-11-16','revision':'20261116-feedback-icons-v2','baseline':'改前：11月13日按钮留白与顺序版。改后：明确解除固定宽度，新增按需使用的Q版反馈与工具图标。','files':[],'changes':[],'cases':{},'evidence':{},'issues':[],'history':'评审候选已整理；尚未更新业务CDN或服务端提示词。历史HTML不会自动重生成；覆盖同URL的CSS会影响动态引用的历史课件。','excluded':'字体、封面、SDK、Retry/Try again与必要完成操作规则保留。无关课件不增判分、星级或工具。'}
 data['cases']={'宽度复测':{'after':'https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/16-FjZqWkJVQpOYNRkHahvVOA/index.html'},'Q版反馈':{'after':'/feedback-icons-review/demo/#feedback'},'工具扩充':{'after':'/feedback-icons-review/demo/#tools'}}
 data['evidence']={'宽度复测':'11月16日4例均未覆盖CDN的固定width:248px。CSS/DOM核对证据，非浏览器视觉通过。','Q版反馈':'用户要求对勾、叉号、星星更圆润Q版且亮眼；无外框默认、底座按需；仅规划需要时优先使用，允许主题定制。','工具扩充':'用户确认新增提示、画笔、橡皮擦、撤销；仅在相关功能已规划时使用。'}
 policy='仅当规划需要正误判断或星级反馈时，优先复用对应圆润图标，不因图标库提供能力而新增判分、星级或奖励流程。星星数量、反馈文案和展示时机按用户意图与实际玩法决定；用户明确指定其他形式或主题需要定制时可使用相应素材。反馈默认无外框，直接嵌入选项或结果区；独立反馈需增强识别时才选用底座。反馈状态不是按钮，不加无意义点击。提示、画笔、橡皮擦、撤销也只在相应功能已规划时选用，撤销与重试不可混用。'
@@ -20,10 +20,10 @@ roles={
 'agent.modify.fixer.instruction':'仅修复任务涉及反馈或工具时，'+policy+'仍只修改当前允许文件，不新增无关功能或跨文件改动。'}
 widths={
 'prompt.material-design-learning-tablet':'文字按钮必须随内容扩宽，不能把组件的默认宽度当作固定尺寸；预留最长文案状态与图标所需空间。',
-'agent.architect.instruction':'在相关taskDetails中明确覆盖组件遗留固定width并按内容扩宽；只加padding或min-width不算实现自适应，父布局也不得强制压缩内容。',
-'agent.modify.architect.instruction':'本轮涉及按钮排版时，明确覆盖组件遗留固定width并按内容扩宽；只加padding或min-width不算实现自适应，父布局也不得强制压缩内容。',
-'agent.developer.instruction':'文字按钮保留组件的内容自适应宽度；若已有固定width（含旧版`.cb-text`的248px），须在当前文件职责内覆盖为`width:max-content`或等效内容自适应布局，不能只加padding或min-width。不得重新写死宽度或让父布局强制压缩内容。',
-'agent.modify.developer.instruction':'本轮涉及文字按钮排版时，保留组件的内容自适应宽度；已有固定width（含旧版`.cb-text`的248px）须在当前文件职责内覆盖为`width:max-content`或等效内容自适应布局，不能只加padding或min-width，不让父布局强制压缩内容。',
+'agent.architect.instruction':'在相关taskDetails中明确文字按钮按内容自适应宽度，组件与页面样式均不得以固定width限制内容；不能仅通过padding或min-width处理拥挤，父布局也不得强制压缩内容。',
+'agent.modify.architect.instruction':'本轮涉及按钮排版时，明确文字按钮按内容自适应宽度，组件与页面样式均不得以固定width限制内容；不能仅通过padding或min-width处理拥挤，父布局也不得强制压缩内容。',
+'agent.developer.instruction':'文字按钮使用`width:max-content`或等效的内容自适应布局，确保组件与页面样式叠加后仍能随文字和图标扩宽；不得以固定width限制内容，也不能仅通过padding或min-width处理拥挤。父布局不得强制压缩内容。',
+'agent.modify.developer.instruction':'本轮涉及文字按钮排版时，在当前文件职责内使用`width:max-content`或等效的内容自适应布局，确保组件与页面样式叠加后仍能随文字和图标扩宽；不得以固定width限制内容，也不能仅通过padding或min-width处理拥挤。父布局不得强制压缩内容。',
 'agent.reviewer.instruction':'核对组件和本地样式叠加后的按钮宽度，而非只检查padding；仍继承固定width、或仅加min-width导致长文案拥挤时不能判通过。',
 'agent.modify.reviewer.instruction':'仅本轮涉及文字按钮排版时，核对组件和本地样式叠加后的宽度，而非只检查padding；仍继承固定width、或仅加min-width导致拥挤时不能判通过。',
 'agent.fixer.instruction':'修复涉及文字按钮宽度时，在当前允许文件内解除固定width对相关按钮的限制，按内容扩宽；不能只加padding或min-width，不扩改其他文件。',
