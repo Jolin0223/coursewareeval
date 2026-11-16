@@ -1,5 +1,5 @@
 {
-  "revision": "2026-11-16-r9-effect-review",
+  "revision": "2026-11-16-r10-h5-sync",
   "sourceName": "视频互动课件提示词与流程说明及完整示例(3).md",
   "sourceSha256": "da7ee3e501f1a69330c0fdcf52aadc9abd780527f95ee358c2050e41ee2d0d94",
   "normalizedLineEndings": "LF; fence boundary newline excluded",
@@ -17,7 +17,7 @@
     {
       "id": "P1",
       "changed": false,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
       "addedCharacters": 0,
       "sha256": "d274fba99cfad980a85feace4fb71a85ab309eda08aaff079f4389f06450b21e"
@@ -25,7 +25,7 @@
     {
       "id": "P2",
       "changed": false,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
       "addedCharacters": 0,
       "sha256": "664d802ced4b219fcea2fbc7a28ef55e9f1e94db4fc95cef196b474cdc37ba72"
@@ -33,7 +33,7 @@
     {
       "id": "P3",
       "changed": false,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
       "addedCharacters": 0,
       "sha256": "c9d3f19e8f11116fc7240dc7479c0044b38d0ba00268fb4c828fcd50975a45ae"
@@ -41,47 +41,47 @@
     {
       "id": "P4",
       "changed": true,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 697,
-      "sha256": "ecca09560fb2a0e21acaf0967b6c81817c567b20f7d04917ced9746276f43c83"
+      "addedCharacters": 1047,
+      "sha256": "02716ab509e07498049618f02f4eddf9b5426c595ae167010b4fd427bfc99ba0"
     },
     {
       "id": "P5",
       "changed": true,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 625,
-      "sha256": "110e3ff87318346ccb47a8fdca5e7e98d7bf416a5f548782ed2a6447a35c6200"
+      "addedCharacters": 895,
+      "sha256": "6999c28854ae10887f1e92bae58751be2db37d3ba7c013c9aa7fd53246657164"
     },
     {
       "id": "P6",
       "changed": true,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 512,
-      "sha256": "b7420e5d6dc5dcec63451929d0606cb12d297d29117dd32f550672a5e53a9d60"
+      "addedCharacters": 1070,
+      "sha256": "298e8d0299c36f48b4e5f35b599b78c2a7dee354f480870df3d8b1f359a0ec35"
     },
     {
       "id": "P7",
       "changed": true,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 637,
-      "sha256": "b8c1e107e315a1bade5bed5ca7e65e92cf73a6efcd5f2d1881f8d7ddea80c9ae"
+      "addedCharacters": 1001,
+      "sha256": "63f732e4abad146259a7f67b5d323b9d0b40a931fb35272b62c3678340db1f6e"
     },
     {
       "id": "R1",
       "changed": true,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
-      "addedCharacters": 924,
-      "sha256": "9eb8e2b098934ec4f290642bbc1008a9fe1c873a3f9cb73ae086e8ce5582f34b"
+      "addedCharacters": 1001,
+      "sha256": "650284781539629e982a354f65bda7e08690b8fbdda314b77e282a7c04607956"
     },
     {
       "id": "P8",
       "changed": false,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
       "addedCharacters": 0,
       "sha256": "2a7ec03e70268f9c260a41aa5dab3c58eb25f4c6ce3d0b539e244720beff8997"
@@ -89,7 +89,7 @@
     {
       "id": "M1",
       "changed": false,
-      "baselineFullyPreserved": true,
+      "r9FullyPreserved": true,
       "runtimeVariablesPreserved": true,
       "addedCharacters": 0,
       "sha256": "054b2275d28d40ec6c0bac2621999a091a9a1f25d8eae0448cfbcb475745bfc1"

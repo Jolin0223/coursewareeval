@@ -1,7 +1,9 @@
-# 视频互动课件提示词评审 r9
+# 视频互动课件提示词评审 r10
 
-基于用户确认的开发2026-11-16文档(3).md，完整提示词见prompts，接入说明在ZIP。只增补P4–P7与R1；保留全部开发正文、M1与固定后缀。
+基于r9与用户确认的开发2026-11-16文档(3).md，同步普通H5反馈图标接入修复2.2.2的适用规则。只增补P4–P7与R1；保留r9正文、M1、固定后缀、模板变量与输出协议。
 
-页面重建：`python3 source/build_review.py`，将生成的`source/index.html`复制到本目录。正文与对照基线位于source/review-data.json。
+页面默认全文对照r9，可切开发11月16日基线，新增内容在全文中标绿。所有环节完整提示词见prompts，直接替换配置、完整SystemMessage联调对照及差异见r10 ZIP。配套CSS为当天核验的业务CDN快照，不代表本轮改写CDN。
 
-未更改测试环境配置或宿主；教师工具与自然连播仍需工程配套。
+页面重建：`python3 source/build_review.py`，将生成的`source/index.html`复制到本目录。正文与对照基线位于source/review-data.json；增补规则位于source/rules.py。
+
+未更改测试环境配置、宿主或历史HTML；未重新发起模型生成。教师工具与自然连播仍需工程配套。详细依据与边界见H5同步评审结论.md。
