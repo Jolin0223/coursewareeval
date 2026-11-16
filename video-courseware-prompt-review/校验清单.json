@@ -1,85 +1,31 @@
 {
-  "revision": "2026-11-16-r11-brace-fix",
-  "changes": [
-    "P4",
-    "P5",
-    "P6",
-    "P7",
-    "R1"
-  ],
-  "M1verbatim": true,
-  "fixedSuffixesVerbatim": true,
-  "checks": [
+  "revision": "2026-11-16-r12-reviewed",
+  "staticChecksPassed": true,
+  "errors": [],
+  "stages": 10,
+  "fixedSuffixesLocked": true,
+  "iconClasses": 24,
+  "negativeCases": [
     {
-      "id": "P1",
-      "replacements": 0,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "d274fba99cfad980a85feace4fb71a85ab309eda08aaff079f4389f06450b21e"
+      "case": "css_brace",
+      "rejected": true
     },
     {
-      "id": "P2",
-      "replacements": 0,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "664d802ced4b219fcea2fbc7a28ef55e9f1e94db4fc95cef196b474cdc37ba72"
+      "case": "renamed_variable",
+      "rejected": true
     },
     {
-      "id": "P3",
-      "replacements": 0,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "c9d3f19e8f11116fc7240dc7479c0044b38d0ba00268fb4c828fcd50975a45ae"
+      "case": "history",
+      "rejected": true
     },
     {
-      "id": "P4",
-      "replacements": 1,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "933cea7051b6e3619458322b461d4ebd3d97060c253043b1c6a57e01f0bd0c92"
-    },
-    {
-      "id": "P5",
-      "replacements": 1,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "b269ac2b2057597f916ca2fda188dd8ca8dfa8a8cf8c75f971dd4f55d0d035ce"
-    },
-    {
-      "id": "P6",
-      "replacements": 1,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "1bf140be303b844cbaee867f60228956c28d07a821daeb7c90729831ecf098a9"
-    },
-    {
-      "id": "P7",
-      "replacements": 1,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "7fcf4dac2a0d5c8349f631717e111126fcaec86b02e64609f2d5a6b9ddf81857"
-    },
-    {
-      "id": "R1",
-      "replacements": 1,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "6d47b016ff8d57ce35b2d5c90e13263e9bd0b3603f84df330b8a3010e3fdcc8c"
-    },
-    {
-      "id": "P8",
-      "replacements": 0,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "2a7ec03e70268f9c260a41aa5dab3c58eb25f4c6ce3d0b539e244720beff8997"
-    },
-    {
-      "id": "M1",
-      "replacements": 0,
-      "onlyExactReplacement": true,
-      "runtimeVariablesPreserved": true,
-      "sha256": "054b2275d28d40ec6c0bac2621999a091a9a1f25d8eae0448cfbcb475745bfc1"
+      "case": "duplicate_fixed_suffix",
+      "rejected": true
     }
   ],
-  "scope": "静态精确替换与兼容性模拟；非实际后端模板或模型生成验收"
+  "backendTemplateRun": "not_run",
+  "generationRegression": "not_run",
+  "releaseReadiness": "requires_backend_validation_and_P4_fixed_suffix_review",
+  "knownDeveloperIssue": "P4 durationSeconds sentence mixes seconds and reference count; fixed server suffix intentionally unchanged",
+  "exactReviewedEdits": 18
 }
