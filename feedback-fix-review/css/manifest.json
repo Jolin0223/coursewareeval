@@ -1,0 +1,153 @@
+{
+  "version": "2.2.2-css-candidate",
+  "visualBaseline": "已确认V2圆润图标，保留静音2.1.2；新增反馈与常用工具候选",
+  "candidateURL": "https://oss-xlss.xdf.cn/ig-kpm/resources/standard-icon.css",
+  "status": "独立图标渲染修复候选；业务CDN未替换",
+  "icons": [
+    {
+      "id": "play",
+      "class": "cb-icon-play",
+      "zh": "播放",
+      "en": "Play"
+    },
+    {
+      "id": "pause",
+      "class": "cb-icon-pause",
+      "zh": "暂停",
+      "en": "Pause"
+    },
+    {
+      "id": "autoplay",
+      "class": "cb-icon-autoplay",
+      "zh": "自动播放",
+      "en": "Auto play"
+    },
+    {
+      "id": "sound",
+      "class": "cb-icon-sound",
+      "zh": "声音开启",
+      "en": "Sound on"
+    },
+    {
+      "id": "mute",
+      "class": "cb-icon-mute",
+      "zh": "已静音",
+      "en": "Muted"
+    },
+    {
+      "id": "show",
+      "class": "cb-icon-show",
+      "zh": "内容可见",
+      "en": "Visible"
+    },
+    {
+      "id": "hide",
+      "class": "cb-icon-hide",
+      "zh": "内容隐藏",
+      "en": "Hidden"
+    },
+    {
+      "id": "menu",
+      "class": "cb-icon-menu",
+      "zh": "场景目录",
+      "en": "Scenes"
+    },
+    {
+      "id": "outline",
+      "class": "cb-icon-outline",
+      "zh": "展开大纲",
+      "en": "Outline"
+    },
+    {
+      "id": "back",
+      "class": "cb-icon-back",
+      "zh": "返回",
+      "en": "Back"
+    },
+    {
+      "id": "home",
+      "class": "cb-icon-home",
+      "zh": "首页",
+      "en": "Home"
+    },
+    {
+      "id": "close",
+      "class": "cb-icon-close",
+      "zh": "关闭",
+      "en": "Close"
+    },
+    {
+      "id": "retry",
+      "class": "cb-icon-retry",
+      "zh": "重试",
+      "en": "Retry"
+    },
+    {
+      "id": "next",
+      "class": "cb-icon-next",
+      "zh": "下一步",
+      "en": "Next"
+    },
+    {
+      "id": "submit",
+      "class": "cb-icon-submit",
+      "zh": "提交",
+      "en": "Submit"
+    },
+    {
+      "id": "done",
+      "class": "cb-icon-done",
+      "zh": "完成",
+      "en": "Done"
+    },
+    {
+      "id": "correct",
+      "class": "cb-icon-correct",
+      "zh": "答对",
+      "kind": "feedback"
+    },
+    {
+      "id": "incorrect",
+      "class": "cb-icon-incorrect",
+      "zh": "答错",
+      "kind": "feedback"
+    },
+    {
+      "id": "star",
+      "class": "cb-icon-star",
+      "zh": "已得星",
+      "kind": "feedback"
+    },
+    {
+      "id": "star-empty",
+      "class": "cb-icon-star-empty",
+      "zh": "未得星",
+      "kind": "feedback"
+    },
+    {
+      "id": "hint",
+      "class": "cb-icon-hint",
+      "zh": "提示",
+      "kind": "optional-tool"
+    },
+    {
+      "id": "pencil",
+      "class": "cb-icon-pencil",
+      "zh": "画笔",
+      "kind": "optional-tool"
+    },
+    {
+      "id": "eraser",
+      "class": "cb-icon-eraser",
+      "zh": "橡皮擦",
+      "kind": "optional-tool"
+    },
+    {
+      "id": "undo",
+      "class": "cb-icon-undo",
+      "zh": "撤销",
+      "kind": "optional-tool"
+    }
+  ],
+  "feedbackPolicy": "仅规划需要时优先复用；默认不带外框，独立反馈按需加底座；主题定制允许"
+}

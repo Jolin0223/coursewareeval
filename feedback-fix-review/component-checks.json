@@ -1,0 +1,186 @@
+{
+  "scope": "CSS parsing and isolated DOM, not browser rendering",
+  "standalone": [
+    {
+      "name": "play",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "pause",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "autoplay",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "sound",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "mute",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "show",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "hide",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "menu",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "outline",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "back",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "home",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "close",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "retry",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "next",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "submit",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "done",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "correct",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "incorrect",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "star",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "star-empty",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "hint",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "pencil",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "eraser",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    },
+    {
+      "name": "undo",
+      "shape": true,
+      "mask": true,
+      "width": "64px",
+      "height": "64px"
+    }
+  ],
+  "actualGeneratedHtml": [
+    {
+      "id": "F01",
+      "feedbackCount": 1,
+      "allHaveSizeShapeAndMask": true
+    },
+    {
+      "id": "F02",
+      "feedbackCount": 1,
+      "allHaveSizeShapeAndMask": true
+    }
+  ],
+  "explicitSizing": true
+}
