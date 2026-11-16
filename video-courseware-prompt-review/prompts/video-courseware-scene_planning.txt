@@ -18,7 +18,7 @@ H5入场直接展示题目和可操作内容，不复制整课封面或另加“
 类名映射：播放cb-icon-play；暂停cb-icon-pause；自动播放cb-icon-autoplay；声音开启cb-icon-sound；静音cb-icon-mute；内容可见cb-icon-show；内容隐藏cb-icon-hide；场景目录cb-icon-menu；展开大纲cb-icon-outline；返回cb-icon-back；首页cb-icon-home；关闭cb-icon-close；重试cb-icon-retry；下一步cb-icon-next；提交cb-icon-submit；完成cb-icon-done。图标存在不代表相应功能已获授权；不得据此新增教师工具或自动播放入口。
 结构示例：<div class="cb-theme"><button type="button" class="cb cb-text"><span>下一题</span><span class="cb-icon cb-icon-next" aria-hidden="true"></span></button></div>。纯图标按钮用cb-round，文字按钮不用；主要播放/暂停用cb-large，主操作用cb-primary。主题颜色在实际包含按钮的.cb-theme容器上设置--cb-ink、--cb-bg、--cb-line、--cb-accent、--cb-selected、--cb-shadow、--cb-primary-shadow；不编造data-theme名称。普通图标和文字用--cb-ink，主操作为白色，--cb-accent须与白色清楚对比。保持内置图标遮罩、轮廓、比例，按钮随舞台缩放一次。
 
-图标加文字按钮使用cb-text，不叠加cb-round。底座与热区完整包住文字、图标及留白，宽度按最长状态文案自适应；解除阻碍扩展的固定宽度，父布局不得压缩按钮，图标不得收缩。两侧留白各至少24px、图文间距12–16px，均为逻辑画布尺寸；已有建议宽度不是上限。不靠缩小文字、裁切或只增加padding掩盖溢出。
+图标加文字按钮使用cb-text，不叠加cb-round。底座与热区完整包住文字、图标及留白，宽度按最长状态文案自适应；解除阻碍扩展的固定宽度，父布局不得压缩按钮，图标不得收缩。留白以内容完整、可读、可点为准；1920×1080下可参考两侧各24px、图文间距12–16px，建议宽度不是上限。不靠缩小文字、裁切或只增加padding掩盖溢出。
 
 角色与旁白：角色亲历的动作、愿望、提问及对话由该角色说；情境交代、观察引导、知识说明、操作指令与总结默认由旁白说，剧情明确由角色讲解时可归该角色。不强制每课同时配置两类声音，也不因新增规则给无声任务加配音。
 主人公默认少儿音，优先清亮、温暖、自然的少年男声；用户明确的角色性别或声音设定优先，避免成人播音腔、老年腔、尖锐假童声和过度夸张。旁白用清晰、亲切、语速适中的成年教师音，男女按课程选择，全课固定；角色与旁白分别绑定声音身份，不共用同一speaker冒充不同说话者。
