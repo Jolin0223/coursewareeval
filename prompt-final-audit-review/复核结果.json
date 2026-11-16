@@ -1,0 +1,103 @@
+[
+  {
+    "file": "prompt.material-design-learning-tablet.txt",
+    "templateVariables": [],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "3a0d9d34fbb4464d67e8adafa165776b9ab54dd05ff807277ff8b5acb47ab97c",
+    "charsBefore": 7208,
+    "charsAfter": 7265
+  },
+  {
+    "file": "agent.architect.instruction.txt",
+    "templateVariables": [
+      "input"
+    ],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "c0d5acdfbac28d5e01b0c9ede4bdf08d45b0d4b7ce29f57d47eed21d2ff4f10f",
+    "charsBefore": 12378,
+    "charsAfter": 12275
+  },
+  {
+    "file": "agent.modify.architect.instruction.txt",
+    "templateVariables": [
+      "input",
+      "all_code_content"
+    ],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "5a6b36d824e1b1d1aac431ad07aede70b1b87fcf58ae9fd498dc99f284989352",
+    "charsBefore": 10919,
+    "charsAfter": 10933
+  },
+  {
+    "file": "agent.developer.instruction.txt",
+    "templateVariables": [
+      "task_content"
+    ],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "da68a84aeea086211418c9cc6c5ba2d01b3df6a5e3e51929c4601e35da73892c",
+    "charsBefore": 4582,
+    "charsAfter": 4614
+  },
+  {
+    "file": "agent.modify.developer.instruction.txt",
+    "templateVariables": [
+      "task_content",
+      "all_code_content"
+    ],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "2298e3c58e407ece0a25c57a2e5c1174b045b857f19956530bc9579192034132",
+    "charsBefore": 4744,
+    "charsAfter": 4776
+  },
+  {
+    "file": "agent.reviewer.instruction.txt",
+    "templateVariables": [
+      "all_code_content"
+    ],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "8982fa93f20ba695d294f08e53d036b3ee0acc53c3e1f2d77e595a31f2192d3d",
+    "charsBefore": 4441,
+    "charsAfter": 4493
+  },
+  {
+    "file": "agent.modify.reviewer.instruction.txt",
+    "templateVariables": [
+      "all_code_content"
+    ],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "94ba84812f9d22b8e9710566b43be3a2d0b15a990632542f7a04d1fd35b03006",
+    "charsBefore": 4571,
+    "charsAfter": 4631
+  },
+  {
+    "file": "agent.fixer.instruction.txt",
+    "templateVariables": [
+      "to_fix_content",
+      "all_code_content"
+    ],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "0289806bf8acb5fdd1d686ecbbce7dad85b26b25e921628254a36d77ee1091ee",
+    "charsBefore": 3160,
+    "charsAfter": 3180
+  },
+  {
+    "file": "agent.modify.fixer.instruction.txt",
+    "templateVariables": [
+      "to_fix_content",
+      "all_code_content"
+    ],
+    "voiceNamesPreserved": true,
+    "noRevisionLanguage": true,
+    "sha256": "97d6f80abf7fefb5e9008fff51a39faaad5dda6703000785a9401cd028076a27",
+    "charsBefore": 3242,
+    "charsAfter": 3262
+  }
+]
