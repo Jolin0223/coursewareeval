@@ -1,0 +1,56 @@
+[
+  {
+    "file": "prompt.material-design-learning-tablet.txt",
+    "changed": false,
+    "newBraceRisk": false,
+    "sha256": "1a590258e61f69408ed9fb83dab206e952784bcb8b2977f9199000d5192644e4"
+  },
+  {
+    "file": "agent.architect.instruction.txt",
+    "changed": false,
+    "newBraceRisk": false,
+    "sha256": "004ae075a5b8b3d51b3cb50cba58840335990ae1601b9c0975edeec0a58595b8"
+  },
+  {
+    "file": "agent.modify.architect.instruction.txt",
+    "changed": false,
+    "newBraceRisk": false,
+    "sha256": "0730f5dc57f1034286c1fc6ef25d5c850461ebb82ea54f562565ab1aa1b508e3"
+  },
+  {
+    "file": "agent.developer.instruction.txt",
+    "changed": true,
+    "newBraceRisk": false,
+    "sha256": "50cb40b70585d1d75d4e9bf80e85b2fbbd7924b5ed80d9fe068c69e0d4e82884"
+  },
+  {
+    "file": "agent.modify.developer.instruction.txt",
+    "changed": true,
+    "newBraceRisk": false,
+    "sha256": "63f86b89ecd88d23abb784291d877163837a5c8471c66081aeb8555da6829190"
+  },
+  {
+    "file": "agent.reviewer.instruction.txt",
+    "changed": true,
+    "newBraceRisk": false,
+    "sha256": "6630c90d1e77e7a8d0e6a32cbd785ec1206ccaaddea7652c7b62d074028a51cb"
+  },
+  {
+    "file": "agent.modify.reviewer.instruction.txt",
+    "changed": true,
+    "newBraceRisk": false,
+    "sha256": "295cb6b5e23d6ac4738cb28dda209945c3449c22cc7cf5a926829316eda89637"
+  },
+  {
+    "file": "agent.fixer.instruction.txt",
+    "changed": true,
+    "newBraceRisk": false,
+    "sha256": "3b3975fe04c752bde37442e838b59b2ae4038856a7ee6b2fff1ed04731156b94"
+  },
+  {
+    "file": "agent.modify.fixer.instruction.txt",
+    "changed": true,
+    "newBraceRisk": false,
+    "sha256": "f91fb85684c7c65073f55d8b7085e138118ab986a1c46d18d70f1018dc57dae3"
+  }
+]
