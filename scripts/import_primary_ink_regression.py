@@ -22,10 +22,13 @@ for case in seed['cases']:
  http=ROOT/'test'/case['id']/'http-check.json'
  if http.exists():
   h=json.loads(http.read_text());v.setdefault('verification',{}).update(httpResourceCount=h['checkedCount'],httpFailureCount=h['failureCount'])
+ if r.get('recoveryNote'):
+  v['recoveryNote']=r['recoveryNote'];v['initialFailureMessageId']=r.get('initialFailureMessageId');v.setdefault('verification',{})['reviewNote']='生成流程恢复记录：'+r['recoveryNote']+'。未作质量评分。'
  case['versions']=[x for x in case.get('versions',[]) if x['id']!=VERSION]+[v]
 old=before.get('currentRun');history=seed.setdefault('runHistory',[])
 if old and old.get('id')!=VERSION and not any(x.get('id')==old.get('id') for x in history):history.append(old)
 seed['generatedAt']=s['updatedAt'];seed['currentRun']={'id':VERSION,'label':LABEL,'environment':'https://box.test.xdf.cn','generateMode':'smart','updatedAt':s['updatedAt'],'successCount':s['successCount'],'failureCount':s['failureCount'],'pendingCount':s['pendingCount'],'automaticCaseCount':28,'manualCaseCount':2,'comparisonType':'historical','requestsSha256':s['requestsSha256'],'note':'版本名称按用户指定为“11月16日测试版”；实际执行于2026年11月17日。固定28条需求原文不变，标准模式smart，仅生成首版。右侧下拉切换测试版本，左侧保留已有线上版本。','boundary':'所有历史课件、版本ID和评分关联保留；2条录音/口语用例待手动生成，不计失败。本轮不自动评分、迭代或上架。','basicCheckNote':f"已检查 {len(allchecks)}/28 份课件包；JS语法发现问题 {sum(bool(c['syntaxErrors']) for c in allchecks)} 份，字面资源路径待核实 {sum(bool(c['missingLiteralReferences']) for c in allchecks)} 份，音频解码异常 {sum(bool(c['audioDecodeErrors']) for c in allchecks)} 份。",'verificationNote':'仅生成及基础包检查；实屏、触控、完整通关和听感待人工验证。生成成功不代表质量通过，不计算效果提升率。','historicalBaselineNote':'左侧沿用网站已有线上结果，包括0813版本；本轮没有重新生成线上对照。'}
+if s.get('recoveredCount'):seed['currentRun']['findingsNote']='T23首次走到普通聊天；保留异常后通过原会话继续创建恢复。需求未改变，不计为首次直接生成成功。'
 # No deletion/mutation of historical cases or versions, including all manual cases.
 def retained(d):return [{**c,'versions':[v for v in c.get('versions',[]) if v['id']!=VERSION]} for c in d['cases']]
 assert retained(before)==retained(seed)
