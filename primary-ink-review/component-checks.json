@@ -1,0 +1,19 @@
+{
+  "scope": "CSS语法与精确差异、样例接入和数值检查；浏览器实屏连接超时，未替代真实渲染验收",
+  "cssParsed": true,
+  "onlyOneDeclarationChanged": true,
+  "all24IconDefinitionsUnchanged": true,
+  "defaultWhiteFallback": true,
+  "ordinarySelectedDisabledRulesUnchanged": true,
+  "primaryIconsUseCurrentColor": true,
+  "correctedSampleJSUnchanged": true,
+  "lightBlueWhiteContrast": 1.72,
+  "lightBlueDarkContrast": 7.36,
+  "delta": [
+    {
+      "before": ".cb-primary {background: var(--cb-accent); border-color: var(--cb-accent); color: white; box-shadow: inset 0 3px 0 #ffffff30,0 5px 0 color-mix(in srgb,var(--cb-accent) 75%,#182d2a);}",
+      "after": ".cb-primary {background: var(--cb-accent); border-color: var(--cb-accent); color: var(--cb-primary-ink,#fff); box-shadow: inset 0 3px 0 #ffffff30,0 5px 0 color-mix(in srgb,var(--cb-accent) 75%,#182d2a);}",
+      "selector": ".cb-primary"
+    }
+  ]
+}

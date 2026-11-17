@@ -1,0 +1,62 @@
+{
+  "baseline": "20261116-系统提示词完整复核",
+  "cssBaselineMatchesLiveCDN": true,
+  "cssBaselineSha256": "54722e2c3a3e9b5f0877dd5a60930118d5fbd90c8dbebcfacc4f1bf819cb3836",
+  "checks": [
+    {
+      "file": "agent.architect.instruction.txt",
+      "changed": true,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "9a262d7c0f55b3dfd0c3099d353157358fa2ff1985ed687bf86512805a1384fc"
+    },
+    {
+      "file": "agent.developer.instruction.txt",
+      "changed": true,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "24b9b974f57acb669c04994b82d4cefd9a531b3430da2920ec73e8eb23d47b50"
+    },
+    {
+      "file": "agent.fixer.instruction.txt",
+      "changed": false,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "0289806bf8acb5fdd1d686ecbbce7dad85b26b25e921628254a36d77ee1091ee"
+    },
+    {
+      "file": "agent.modify.architect.instruction.txt",
+      "changed": true,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "cc3e389a426faf31d522573cf0491b98c552a2c3cff5c588c0d7b9596cf243fb"
+    },
+    {
+      "file": "agent.modify.developer.instruction.txt",
+      "changed": true,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "090d667c234e6b473968fd56b48511eeafb7897f10f92085051a41e1086c9e26"
+    },
+    {
+      "file": "agent.modify.fixer.instruction.txt",
+      "changed": false,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "97d6f80abf7fefb5e9008fff51a39faaad5dda6703000785a9401cd028076a27"
+    },
+    {
+      "file": "agent.modify.reviewer.instruction.txt",
+      "changed": true,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "21237442532c687cb32e6af405d2a3d07e5709bda2973623ff629613036c9c5c"
+    },
+    {
+      "file": "agent.reviewer.instruction.txt",
+      "changed": true,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "160ef8f3a84fffc865d564b0f80d8aaff9cbe20afd15b41ffd7fd0459e054471"
+    },
+    {
+      "file": "prompt.material-design-learning-tablet.txt",
+      "changed": false,
+      "templateBracesAndVariablesUnchanged": true,
+      "sha256": "3a0d9d34fbb4464d67e8adafa165776b9ab54dd05ff807277ff8b5acb47ab97c"
+    }
+  ],
+  "cssOnlyOneDeclarationChanged": true
+}
