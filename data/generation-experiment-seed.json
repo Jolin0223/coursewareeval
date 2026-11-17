@@ -4,7 +4,7 @@
   "testSetVersion": "1.2",
   "manualTestSetId": "manual-recording-baseline-20260813-v1.1",
   "manualTestSetVersion": "1.1",
-  "generatedAt": "2026-10-30T05:43:20.848957+00:00",
+  "generatedAt": "2026-11-17T12:12:52.734584+08:00",
   "source": "Fixed 28-case Box test and production generation",
   "runPolicy": {
     "environment": "https://box.test.xdf.cn",
@@ -370,6 +370,43 @@
             "httpFailureCount": 0,
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
+          }
+        },
+        {
+          "conversationId": "4c7b135277e5420bb7d5529df79e8d3c",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-orI6ow83RhCnCnKKrYYwbA/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-orI6ow83RhCnCnKKrYYwbA/package.zip",
+          "fileName": "看图识字",
+          "snapshotId": "3df775c2ec804cbdbf74d300994af7f4",
+          "finishedAt": "2026-11-17T12:11:46.975211+08:00",
+          "startedAt": "2026-11-17T12:06:21.271279+08:00",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T01_box-test-20261116-primary-ink",
+          "status": "success",
+          "prompt": "做一个幼儿园看图识字点选游戏，认识日、月、山、水。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": 41577,
+          "htmlSha256": "a39934440ad65fae75f83b3d7965c6abe12c3b09d149b1bdb730f270c8de646b",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 2,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewNote": "仅做包内基础检查；未自动评分、迭代或上架。请按实际画面和操作人工评审。",
+            "httpResourceCount": 1,
+            "httpFailureCount": 0
           }
         }
       ]
@@ -743,6 +780,43 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "cefb4061bbb240379d663cc5574a44a5",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-qb6pGfQwRZO54xw2aYVW4Q/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-qb6pGfQwRZO54xw2aYVW4Q/package.zip",
+          "fileName": "海底寻宝",
+          "snapshotId": "8e93122789c34cde89804d8073c64d78",
+          "finishedAt": "2026-11-17T12:12:52.725542+08:00",
+          "startedAt": "2026-11-17T12:06:21.270880+08:00",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T02_box-test-20261116-primary-ink",
+          "status": "success",
+          "prompt": "做一个海底寻宝主题的幼儿园5以内数量与数字配对游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": 41581,
+          "htmlSha256": "a53c16ac062a342ddfa768d421c1296f891ff2523de10e2044edc4f119f6bccc",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewNote": "仅做包内基础检查；未自动评分、迭代或上架。请按实际画面和操作人工评审。",
+            "httpResourceCount": 1,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -1114,6 +1188,43 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "9f38c74edeb24de39a3d486c777b781a",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-NzESDBuTSSSjHOFnWJMDNw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-NzESDBuTSSSjHOFnWJMDNw/package.zip",
+          "fileName": "Animal Cards",
+          "snapshotId": "5fd2f63f68524f368cc736bbea6d5c23",
+          "finishedAt": "2026-11-17T12:12:02.478339+08:00",
+          "startedAt": "2026-11-17T12:06:21.270899+08:00",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T03_box-test-20261116-primary-ink",
+          "status": "success",
+          "prompt": "做一个幼儿园动物英语单词翻翻卡，翻开后可以点击播放单词发音。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": 41579,
+          "htmlSha256": "8ad7717a90f24bc766d1afed0d0c9d1182d55dacf793092aa867642cd7990d63",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 7,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewNote": "仅做包内基础检查；未自动评分、迭代或上架。请按实际画面和操作人工评审。",
+            "httpResourceCount": 1,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -1466,6 +1577,43 @@
             "httpFailureCount": 0,
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
+          }
+        },
+        {
+          "conversationId": "9c3980db246d484791c0570a29546c42",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-UiW-3HoWSLaG-2DcV41PTQ/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-UiW-3HoWSLaG-2DcV41PTQ/package.zip",
+          "fileName": "云朵乐园 - 听音辨识声母",
+          "snapshotId": "c6fefde2e47347b2a43ded48bc91ee17",
+          "finishedAt": "2026-11-17T12:11:02.067794+08:00",
+          "startedAt": "2026-11-17T12:06:21.272278+08:00",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T04_box-test-20261116-primary-ink",
+          "status": "success",
+          "prompt": "做一个云朵乐园主题的一年级拼音听音选声母课件，学生点击播放后选择听到的声母。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": 41571,
+          "htmlSha256": "95bc46d1da525170002e78bceb70e2d62caa436751f380e7760c42623fa3b475",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 4,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewNote": "仅做包内基础检查；未自动评分、迭代或上架。请按实际画面和操作人工评审。",
+            "httpResourceCount": 1,
+            "httpFailureCount": 0
           }
         }
       ]
@@ -1838,6 +1986,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T05_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个一年级数轴小车游戏，学生左右滑动小车找到正确数字。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -2205,6 +2376,43 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "357c5e36f0d0404aaa4e7f4f326d084c",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-BAymhYcBRGeP8J7-dZE9Og/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-BAymhYcBRGeP8J7-dZE9Og/package.zip",
+          "fileName": "Letter Tracing",
+          "snapshotId": "f82483b43a80420dab8a6ed36e295dc7",
+          "finishedAt": "2026-11-17T12:11:37.915315+08:00",
+          "startedAt": "2026-11-17T12:06:21.271266+08:00",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T06_box-test-20261116-primary-ink",
+          "status": "success",
+          "prompt": "做一个一年级英语字母A到D的四线三格书写练习。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": 41569,
+          "htmlSha256": "028139cba2d00e854708d967282ae24cd81af24952355ca826a2aa40b0189f22",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 4,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewNote": "仅做包内基础检查；未自动评分、迭代或上架。请按实际画面和操作人工评审。",
+            "httpResourceCount": 1,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -2545,6 +2753,43 @@
             "httpFailureCount": 0,
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
+          }
+        },
+        {
+          "conversationId": "a6fde83c3ae347bd9fd5f23fc890e1d3",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-UoPFpJ54T660ohxC0Drjlw/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-UoPFpJ54T660ohxC0Drjlw/package.zip",
+          "fileName": "汉字连连看",
+          "snapshotId": "4c6ccbf9d4ed4082b5ae2758831f0b42",
+          "finishedAt": "2026-11-17T12:11:36.891239+08:00",
+          "startedAt": "2026-11-17T12:06:21.271297+08:00",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T07_box-test-20261116-primary-ink",
+          "status": "success",
+          "prompt": "做一个二年级汉字与偏旁部首连线游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": 41567,
+          "htmlSha256": "4a6d562207b56d3849c5a7f48eeaba549a257cb818c57e481db106d62ff04bd7",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 1,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewNote": "仅做包内基础检查；未自动评分、迭代或上架。请按实际画面和操作人工评审。",
+            "httpResourceCount": 1,
+            "httpFailureCount": 0
           }
         }
       ]
@@ -2887,6 +3132,43 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "9bb46bb8354d4530a6f661f505e35cda",
+          "fileUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-IuUG7JQGTK-dVVxaTfuymA/index.html",
+          "pushUrl": "https://oss-xlss.test.xdf.cn/ig-kpm/multiple/2026-11/17-IuUG7JQGTK-dVVxaTfuymA/package.zip",
+          "fileName": "拨钟游戏",
+          "snapshotId": "03c825a3bf2b477f8681261730bbd545",
+          "finishedAt": "2026-11-17T12:12:31.957664+08:00",
+          "startedAt": "2026-11-17T12:06:21.271734+08:00",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T08_box-test-20261116-primary-ink",
+          "status": "success",
+          "prompt": "做一个二年级认识整点和半点的拨时钟游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": 41573,
+          "htmlSha256": "3b73829416f2cc9981302c87f339748ac0dec5f14dee91874ff517e505aeeecd",
+          "verification": {
+            "scriptSyntax": "通过",
+            "literalResourceReferences": "通过",
+            "audioDecode": "通过",
+            "audioFileCount": 4,
+            "interaction": "待验证",
+            "audioListening": "待验证",
+            "visualStatus": "待验证",
+            "scope": "包内文件、JS语法、音频可解码；不证明交互完成、文字无溢出或音画匹配",
+            "reviewNote": "仅做包内基础检查；未自动评分、迭代或上架。请按实际画面和操作人工评审。",
+            "httpResourceCount": 1,
+            "httpFailureCount": 0
+          }
         }
       ]
     },
@@ -3228,6 +3510,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T09_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个二年级英语单词分类投篮游戏，把动物和食物单词放进对应篮筐。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -3569,6 +3874,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T10_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个三年级古诗句拖拽排序课件，内容是《绝句》。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -3910,6 +4238,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T11_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个三年级九九乘法棋盘点击游戏，根据算式找到正确的积。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -4251,6 +4602,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T12_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "人教版三年级英语，做一个身体部位单词看图选词课件，支持点击播放单词发音。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -4636,6 +5010,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T13_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个四年级成语迷宫游戏，学生帮助角色走到正确成语出口。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -4977,6 +5374,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T14_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个四年级分数大小比较滑杆课件，拖动滑杆观察并选择更大的分数。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -5330,6 +5750,29 @@
             "reviewNote": "Codex已直接复核知识与关键交互逻辑；已复核问题见本条记录。实际画面、试听和完整操作待验证，不据此给出总体通过分。",
             "aiSourceReviewStatus": "codex-source-reviewed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T15_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个四年级英语句子排序课件，把日常问候语的单词拖成正确句子。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -5683,6 +6126,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T16_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个五年级阅读课件，把文章的起因、经过、结果卡片拖拽排序。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -6063,6 +6529,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T17_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个五年级数独课件，支持填数、候选数笔记和擦除。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -6429,6 +6918,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T18_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "苏教版五年级双语故事表演，做一个问路对话的问句与答句连线课件，问句和答句都可以点击播放。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -6770,6 +7282,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T19_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个六年级语文论点与论据配对棋盘，点击选择能够支持论点的论据。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -7111,6 +7646,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T20_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个六年级长方体和正方体观察课件，可以拖动旋转、缩放和重置视角。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -7452,6 +8010,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T21_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个六年级英语对话补全课件，学生点击播放并听完情境对话后，选择合适的答句完成对话。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -7793,6 +8374,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T22_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个比较物体长短的拖拽互动课件。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -8148,6 +8752,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T23_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个动物英语单词听音选图游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -8521,6 +9148,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T24_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个四年级七巧板拼图课件，把七块图形拼成指定图案并支持旋转。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -8862,6 +9512,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T25_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个一年级拼音字母描摹课件，学生沿正确笔顺描写声母。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -9242,6 +9915,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T26_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个四年级推箱子数学闯关课件，把数字箱子推到对应算式结果的位置。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -9583,6 +10279,29 @@
             "reviewNote": "知识、教学、代码三项源码初审已完成；已复核问题见本条记录。未覆盖实际画面、试听和完整操作，不据此给出总体通过分。",
             "aiSourceReviewStatus": "completed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T27_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个五年级英语单词与释义配对转盘游戏。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -9936,6 +10655,29 @@
             "reviewNote": "Codex已直接复核知识与关键交互逻辑；已复核问题见本条记录。实际画面、试听和完整操作待验证，不据此给出总体通过分。",
             "aiSourceReviewStatus": "codex-source-reviewed"
           }
+        },
+        {
+          "conversationId": "",
+          "fileUrl": "",
+          "pushUrl": "",
+          "fileName": "",
+          "snapshotId": "",
+          "finishedAt": "",
+          "startedAt": "",
+          "error": "",
+          "id": "box-test-20261116-primary-ink",
+          "label": "11月16日测试版",
+          "group": "固定测试集",
+          "taskId": "fixed_T28_box-test-20261116-primary-ink",
+          "status": "pending",
+          "prompt": "做一个三年级乘法跑酷游戏，学生按住蓄力跳跃，碰到正确答案得分。",
+          "promptType": "raw-user-requirement",
+          "environment": "https://box.test.xdf.cn",
+          "generationMethod": "box-pipeline-generate-only",
+          "generateMode": "smart",
+          "published": false,
+          "evaluated": false,
+          "generationMessageId": ""
         }
       ]
     },
@@ -10041,24 +10783,23 @@
     }
   ],
   "currentRun": {
-    "id": "box-production-20261030-latest",
-    "label": "10月30日 线上最新版",
-    "environment": "https://box.xdf.cn",
+    "id": "box-test-20261116-primary-ink",
+    "label": "11月16日测试版",
+    "environment": "https://box.test.xdf.cn",
     "generateMode": "smart",
-    "updatedAt": "2026-10-30T05:43:20.848957+00:00",
-    "successCount": 28,
+    "updatedAt": "2026-11-17T12:12:52.734584+08:00",
+    "successCount": 7,
     "failureCount": 0,
-    "pendingCount": 0,
-    "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
+    "pendingCount": 21,
     "automaticCaseCount": 28,
     "manualCaseCount": 2,
-    "comparisonType": "production-latest",
-    "note": "本轮使用线上最新提示词，按固定28条原始需求、标准模式（smart）生成首版。线上栏默认显示最新结果；下拉可切回0813线上版本。测试环境历史结果另行保留。",
-    "boundary": "保留全部历史课件、版本ID及评分关联；不自动修复或迭代。2条录音/口语用例仍待手动生成。",
-    "verificationNote": "AI源码初审完成 28/28；画面、触控、听感和完整通关尚未完成实测。浏览器采集异常未作为课件失败证据。人工评分独立填写，不用源码分数替代整体评分。",
-    "basicCheckNote": "已检查 28/28 份课件包；JS语法发现问题 0 份，明确资源路径待核实 0 份。 已探测 28 份课件的 413 个在线文件，访问异常 0 个。",
-    "sourceReviewedCount": 28,
-    "findingsNote": "重点问题：T05数轴刻度缺少横坐标设置，实屏优先复核；T06的C/c描摹路径只生成90度短弧；T17第2套数独多解却按固定答案判定。T24封面仅局部热区可进入，七巧板同形互换与对称角度被拒绝。独立求解确认T26两关推箱子均有解。其余AI建议未经复核不计为确定缺陷。"
+    "comparisonType": "historical",
+    "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
+    "note": "版本名称按用户指定为“11月16日测试版”；实际执行于2026年11月17日。固定28条需求原文不变，标准模式smart，仅生成首版。右侧下拉切换测试版本，左侧保留已有线上版本。",
+    "boundary": "所有历史课件、版本ID和评分关联保留；2条录音/口语用例待手动生成，不计失败。本轮不自动评分、迭代或上架。",
+    "basicCheckNote": "已检查 7/28 份课件包；JS语法发现问题 0 份，字面资源路径待核实 0 份，音频解码异常 0 份。",
+    "verificationNote": "仅生成及基础包检查；实屏、触控、完整通关和听感待人工验证。生成成功不代表质量通过，不计算效果提升率。",
+    "historicalBaselineNote": "左侧沿用网站已有线上结果，包括0813版本；本轮没有重新生成线上对照。"
   },
   "runHistory": [
     {
@@ -10081,6 +10822,26 @@
       "historicalBaselineNote": "对照沿用网站已有线上历史结果，本轮未重新生成线上课件。",
       "sourceReviewedCount": 28,
       "coverPolicyNote": "封面分布（HTML结构核对）：16条有独立封面、12条直接进入内容，并非每条都强制生成封面；包含T23脚本异常的封面结构，不能等同于16条可用封面。"
+    },
+    {
+      "id": "box-production-20261030-latest",
+      "label": "10月30日 线上最新版",
+      "environment": "https://box.xdf.cn",
+      "generateMode": "smart",
+      "updatedAt": "2026-10-30T05:43:20.848957+00:00",
+      "successCount": 28,
+      "failureCount": 0,
+      "pendingCount": 0,
+      "requestsSha256": "60e96bf48e2a3f19a200cb27360dbc7dd8c944a1a52ba8f9f399504f0fcd415a",
+      "automaticCaseCount": 28,
+      "manualCaseCount": 2,
+      "comparisonType": "production-latest",
+      "note": "本轮使用线上最新提示词，按固定28条原始需求、标准模式（smart）生成首版。线上栏默认显示最新结果；下拉可切回0813线上版本。测试环境历史结果另行保留。",
+      "boundary": "保留全部历史课件、版本ID及评分关联；不自动修复或迭代。2条录音/口语用例仍待手动生成。",
+      "verificationNote": "AI源码初审完成 28/28；画面、触控、听感和完整通关尚未完成实测。浏览器采集异常未作为课件失败证据。人工评分独立填写，不用源码分数替代整体评分。",
+      "basicCheckNote": "已检查 28/28 份课件包；JS语法发现问题 0 份，明确资源路径待核实 0 份。 已探测 28 份课件的 413 个在线文件，访问异常 0 个。",
+      "sourceReviewedCount": 28,
+      "findingsNote": "重点问题：T05数轴刻度缺少横坐标设置，实屏优先复核；T06的C/c描摹路径只生成90度短弧；T17第2套数独多解却按固定答案判定。T24封面仅局部热区可进入，七巧板同形互换与对称角度被拒绝。独立求解确认T26两关推箱子均有解。其余AI建议未经复核不计为确定缺陷。"
     }
   ]
 }
