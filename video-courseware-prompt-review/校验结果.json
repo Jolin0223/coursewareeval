@@ -1,0 +1,40 @@
+{
+  "revision": "2026-11-18-r13-coordinated",
+  "staticChecksPassed": true,
+  "errors": [],
+  "stages": 10,
+  "developerOriginalSuffixFilesLocked": true,
+  "mediaContractChangedClauses": [
+    2,
+    4,
+    5
+  ],
+  "mediaContractProtectedClauses": [
+    1,
+    3,
+    6
+  ],
+  "iconClasses": 24,
+  "negativeCases": [
+    {
+      "case": "css_brace",
+      "rejected": true
+    },
+    {
+      "case": "renamed_variable",
+      "rejected": true
+    },
+    {
+      "case": "history",
+      "rejected": true
+    },
+    {
+      "case": "duplicate_fixed_suffix",
+      "rejected": true
+    }
+  ],
+  "backendTemplateRun": "not_run",
+  "generationRegression": "not_run",
+  "releaseReadiness": "requires_runtime_checker_template_validation_and_generation_regression",
+  "knownDeveloperIssue": "P4 durationSeconds sentence mixes seconds and reference count; fixed server suffix intentionally unchanged"
+}

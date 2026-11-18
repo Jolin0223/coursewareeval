@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "fullTextRecoveryPairs": 20,
+  "historyLinks": 18,
+  "mobilePages": 5,
+  "downloadMatches": true,
+  "reviewStatePersists": true,
+  "pageErrors": [],
+  "browser": "fresh_headless_profile_no_user_browser"
+}
