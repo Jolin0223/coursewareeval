@@ -31,7 +31,7 @@ def replace_lines(k,predicate,after,topic):
             F[k]['final']=F[k]['final'].replace(line,after)
             PATCHES.append(dict(id=k,topic=topic,before=line,after=after,count=count))
 
-structure='需求确认的objective与designStyle仍为非空字符串，不改为数组或对象。objective按实际目标分成2—4条，每条用简短标签加一个可观察的学习结果，如“认识：……”“操作：……”“应用：……”，不堆叠无法验证的口号。designStyle按“画风与配色、角色与道具、场景与题板、字体与语言、交互与反馈、声音与字幕”分行，每项写本课具体决定；不适用项省略，不压成一段。字符串内用标准JSON换行转义，解析后逐行显示；不用HTML、Markdown表格或新增字段。章节content依次写学习内容、学生动作、完成条件与后续衔接，保持短句。'
+structure='需求确认的objective与designStyle仍为非空字符串，不改为数组或对象。objective按实际目标分条，通常不超过4条，不为凑数增加目标；每条用简短标签加一个可观察的学习结果，如“认识：……”“操作：……”“应用：……”，不堆叠无法验证的口号。designStyle按“画风与配色、角色与道具、场景与题板、字体与语言、交互与反馈、声音与字幕”分行，每项写本课具体决定；不适用项省略，不压成一段。字符串内用标准JSON换行转义，解析后逐行显示；不用HTML、Markdown表格或新增字段。章节content依次写学习内容、学生动作、完成条件与后续衔接，保持短句。'
 append_after('P3',F['P3']['final'].splitlines()[0],structure,'需求确认结构化')
 identity='多位同类角色逐个固定名字或称呼、毛色或肤色、脸型体型、服装及配饰配色，给出允许变化；不能只写“不同颜色”或让各图自行分配。封面、视频及H5保持同一角色与外貌的对应关系，角色位置可变但身份不互换；任务明确换装时只改变指定服装，保留其他识别特征。'
 append_after('P3',next(x for x in F['P3']['final'].splitlines() if x.startswith('主题元素可以用于')),identity,'多角色身份固定')
